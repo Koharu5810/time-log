@@ -8,7 +8,7 @@
 @section('title', '会員登録')
 
 @section('content')
-    <form method="post" action="/register" class="register-container">
+    <form method="post" action="{{ route('user.register') }}" class="register-container">
     @csrf
 {{-- ユーザー名 --}}
         <div class="form__group">

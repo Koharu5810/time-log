@@ -16,7 +16,6 @@ class AuthController extends Controller
     }
 // 会員登録処理
     public function register(UserRegisterRequest $request) {
-    // public function register(Request $request) {
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,

@@ -8,7 +8,7 @@
 @section('title', 'ログイン')
 
 @section('content')
-    <form method="POST" action="/login" class="login-container">
+    <form method="POST" action="{{ route('user.register') }}" class="login-container">
     @csrf
 {{-- ユーザー名/メールアドレス --}}
         <div class="form__group">
