@@ -13,7 +13,6 @@ html {
     align-items: center;  /* 垂直位置 中央揃え */
     justify-content: space-between;  /* 水平方向 両端揃え */
     box-sizing: border-box;
-    border: 3px solid pink;
 }
 .header-left,
 .header-center,
@@ -33,7 +32,6 @@ html {
     max-width: 100%;
     height: auto;
     display: block;
-    border: 1px solid orange;
 }
 
 /* ボタン類 */
@@ -41,9 +39,10 @@ html {
     justify-content: flex-end;
     gap: 10px;
 }
-.header__login-button,
 .header__logout-button,
-.header__mypage-button {
+.header__create-button,
+.header__list-button,
+.header__request-button {
     display: flex;
     align-items: center;
     line-height: normal;
@@ -55,23 +54,11 @@ html {
     border: none;
     cursor: pointer;
 }
-.header__mypage-button a {
+.header__logout-button a,
+.header__create-button a,
+.header__list-button a,
+.header__request-button a {
     color: #FFF;
-    text-decoration: none;
-}
-.header__sell-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 5px;
-    padding: 3px 7px;
-    background-color: #fff;
-    border-radius: 3px;
-    border: none;
-    cursor: pointer;
-}
-.header__sell-button a {
-    color: #000;
     text-decoration: none;
 }
 
@@ -144,6 +131,13 @@ main {
     margin-top: 40px;
     margin-bottom: 30px;
     font-size: 36px;
+}
+.content__sub-title {
+    border-left: solid 8px #000;
+    padding-left: 21px;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    font-size: 30px;
 }
 
 /* タブレット幅用スタイル */

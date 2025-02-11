@@ -24,13 +24,11 @@
             @if (auth()->check() && !request()->is('user/register') && !request()->is('user/login'))
                 <div class="header-right">
             {{-- 勤怠ボタン --}}
-                    <button class="header__mypage-button"><a href="{{ route('create') }}">勤怠</a></button>
+                    <button class="header__create-button"><a href="{{ route('create') }}">勤怠</a></button>
             {{-- 勤怠一覧ボタン --}}
-                    <button>勤怠一覧</button>
-                    {{-- <button class="header__sell-button"><a href="{{ route('list') }}">勤怠一覧</a></button> --}}
+                    <button class="header__list-button"><a href="{{ route('user.attendance.list') }}">勤怠一覧</a></button>
             {{-- 申請ボタン --}}
-                    <button>申請</button>
-                    {{-- <button class="header__sell-button"><a href="{{ route('request') }}">申請</a></button> --}}
+                    <button class="header__request-button"><a href="{{ route('request.list') }}">申請</a></button>
             {{-- ログアウトボタン --}}
                     <form action="{{ route('user.logout') }}" method="POST" class="header__logout">
                         @csrf
@@ -44,6 +42,7 @@
     <main>
         <div class="content">
             <h1 class="content__title">@yield('title')</h1>
+            <h2 class="content__sub-title">@yield('sub-title')</h2>
             @yield('content')
         </div>
     </main>

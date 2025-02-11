@@ -16,4 +16,9 @@ Route::post('/user/logout', [AuthController::class, 'userDestroy'])->name('user.
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [AttendanceController::class, 'index'])->name('create');
+    Route::post('/user', [AttendanceController::class, 'store'])->name('attendance.store');
+
+    Route::get('/user/attendance-list', [AttendanceController::class, 'showUserAttendanceList'])->name('user.attendance.list');
+    Route::get('/user/request-list', [AttendanceController::class, 'showRequestList'])->name('request.list');
+    Route::get('/user/attendance-detail', [AttendanceController::class, 'showAttendanceDetail'])->name('request.detail');
 });

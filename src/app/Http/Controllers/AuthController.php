@@ -30,11 +30,11 @@ class AuthController extends Controller
         return redirect()->route('create');
     }
 
-// ログイン画面表示
+// ログイン画面表示（一般ユーザー）
     public function showUsersLoginForm() {
         return view('user.login');
     }
-// ログイン処理
+// ログイン処理（一般ユーザー）
     public function login(UserLoginRequest $request) {
         $user = User::firstWhere('email', $request->email);
 

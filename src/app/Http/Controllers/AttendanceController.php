@@ -3,11 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Attendance;
+use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
-// 勤怠登録画面表示
+// 勤怠登録画面表示（一般ユーザ）
     public function index() {
         return view('attendance.create');
+    }
+    public function store(Request $request)
+    {
+        try {
+            // 打刻処理
+            Attendance::create([
+                'user_id' => auth()->id(),
+                'clock_in' => Carbon::now(),
+                'type' => 'clock_in'
+            ]);
+
+            return redirect()->back()->with('success', '出勤を記録しました');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors('打刻に失敗しました');
+        }
+    }
+
+// 勤怠一覧画面表示（一般ユーザ）
+    public function showUserAttendanceList() {
+        return view('attendance.attendance-list');
+    }
+// 申請一覧画面表示（一般ユーザ）
+    public function showRequestList() {
+        return view('attendance.request-list');
+    }
+// 勤怠詳細画面表示（一般ユーザ）
+    public function showAttendanceDetail() {
+        return view('attendance.detail');
     }
 }
