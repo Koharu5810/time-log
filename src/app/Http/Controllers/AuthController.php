@@ -27,7 +27,7 @@ class AuthController extends Controller
         // 登録直後にログイン状態にする
         auth()->login($user);
 
-        return redirect()->route('attendance.create');
+        return redirect()->route('create');
     }
 
 // ログイン画面表示

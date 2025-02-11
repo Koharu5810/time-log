@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use App\Models\User;
@@ -23,7 +22,7 @@ class UserRegistrationTest extends TestCase
     private function getRegisterData(array $overrides = []): array
     {
         return array_merge([
-            'username' => 'TEST USER',
+            'name' => 'TEST USER',
             'email' => 'test@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
@@ -80,8 +79,13 @@ class UserRegistrationTest extends TestCase
         $data = $this->getRegisterData();
         $response = $this->post(route('user.register'), $data);
 
+        // パスワードがハッシュ化されて保存されていることを確認
+        $user = User::where('email', 'test@example.com')->first();
+        $this->assertNotNull($user);
+        $this->actingAs($user);
+
         $response->assertStatus(302);   // ステータスコード302を確認（リダイレクト）
-        $response->assertRedirect(route('login'));
+        $response->assertRedirect(route('create'));  // 登録後に勤怠管理画面へリダイレクト確認
 
         // データベースにユーザーが作成されたことを確認
         $this->assertDatabaseHas('users', [
@@ -89,9 +93,6 @@ class UserRegistrationTest extends TestCase
             'email' => 'test@example.com',
         ]);
 
-        // パスワードがハッシュ化されて保存されていることを確認
-        $user = User::where('email', 'test@example.com')->first();
-        $this->assertNotNull($user);
         $this->assertTrue(Hash::check('password123', $user->password));
     }
 }
