@@ -15,32 +15,27 @@
         <div class="header">
         {{-- ロゴ表示 --}}
             <div class="header-left">
-                {{-- <a href="{{ route('home') }}"> --}}
+                <a href="{{ route('create') }}">
                     <img class="header__logo" src="{{ asset('storage/logo.svg') }}" alt="ロゴ" />
-                {{-- </a> --}}
+                </a>
             </div>
 
-            {{-- ログイン・会員登録画面では非表示 --}}
-            @if (!request()->is('register') && !request()->is('login'))
-                <div class="header-center">
-                </div>
-            @endif
-
     {{-- ボタンコンテナ --}}
-            @if (!request()->is('register') && !request()->is('login'))
+            @if (auth()->check() && !request()->is('user/register') && !request()->is('user/login'))
                 <div class="header-right">
             {{-- 勤怠ボタン --}}
-                    <button>勤怠</button>
-                    {{-- <button class="header__mypage-button"><a href="{{ route('profile.mypage') }}">マイページ</a></button> --}}
+                    <button class="header__mypage-button"><a href="{{ route('create') }}">勤怠</a></button>
             {{-- 勤怠一覧ボタン --}}
                     <button>勤怠一覧</button>
-                    {{-- <button class="header__sell-button"><a href="{{ route('sell') }}">出品</a></button> --}}
+                    {{-- <button class="header__sell-button"><a href="{{ route('list') }}">勤怠一覧</a></button> --}}
+            {{-- 申請ボタン --}}
+                    <button>申請</button>
+                    {{-- <button class="header__sell-button"><a href="{{ route('request') }}">申請</a></button> --}}
             {{-- ログアウトボタン --}}
-                    <button>ログアウト</button>
-                    {{-- <form action="{{ route('logout') }}" method="POST" class="header__logout">
+                    <form action="{{ route('user.logout') }}" method="POST" class="header__logout">
                         @csrf
                         <button type="submit" class="header__logout-button">ログアウト</button>
-                    </form> --}}
+                    </form>
                 </div>
             @endif
         </div>
