@@ -8,7 +8,7 @@
 @section('title', 'ログイン')
 
 @section('content')
-    <form method="POST" action="{{ route('user.register') }}" class="login-container">
+    <form method="POST" action="{{ route('user.login') }}" class="login-container">
     @csrf
 {{-- ユーザー名/メールアドレス --}}
         <div class="form__group">
@@ -37,5 +37,5 @@
         <button class="login-form__button form__black-button">ログインする</button>
     </form>
 {{-- 会員登録案内 --}}
-    <a href="/user/register" class="register-link blue-button">会員登録はこちら</a>
+    <a href="{{ route('user.register') }}" class="register-link blue-button">会員登録はこちら</a>
 @endsection

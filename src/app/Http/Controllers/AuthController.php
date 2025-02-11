@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\UserLoginRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
@@ -34,20 +35,18 @@ class AuthController extends Controller
         return view('user.login');
     }
 // ログイン処理
-    // public function login(LoginRequest $request) {
-    //     $user = User::where('name', $request->name)
-    //         ->orWhere('email', $request->username)  // ユーザ名またはメールアドレスで認証
-    //         ->first();
+    public function login(UserLoginRequest $request) {
+        $user = User::firstWhere('email', $request->email);
 
-    //     // パスワードが一致するか確認
-    //     if ($user && Hash::check($request->password, $user->password)) {
-    //         auth()->login($user);  // 認証成功
+        // パスワードが一致するか確認
+        if ($user && Hash::check($request->password, $user->password)) {
+            auth()->login($user);  // 認証成功
 
-    //         // 認証成功後商品一覧画面にリダイレクト
-    //         return redirect()->route('home');
-    //     }
+            // 認証成功後勤怠登録画面にリダイレクト
+            return redirect()->route('create');
+        }
 
-    //     session()->flash('auth_error', 'ログイン情報が登録されていません');
-    //     return redirect()->route('login')->withInput();  // 入力値を保持してログイン画面にリダイレクト
-    // }
+        session()->flash('auth_error', 'ログイン情報が登録されていません');
+        return redirect()->route('user.login')->withInput();  // 入力値を保持してログイン画面にリダイレクト
+    }
 }
