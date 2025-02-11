@@ -8,7 +8,7 @@
 
 **Docker ビルド**
 
-1. アプリケーションをクローンするディレクトリに移動
+1. アプリケーションをクローンするディレクトリに移動。
 2. `git clone git@github.com:Koharu5810/time-log.git`
 3. `cd time_log`
 4. DockerDesktop アプリを立ち上げる（`open -a docker`）。
@@ -20,7 +20,7 @@
 2. `composer install`
 3. 「.env.example」ファイルを 「.env」ファイルに命名を変更。  
     または、新しく.env ファイルを作成（`cp .env.example .env`）。
-4. .env に以下の環境変数を追加
+4. .env に以下の環境変数を追加する。
 
 ```text
 DB_CONNECTION=mysql
@@ -47,51 +47,69 @@ MAIL_FROM_NAME="${APP_NAME}"
 php artisan key:generate
 ```
 
-6. マイグレーションの実行
+6. マイグレーション・シーディングの実行
 
 ```bash
 php artisan migrate
-```
-
-7. シーディングの実行
-
-```bash
 php artisan db:seed
 ```
 
-8. シンボリックリンクの作成
+7. シンボリックリンクの作成
 
 ``` bash
 php artisan storage:link
 ```
 
-<!-- 9. テスト用データベースの設定
+**テスト用データベースの設定**
 
-まずテスト用の環境変数ファイルを作成する
+1. MySQLコンテナ内でコマンド実行
+
+``` bash
+mysql -u root -p
+CREATE DATABASE your_database;
+```
+
+2. src/config/database.phpのmysqlの配列をすべてコピーし、mysql_testを作成する。  
+   以下は1.で作成したデータベースに合わせた設定項目に書き換える。
+
+``` bash
+'database' => 'your_database',
+'username' => 'your_username',
+'password' => 'your_password',
+```
+
+3. テスト用の環境変数ファイルを作成し、テスト用データベース設定に編集する。
+
 ``` bash
 cp .env .env.testing
-```
-作成したファイルに以下を記載し、テスト用データベース設定に変更する
-``` bash
-APP_ENV=testing
-APP_KEY=base64:テスト用キー
-APP_DEBUG=true
-APP_URL=http://localhost
 
-DB_CONNECTION=mysql
-DB_HOST=mysql
-DB_PORT=3306
-DB_DATABASE=laravel_test_db
-DB_USERNAME=root
-DB_PASSWORD=root
+
+APP_ENV=test
+APP_KEY=base64:テスト用キーを生成
+
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 ```
-テスト用データベースを作成
-phpunit.xmlの設定確認
-テスト用データベースにマイグレーションとシーディングを適用する
+
+4. キャッシュを削除
+
+``` bash
+php artisan config:clear
+```
+
+5. テスト用データベースにマイグレーションとシーディングを適用する
+
 ``` bash
 php artisan migrate --env=testing
 php artisan db:seed --env=testing
-``` -->
+```
+
+6. phpunit.xmlを修正
+``` bash
+<env name="DB_CONNECTION" value="mysql_test"/>
+<env name="DB_DATABASE" value="your_database"/>
+```
 <br>
 
 **会員登録後のメール認証**
