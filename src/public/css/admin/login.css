@@ -1,0 +1,22 @@
+.login-container {
+    width: 80%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.login-form__button {
+    margin-top: 40px;
+}
+.register-link {
+    margin-top: 15px;
+}
+
+/* タブレット幅用スタイル */
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .login-form__button {
+        width: 100%;
+    }
+}

@@ -1,0 +1,196 @@
+html {
+    overflow-y: scroll; /* 常にスクロールバーを表示 */
+}
+.header {
+    background-color: #000;
+    position: fixed;
+    z-index: 1000;
+    width: 100%;
+    height: 50px;
+    padding: 0 20px;
+    gap: 10px;
+    display: flex;
+    align-items: center;  /* 垂直位置 中央揃え */
+    justify-content: space-between;  /* 水平方向 両端揃え */
+    box-sizing: border-box;
+    border: 3px solid pink;
+}
+.header-left,
+.header-center,
+.header-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    height: 30px;
+}
+
+/* ロゴ */
+.header-left {
+    justify-content: flex-start;
+}
+.header__logo {
+    width: 30%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid orange;
+}
+
+/* ボタン類 */
+.header-right {
+    justify-content: flex-end;
+    gap: 10px;
+}
+.header__login-button,
+.header__logout-button,
+.header__mypage-button {
+    display: flex;
+    align-items: center;
+    line-height: normal;
+    padding: 0;
+    margin-right: 10px;
+    background-color: transparent;
+    color: #ccc;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+}
+.header__mypage-button a {
+    color: #ccc;
+    text-decoration: none;
+}
+.header__sell-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+    padding: 3px 7px;
+    background-color: #fff;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+}
+.header__sell-button a {
+    color: #000;
+    text-decoration: none;
+}
+
+main {
+    padding-top: 50px;
+    display: flex;
+    justify-content: center;
+    border: 1px solid yellow;
+}
+/* 入力フォーム・グループ */
+.form__group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;  /* ラベル・入力欄を左揃え */
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+/* 入力フォーム・ラベル */
+.form__group label {
+    font-weight: bold;
+}
+.form__group-input {
+    width: 100%;
+    height: 45px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: block;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+/* フォーム送信用 背景黒色ボタン */
+.form__black-button {
+    width: 100%;
+    height: 45px;
+    background-color: #000000;
+    color: #fff;
+    font-size: 24px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    justify-content: center;
+    text-align: center;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+}
+/* リンク用 青文字ボタン */
+.blue-button {
+    font-size: 20px;
+    color: #8FC1E9;
+    text-decoration: none;
+    cursor: pointer;
+}
+/* バリデーションエラーメッセージ */
+.error-message {
+    color: #ff6666;
+    font-size: 12px;
+}
+
+.content {
+    width: 90vw;
+    max-width: 1230px;
+    padding-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.content__title {
+    margin-top: 40px;
+    margin-bottom: 30px;
+    font-size: 36px;
+}
+
+/* タブレット幅用スタイル */
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .header__logo {
+        width: 90%;
+        height: auto;
+    }
+    .content {
+        max-width: 95vw;
+    }
+    .form__group{
+        width: 100%;
+    }
+    .form__black-button {
+        width: 100%;
+    }
+}
+/* スマートフォン幅用スタイル */
+@media screen and (max-width: 767px) {
+    .header {
+        padding: 0;
+        gap: 2px;
+    }
+    .header__search {
+        height: 20px;
+    }
+    .header__search-input {
+        font-size: 10px;
+    }
+    .header-right {
+        gap: 2px;
+    }
+    .header__login-button,
+    .header__logout-button,
+    .header__mypage-button {
+        font-size: 10px;
+        padding: 0;
+        margin: 0;
+    }
+    .header__sell-button {
+        font-size: 10px;
+    }
+    .form__group{
+        width: 100%;
+    }
+    .form__black-button {
+        width: 100%;
+    }
+}

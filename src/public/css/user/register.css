@@ -1,0 +1,23 @@
+.register-container {
+    width: 680px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid green;
+}
+.register-form__button {
+    margin-top: 40px;
+}
+.login-link {
+    margin-top: 15px;
+}
+
+/* タブレット幅用スタイル */
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .register-form__button {
+        width: 100%;
+    }
+}
