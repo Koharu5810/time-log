@@ -14,7 +14,3 @@ Route::post('/user/login', [AuthController::class, 'login'])->name('user.login')
 Route::middleware('auth')->group(function () {
     Route::get('/', [AttendanceCreateController::class, 'index'])->name('create');
 });
-
-Route::get('/', function () {
-    return view('user.login');
-});
