@@ -41,8 +41,8 @@
 
     <main>
         <div class="content">
-            <h1 class="content__title">@yield('title')</h1>
-            <h2 class="content__sub-title">@yield('sub-title')</h2>
+            {{-- <h1 class="content__title">@yield('title')</h1>
+            <h2 class="content__sub-title">@yield('sub-title')</h2> --}}
             @yield('content')
         </div>
     </main>

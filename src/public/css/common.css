@@ -64,9 +64,12 @@ html {
 
 main {
     padding-top: 80px;
+    height: 100vw;
     display: flex;
+    align-items: flex-start; /* 上寄せ */
     justify-content: center;
-    border: 1px solid yellow;
+    background-color: #f5f5f5;
+    border: 3px solid yellow;
 }
 /* 入力フォーム・グループ */
 .form__group {

@@ -8,6 +8,10 @@
 @section('sub-title', '勤怠詳細')
 
 @section('content')
+    <div class="body">
+    <div class="container">
+        <h2 class="content__sub-title">@yield('sub-title')</h2>
+
 
 
 @endsection
