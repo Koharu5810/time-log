@@ -68,11 +68,6 @@
             padding: 20px;
         }
 
-        h1 {
-            font-size: 1.25rem;
-            margin-bottom: 20px;
-        }
-
         .month-selector {
             display: flex;
             align-items: center;
