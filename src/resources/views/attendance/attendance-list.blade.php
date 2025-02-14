@@ -44,7 +44,7 @@
                             <td>18:00</td>
                             <td>1:00</td>
                             <td>8:00</td>
-                            <td><button class="detail-btn">詳細</button></td>
+                            <td><button class="detail-btn"><a href="{{ route("request.detail") }}">詳細</a></button></td>
                         </tr>
                     {{-- @endforeach --}}
                 </tbody>
@@ -56,19 +56,15 @@
     <style>
         .body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f5f5f5;
             padding: 20px;
-            color: #333;
-            widows: 100%;
+            color: #000;
+            width: 100%;
             border: solid 1px yellowgreen
         }
 
         .container {
             /* max-width: 1000px; */
             margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
 
@@ -106,12 +102,14 @@
 
         table {
             width: 100%;
+            background-color: #fff;
             border-collapse: collapse;
+            border-radius: 10px;
             font-size: 0.9rem;
         }
 
         th {
-            background-color: #f8f9fa;
+            /* background-color: #f8f9fa; */
             padding: 12px;
             text-align: center;
             border-bottom: 2px solid #dee2e6;
