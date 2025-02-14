@@ -32,6 +32,14 @@ class AttendanceController extends Controller
     public function showUserAttendanceList() {
         return view('attendance.attendance-list');
     }
+    // public function index()
+    // {
+    //     $attendances = Attendance::orderBy('date', 'desc')
+    //         ->paginate(31);
+
+    //     return view('attendances.index', compact('attendances'));
+    // }
+
 // 申請一覧画面表示（一般ユーザ）
     public function showRequestList() {
         return view('attendance.request-list');

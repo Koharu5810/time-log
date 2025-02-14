@@ -6,45 +6,70 @@
 @endsection
 
 @section('content')
-
-<div class="min-h-screen flex items-center justify-center bg-gray-50">
-
-    <div class="w-full max-w-sm p-6 space-y-8 text-center">
-        {{-- 日付表示 --}}
-        <div class="text-gray-600 text-sm">
-            {{ \Carbon\Carbon::now()->isoFormat('YYYY年M月D日(ddd)') }}
-        </div>
-
-        {{-- 時刻表示 --}}
-        <div class="text-4xl font-medium">
-            {{ \Carbon\Carbon::now()->format('H:i') }}
-        </div>
-
-        {{-- 打刻フォーム --}}
-        <form method="POST" action="{{ route('attendance.store') }}">
-            @csrf
-            <button type="submit"
-                    class="bg-black text-white rounded-md px-8 py-3 text-base hover:bg-gray-800 transition-colors">
-                出勤
-            </button>
-        </form>
-
-        {{-- エラーメッセージ表示 --}}
-        @if ($errors->any())
-            <div class="text-red-500 text-sm">
-                @foreach ($errors->all() as $error)
-                    <p>{{ $error }}</p>
-                @endforeach
-            </div>
-        @endif
-
-        {{-- 成功メッセージ表示 --}}
-        @if (session('success'))
-            <div class="text-green-500 text-sm">
-                {{ session('success') }}
-            </div>
-        @endif
+<div class="body">
+    <div class="container">
+        <span class="status-badge">勤務外</span>
+        <div class="date">2023年6月1日(木)</div>
+        <div class="time">08:00</div>
+        <button class="clock-in-btn">出勤</button>
     </div>
 </div>
+
+    <style>
+        .body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* min-height: 100vh; */
+            width: 100%;
+            border: 1px solid green
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 2rem;
+            border: 1px solid orange
+        }
+
+        .status-badge {
+            background-color: #e0e0e0;
+            color: #333;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.875rem;
+        }
+
+        .date {
+            font-size: 1rem;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .time {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #000;
+            margin: 10px 0;
+        }
+
+        .clock-in-btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .clock-in-btn:hover {
+            background-color: #333;
+        }
+    </style>
 
 @endsection
