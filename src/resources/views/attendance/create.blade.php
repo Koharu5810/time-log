@@ -11,9 +11,31 @@
         <span class="status-badge">{{ $attendance->status ?? '勤務外' }}</span>
         <div class="date">{{ now()->translatedFormat('Y年n月j日(D)') }}</div>
         <div class="time">{{ now()->format('H:i') }}</div>
-        <button class="clock-in-btn">出勤</button>
+        <form id="statusForm" method="POST" action="{{ route('attendance.store') }}" class="status-button">
+            @csrf
+            <input type="hidden" name="status" id="statusInput">
+
+            @if ($attendance && $attendance->status === '退勤済')
+                <span class="">お疲れ様でした。</span>
+            @elseif ($attendance && $attendance->status === '出勤中')
+                <button class="clock-in-btn">退勤</button>
+                <button class="clock-in-btn">休憩入</button>
+            @elseif ($attendance && $attendance->status === '休憩中')
+                <button class="clock-in-btn">休憩戻</button>
+            @else
+                <button class="clock-in-btn">出勤</button>
+            @endif
+        </form>
     </div>
 </div>
+
+<script>
+    // ボタンを押すとstatusを送信
+    function updateStatus(status) {
+        document.getElementById('statusInput').value = status;
+        document.getElementById('statusForm').submit();
+    }
+</script>
 
     <style>
         .body {
@@ -27,6 +49,7 @@
         }
 
         .container {
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;

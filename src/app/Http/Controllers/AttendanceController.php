@@ -12,30 +12,29 @@ class AttendanceController extends Controller
 {
 // 勤怠登録画面表示（一般ユーザ）
     public function index() {
-        $user = User::find(Auth::id());
+        $user = Auth::user();
         $today = Carbon::today()->format('Y-m-d'); // 今日の日付
 
         // 本日の勤務データを取得（ない場合は null）
-        $attendance = Attendance::where('user_id', $user->id)
-                                ->where('work_date', $today)
-                                ->first();
+        $attendance = $user->attendances()->where('work_date', $today)->first();
 
         return view('attendance.create', compact('user', 'attendance'));
     }
-    public function store(Request $request)
-    {
-        try {
-            // 打刻処理
-            Attendance::create([
-                'user_id' => auth()->id(),
-                'clock_in' => Carbon::now(),
-                'type' => 'clock_in'
-            ]);
+    public function store(Request $request) {
+        $user = Auth::user();
+        $today = Carbon::today()->format('Y-m-d'); // 今日の日付
 
-            return redirect()->back()->with('success', '出勤を記録しました');
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors('打刻に失敗しました');
-        }
+        // 打刻処理
+        $attendance = Attendance::firstOrCreate(
+            ['user_id' => $user->id, 'work_date' => $today],
+            ['status' => '勤務外'],  // デフォルト値
+            ['clock_in' => Carbon::now()],
+        );
+
+        $attendance->status = $request->status;
+        $attendance->save();
+
+        return redirect()->back();
     }
 
 // 勤怠一覧画面表示（一般ユーザ）
