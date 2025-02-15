@@ -24,9 +24,10 @@ class UserLoginTest extends TestCase
 
     private function openLoginPage()
     {
-        return $this->get(route('user.login.show'))
+        return $this->get('/login')
             ->assertStatus(200)
-            ->assertSee('ログインする');
+            ->assertSee('ログインする')
+            ->assertSee('<form', false);
     }
     private function assertValidationError($data, $expectedErrors)
     {
