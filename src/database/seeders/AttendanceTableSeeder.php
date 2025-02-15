@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use Carbon\Carbon;
@@ -16,20 +17,46 @@ class AttendanceTableSeeder extends Seeder
      */
     public function run(): void
     {
+        $userId = 1;
+        for ($i = 0; $i < 30; $i++) {
+            $workDate = Carbon::now()->subDays($i)->format('Y-m-d'); // 過去30日間
+
+            $clockIn = Carbon::createFromTime(9, 0, 0); // 9:00 出勤
+            $breakStart = (clone $clockIn)->addHours(4); // 13:00 休憩開始
+            $breakEnd = (clone $breakStart)->addHour(); // 14:00 休憩終了
+            $clockOut = (clone $clockIn)->addHours(9); // 18:00 退勤
+
+            $attendance = Attendance::create([
+                'user_id' => $userId,
+                'work_date' => $workDate,
+                'clock_in' => $clockIn->format('H:i:s'),
+                'clock_end' => $clockOut->format('H:i:s'),
+                'status' => '退勤済',
+                'remarks' => '電車遅延のため',
+            ]);
+
+            // 休憩データを追加
+            BreakTime::create([
+                'attendance_id' => $attendance->id,
+                'break_time_start' => $breakStart->format('H:i:s'),
+                'break_time_end' => $breakEnd->format('H:i:s'),
+            ]);
+        }
+
         $statusMap = [
             1 => '勤務外',
-            2 => '出勤中',              // 出勤中（未休憩）
-            3 => '休憩中',              // 1回目の休憩中
-            4 => '出勤中',              // 1回目の休憩後の出勤中
-            5 => '休憩中',              // 2回目の休憩中
-            6 => '出勤中',              // 2回目の休憩後の出勤中
-            7 => '退勤済',              // 休憩なしで退勤済
-            8 => '退勤済',              // 1回の休憩後、退勤済
-            9 => '退勤済',              // 2回の休憩後、退勤済
+            2 => '出勤中',    // 出勤中（未休憩）
+            3 => '休憩中',    // 1回目の休憩中
+            4 => '出勤中',    // 1回目の休憩後の出勤中
+            5 => '休憩中',    // 2回目の休憩中
+            6 => '出勤中',    // 2回目の休憩後の出勤中
+            7 => '退勤済',    // 休憩なしで退勤済
+            8 => '退勤済',    // 1回の休憩後、退勤済
+            9 => '退勤済',    // 2回の休憩後、退勤済
         ];
 
         foreach ($statusMap as $userId => $status) {
-            $workDate = Carbon::now()->subDays(rand(0, 3))->format('Y-m-d');  // 過去3日間のランダムな日付
+            $workDate = Carbon::now()->subDays(1)->format('Y-m-d');
 
             // 勤務外データ
             if ($status === '勤務外') {
@@ -105,12 +132,12 @@ class AttendanceTableSeeder extends Seeder
                     // 退勤済
                     $workDuration = rand(120, 300); // 2〜5時間
                     $this->safeClockOut($attendance, $clockIn, $workDuration);
-                    break;
 
                     $attendance->update([
                         // 'status' => '出勤中',
                         'remarks' => '休憩なしで退勤済ダミーデータ'
                     ]);
+                    break;
 
                 case 8:
                     // 1回の休憩を取り退勤
