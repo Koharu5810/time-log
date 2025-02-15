@@ -8,7 +8,7 @@
 @section('content')
 <div class="body">
     <div class="container">
-        <span class="status-badge">{{ $user->status }}</span>
+        <span class="status-badge">{{ $user->status ?? '勤務外' }}</span>
         <div class="date">{{ now()->translatedFormat('Y年n月j日(D)') }}</div>
         <div class="time">{{ now()->format('H:i') }}</div>
         <button class="clock-in-btn">出勤</button>

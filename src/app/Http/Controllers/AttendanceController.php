@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Attendance;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
 // 勤怠登録画面表示（一般ユーザ）
-    public function index($id) {
-        $user = User::findOrFail($id);
+    public function index() {
+        $user = User::find(Auth::id());
 
         return view('attendance.create', compact('user'));
     }
