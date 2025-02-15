@@ -23,6 +23,5 @@ class DateRetrievalTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee($now->translatedFormat('Y年n月j日(D)'));
         $response->assertSee($now->format('H:i'));
-
     }
 }
