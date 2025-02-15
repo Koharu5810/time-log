@@ -8,9 +8,9 @@
 @section('content')
 <div class="body">
     <div class="container">
-        <span class="status-badge">勤務外</span>
-        <div class="date">2023年6月1日(木)</div>
-        <div class="time">08:00</div>
+        <span class="status-badge">{{ $user->status }}</span>
+        <div class="date">{{ now()->translatedFormat('Y年n月j日(D)') }}</div>
+        <div class="time">{{ now()->format('H:i') }}</div>
         <button class="clock-in-btn">出勤</button>
     </div>
 </div>
