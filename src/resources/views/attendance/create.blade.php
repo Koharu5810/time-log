@@ -28,8 +28,7 @@
                 @if (!$alreadyClockedIn)
                     <button type="button" onclick="updateStatus('出勤')" class="clock-in-btn">出勤</button>
                 @else
-                    <button type="button" onclick="updateStatus('退勤')" class="clock-in-btn">退勤</button>
-                    <button type="button" onclick="updateStatus('休憩入')" class="clock-in-btn">休憩入</button>
+                    <span class="status-message">既に出勤ボタンを押しています</span>
                 @endif
             @endif
         </form>

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Attendance;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Attendance;
 use App\Models\BreakTime;
 use Carbon\Carbon;
 
@@ -35,6 +35,10 @@ class AttendanceController extends Controller
             ['user_id' => $user->id, 'work_date' => $today],
             ['clock_in' => null, 'clock_end' => null, 'status' => '勤務外'],  // デフォルト値
         );
+        // すでに出勤済みなら「出勤」を禁止
+        if ($request->status === '出勤中' && $attendance->clock_in !== null) {
+            return redirect()->back()->with('error', 'すでに出勤済みです。');
+        }
 
         // ステータスごとの処理を定義
         $statusActions = [
@@ -50,7 +54,7 @@ class AttendanceController extends Controller
 
         return redirect()->back();
     }
-// 共通処理のメソッド
+// 勤怠ボタン共通処理
     private function handleClockIn($attendance, $now) {
         $attendance->update(['clock_in' => $now, 'status' => '出勤中']);
     }
