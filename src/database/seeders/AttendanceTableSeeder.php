@@ -54,7 +54,7 @@ class AttendanceTableSeeder extends Seeder
         ];
 
         foreach ($statusMap as $userId => $status) {
-            $workDate = Carbon::now()->subDays(1)->format('Y-m-d');
+            $workDate = Carbon::today()->format('Y-m-d');
 
             // 勤務外データ
             if ($status === '勤務外') {
