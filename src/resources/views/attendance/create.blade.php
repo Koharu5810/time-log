@@ -9,10 +9,8 @@
 <div class="body">
     <div class="container">
         <span class="status-badge">{{ $attendance->status ?? '勤務外' }}</span>
-        {{-- <div class="date" id="current-date">{{ now()->translatedFormat('Y年n月j日(D)') }}</div>
-        <div class="time" id="current-time">{{ now()->format('H:i:s') }}</div> --}}
-        <div class="date" id="current-date"></div>
-        <div class="time" id="current-time"></div>
+        <div class="date" id="current-date">{{ now()->translatedFormat('Y年n月j日(D)') }}</div>
+        <div class="time" id="current-time">{{ now()->format('H:i') }}</div>
 
     {{-- ボタン --}}
         <form id="statusForm" method="POST" action="{{ route('attendance.store') }}" class="status-button">
