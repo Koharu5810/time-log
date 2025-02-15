@@ -11,7 +11,7 @@ class TestHelper
         // 事前にユーザーを作成
         $user = User::factory()->create();
 
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var */
         auth()->login($user);
 
         return $user;
