@@ -13,9 +13,10 @@ class UserRegistrationTest extends TestCase
 
     private function openRegisterPage()
     {
-        $response = $this->get(route('user.register.show'));
+        $response = $this->get('/register');
         $response->assertStatus(200);
         $response->assertSee('登録する');
+        $response->assertSee('<form', false);
 
         return $response;
     }
@@ -30,7 +31,7 @@ class UserRegistrationTest extends TestCase
     }
     private function assertValidationError(array $data, array $expectedErrors)
     {
-        $response = $this->postJson(route('user.register'), $data);
+        $response = $this->postJson('/register', $data);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors($expectedErrors);
     }
@@ -77,7 +78,7 @@ class UserRegistrationTest extends TestCase
         $this->openRegisterPage();
 
         $data = $this->getRegisterData();
-        $response = $this->post(route('user.register'), $data);
+        $response = $this->post(route('registration'), $data);
 
         // パスワードがハッシュ化されて保存されていることを確認
         $user = User::where('email', 'test@example.com')->first();

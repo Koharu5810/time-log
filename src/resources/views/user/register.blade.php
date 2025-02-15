@@ -10,7 +10,7 @@
 @section('content')
     <h1 class="content__title">@yield('title')</h1>
 
-    <form method="post" action="{{ route('user.register') }}" class="register-container">
+    <form method="post" action="{{ route('registration') }}" class="register-container">
     @csrf
 {{-- ユーザー名 --}}
         <div class="form__group">
@@ -56,5 +56,5 @@
         <button class="register-form__button form__black-button">登録する</button>
     </form>
 {{-- ログイン案内 --}}
-    <a href="{{ route('user.login') }}" class="login-link blue-button">ログインはこちら</a>
+    <a href="/login" class="login-link blue-button">ログインはこちら</a>
 @endsection

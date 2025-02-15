@@ -39,5 +39,5 @@
         <button class="login-form__button form__black-button">ログインする</button>
     </form>
 {{-- 会員登録案内 --}}
-    <a href="{{ route('user.register') }}" class="register-link blue-button">会員登録はこちら</a>
+    <a href="{{ route('register') }}" class="register-link blue-button">会員登録はこちら</a>
 @endsection
