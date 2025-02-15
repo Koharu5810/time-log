@@ -24,6 +24,11 @@ class Attendance extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function breakTimes()
+    {
+        return $this->hasMany(BreakTime::class, 'attendance_id');
+    }
+
     // 勤務時間の計算
     public function getDurationInMinutesAttribute()
     {
