@@ -9,8 +9,10 @@
 <div class="body">
     <div class="container">
         <span class="status-badge">{{ $attendance->status ?? '勤務外' }}</span>
-        <div class="date">{{ now()->translatedFormat('Y年n月j日(D)') }}</div>
-        <div class="time">{{ now()->format('H:i') }}</div>
+        {{-- <div class="date" id="current-date">{{ now()->translatedFormat('Y年n月j日(D)') }}</div>
+        <div class="time" id="current-time">{{ now()->format('H:i:s') }}</div> --}}
+        <div class="date" id="current-date"></div>
+        <div class="time" id="current-time"></div>
 
     {{-- ボタン --}}
         <form id="statusForm" method="POST" action="{{ route('attendance.store') }}" class="status-button">
@@ -36,6 +38,31 @@
 </div>
 
 <script>
+    function updateTime() {
+        const now = new Date();
+
+        // 日付を更新（例: 2024年2月16日(金)）
+        const dateStr = now.getFullYear() + '年'
+                    + (now.getMonth() + 1) + '月'
+                    + now.getDate() + '日('
+                    + ['日', '月', '火', '水', '木', '金', '土'][now.getDay()] + ')';
+
+        document.getElementById('current-date').innerText = dateStr;
+
+        // 時間を更新
+        const timeStr = now.getHours().toString().padStart(2, '0') + ':'
+                    + now.getMinutes().toString().padStart(2, '0')
+                    // + ':'
+                    // + now.getSeconds().toString().padStart(2, '0')  // デバッグ用に秒数表示残してるが後で消す
+                    ;
+
+        document.getElementById('current-time').innerText = timeStr;
+    }
+    // 1秒ごとに時間を更新
+    setInterval(updateTime, 1000);
+    // ページ読み込み時に即時実行
+    updateTime();
+
     // ボタンを押すとstatusを送信
     function updateStatus(status) {
         document.getElementById('statusInput').value = status;
