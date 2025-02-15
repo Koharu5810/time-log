@@ -5,10 +5,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 
 // 会員登録画面
-Route::get('/register', [AuthController::class, 'showRegistrationForm'])->withoutMiddleware(['auth'])->name('user.register.show');
+Route::get('/register', [AuthController::class, 'showRegistrationForm'])->withoutMiddleware(['auth']);
 Route::post('/register', [AuthController::class, 'register'])->withoutMiddleware(['auth'])->name('user.register');
 // 一般ユーザログイン画面
-Route::get('/login', [AuthController::class, 'showUsersLoginForm'])->name('user.login.show');
+Route::get('/login', [AuthController::class, 'showUsersLoginForm']);
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
 
 // ログアウト機能
