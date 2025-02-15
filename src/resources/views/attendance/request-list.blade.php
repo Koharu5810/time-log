@@ -8,8 +8,6 @@
 @section('sub-title', '申請一覧')
 
 @section('content')
-
-@section('content')
 <div class="body">
     <div class="container">
         <h2 class="content__sub-title">@yield('sub-title')</h2>

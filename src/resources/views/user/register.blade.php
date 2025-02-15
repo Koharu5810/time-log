@@ -8,6 +8,8 @@
 @section('title', '会員登録')
 
 @section('content')
+    <h1 class="content__title">@yield('title')</h1>
+
     <form method="post" action="{{ route('user.register') }}" class="register-container">
     @csrf
 {{-- ユーザー名 --}}

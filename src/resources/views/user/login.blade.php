@@ -8,6 +8,8 @@
 @section('title', 'ログイン')
 
 @section('content')
+    <h1 class="content__title">@yield('title')</h1>
+
     <form method="POST" action="{{ route('user.login') }}" class="login-container">
     @csrf
 {{-- ユーザー名/メールアドレス --}}
