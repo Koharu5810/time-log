@@ -13,8 +13,14 @@ class AttendanceController extends Controller
 // 勤怠登録画面表示（一般ユーザ）
     public function index() {
         $user = User::find(Auth::id());
+        $today = Carbon::today()->format('Y-m-d'); // 今日の日付
 
-        return view('attendance.create', compact('user'));
+        // 本日の勤務データを取得（ない場合は null）
+        $attendance = Attendance::where('user_id', $user->id)
+                                ->where('work_date', $today)
+                                ->first();
+
+        return view('attendance.create', compact('user', 'attendance'));
     }
     public function store(Request $request)
     {
