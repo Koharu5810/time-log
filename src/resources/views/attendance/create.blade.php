@@ -25,7 +25,12 @@
             @elseif ($attendance && $attendance->status === '休憩中')
                 <button type="button" onclick="updateStatus('休憩戻')" class="clock-in-btn">休憩戻</button>
             @else
-                <button type="button" onclick="updateStatus('出勤')" class="clock-in-btn">出勤</button>
+                @if (!$alreadyClockedIn)
+                    <button type="button" onclick="updateStatus('出勤')" class="clock-in-btn">出勤</button>
+                @else
+                    <button type="button" onclick="updateStatus('退勤')" class="clock-in-btn">退勤</button>
+                    <button type="button" onclick="updateStatus('休憩入')" class="clock-in-btn">休憩入</button>
+                @endif
             @endif
         </form>
     </div>

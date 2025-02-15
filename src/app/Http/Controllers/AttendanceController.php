@@ -17,9 +17,13 @@ class AttendanceController extends Controller
         $today = Carbon::today()->format('Y-m-d'); // 今日の日付
 
         // 本日の勤務データを取得（ない場合は null）
-        $attendance = $user->attendances()->where('work_date', $today)->first();
+        $attendance = Attendance::where('user_id', $user->id)
+                                ->where('work_date', $today)
+                                ->first();
 
-        return view('attendance.create', compact('user', 'attendance'));
+        $alreadyClockedIn = $attendance && $attendance->clock_in !== null;
+
+        return view('attendance.create', compact('user', 'attendance', 'alreadyClockedIn'));
     }
     public function store(Request $request) {
         $user = Auth::user();
