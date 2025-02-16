@@ -13,9 +13,9 @@
         <h2 class="content__sub-title">@yield('sub-title')</h2>
 
         <div class="month-selector">
-            <button>←</button>
-            <span class="current-month">{{ now()->translatedFormat('Y/n') }}</span>
-            <button>→</button>
+            <a href="{{ route('attendance.list', ['year' => $month == 1 ? $year - 1 : $year, 'month' => $month == 1 ? 12 : $month - 1]) }}">←</a>
+            <span class="current-month">{{ \Carbon\Carbon::create($year, $month)->format('Y/m') }}</span>
+            <a href="{{ route('attendance.list', ['year' => $month == 12 ? $year + 1 : $year, 'month' => $month == 12 ? 1 : $month + 1]) }}">→</a>
         </div>
 
         <div class="table-container">
@@ -31,22 +31,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @foreach($attendances as $attendance) --}}
+                    @if ($attendances->isEmpty())
                         <tr>
-                            {{-- <td>{{ $attendance->date->format('m/d') }}</td>
-                            <td>{{ $attendance->start_time->format('H:i') }}</td>
-                            <td>{{ $attendance->end_time->format('H:i') }}</td>
-                            <td>{{ $attendance->break_time->format('H:i') }}</td>
-                            <td>{{ $attendance->working_hours->format('H:i') }}</td> --}}
-                            <td>06/02(金)</td>
-                            <td>09:00</td>
-                            <td>18:00</td>
-                            <td>1:00</td>
-                            <td>8:00</td>
-                            <td>詳細</td>
-                            {{-- <td><button class="detail-btn"><a href="{{ route("request.detail") }}">詳細</a></button></td> --}}
+                            <td colspan="6" class="text-center">今月の申請はありません。</td>
                         </tr>
-                    {{-- @endforeach --}}
+                    @else
+                        @foreach($attendances as $attendance)
+                            <tr>
+                                <td>{{ \Carbon\Carbon::create($attendance->work_date)->translatedFormat('m/d(D)') }}</td>
+                                <td>{{ $attendance->clock_in ? \Carbon\Carbon::create($attendance->clock_in)->format('H:i') : '-' }}</td>
+                                <td>{{ $attendance->clock_end ? \Carbon\Carbon::create($attendance->clock_end)->format('H:i') : '-' }}</td>
+                                <td>{{ $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '-' }}</td>
+                                <td>
+                                    @if ($attendance->clock_in && $attendance->clock_end)
+                                       {{ gmdate('H:i', (\Carbon\Carbon::create($attendance->clock_end)->diffInSeconds(\Carbon\Carbon::create($attendance->clock_in)) - ($attendance->break_time * 60))) }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>詳細</td>
+                                {{-- <td><button class="detail-btn"><a href="{{ route("request.detail") }}">詳細</a></button></td> --}}
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>

@@ -77,26 +77,27 @@ class AttendanceController extends Controller
     }
 
 // 勤怠一覧画面表示（一般ユーザ）
-    public function showUserAttendanceList() {
+    public function showUserAttendanceList(Request $request) {
         $user = Auth::user();
-        $today = Carbon::today();
+        $year = $request->query('year', Carbon::now()->year);
+        $month = $request->query('month', Carbon::now()->month);
 
-        return view('attendance.attendance-list', compact('user', 'today'));
+        $attendances = Attendance::with('breakTimes')
+            ->where('user_id', $user->id)
+            ->whereYear('work_date', $year)
+            ->whereMonth('work_date', $month)
+            ->orderBy('work_date', 'asc')
+            ->get();
+
+        return view('attendance.attendance-list', compact('user', 'year', 'month', 'attendances'));
     }
-    // public function index()
-    // {
-    //     $attendances = Attendance::orderBy('date', 'desc')
-    //         ->paginate(31);
 
-    //     return view('attendances.index', compact('attendances'));
-    // }
-
-// 申請一覧画面表示（一般ユーザ）
-    public function showRequestList() {
-        return view('attendance.request-list');
-    }
 // 勤怠詳細画面表示（一般ユーザ）
     public function showAttendanceDetail() {
         return view('attendance.detail');
+    }
+// 申請一覧画面表示（一般ユーザ）
+    public function showRequestList() {
+        return view('attendance.request-list');
     }
 }

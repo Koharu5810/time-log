@@ -39,4 +39,21 @@ class Attendance extends Model
         }
         return 0; // 両方の値が揃っていない場合は0を返す
     }
+    // 休憩時間の合計
+    public function getTotalBleakTimeAttribute()
+    {
+        if ($this->breakTimes->isNotEmpty()) {
+            $totalBreakTime = 0;
+
+            foreach ($this->breakTimes as $break) {
+                if ($break->break_time_start && $break->break_time_end) {
+                    $start = Carbon::parse($this->break_time_start);
+                    $end = Carbon::parse($this->break_time_end);
+                    $totalBreakTime += $start->diffInMinutes($end);
+                }
+            }
+            return $totalBreakTime;
+        }
+        return 0; // 休憩データがない場合は0を返す
+    }
 }

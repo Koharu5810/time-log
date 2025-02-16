@@ -26,7 +26,7 @@
             {{-- 勤怠ボタン --}}
                     <button class="header__create-button"><a href="{{ route('create') }}">勤怠</a></button>
             {{-- 勤怠一覧ボタン --}}
-                    <button class="header__list-button"><a href="{{ route('user.attendance.list') }}">勤怠一覧</a></button>
+                    <button class="header__list-button"><a href="{{ route('attendance.list') }}">勤怠一覧</a></button>
             {{-- 申請ボタン --}}
                     <button class="header__request-button"><a href="{{ route('request.list') }}">申請</a></button>
             {{-- ログアウトボタン --}}
