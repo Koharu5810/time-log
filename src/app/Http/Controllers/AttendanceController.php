@@ -96,9 +96,11 @@ class AttendanceController extends Controller
     public function showAttendanceDetail($id) {
         $user = Auth::user();
 
-        $attendances = Attendance::with('breakTimes')->findOrFail($id);
+        $attendance = Attendance::with(['user', 'breakTimes'])
+            ->where('user_id', $user->id)
+            ->findOrFail($id);
 
-        return view('attendance.detail', compact('user', 'attendances'));
+        return view('attendance.detail', compact('user', 'attendance'));
     }
 // 申請一覧画面表示（一般ユーザ）
     public function showRequestList() {

@@ -16,43 +16,55 @@
             <table class="attendance-table">
                 <tbody class="table-body">
                     <tr>
-                        <th>氏名</th>
-                        <td class="name-value">西 怜奈</td>
+                        <th>名前</th>
+                        <td colspan="4" class="name-value">{{ $attendance->user->name }}</td>
                     </tr>
                     <tr>
                         <th>日付</th>
                         <td class="date-container">
-                            <span>2023年</span>
-                            <span class="time-separator">  </span>
-                            <span>6月1日</span>
+                            {{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('Y年') }}
                         </td>
+                        <td class="time-separator"></td>
+                        <td class="date-container">
+                            {{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('n月j日') }}
+                        </td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>出勤・退勤</th>
-                        <td>
-                            <input type="text" class="time-input" value="09:00">
-                            <span class="time-separator">～</span>
-                            <input type="text" class="time-input" value="18:00">
+                        <td class="time">
+                            <input type="time" class="time-input" value="{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}" required>
                         </td>
-                    </tr>
-                    <tr>
-                        <th>休憩</th>
-                        <td>
-                            <input type="text" class="time-input" value="12:00">
-                            <span class="time-separator">～</span>
-                            <input type="text" class="time-input" value="13:00">
+                        <td class="time-separator">〜</td>
+                        <td class="time">
+                            <input type="time" class="time-input" value="{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '' }}" required>
                         </td>
+                        <td></td>
                     </tr>
+                    @foreach ($attendance->breakTimes as $index => $break)
+                        <tr>
+                            <th>{{ $index == 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
+                            <td>
+                                <input type="time" class="time-input" value="{{ $break->break_time_start ? \Carbon\Carbon::parse($break->break_time_start)->format('H:i') : '' }}">
+                            </td>
+                            <td class="time-separator">〜</td>
+                            <td class="time">
+                                <input type="time" class="time-input" value="{{ $break->break_time_end ? \Carbon\Carbon::parse($break->break_time_end)->format('H:i') : '' }}">
+                            </td>
+                            <td></td>
+                        </tr>
+                    @endforeach
                     <tr>
                         <th>備考</th>
-                        <td>
-                            <textarea placeholder="電車遅延のため">電車遅延のため</textarea>
+                        <td colspan="3">
+                            <textarea placeholder="電車遅延のため"></textarea>
                         </td>
+                        <td></td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="2" class="button-container">
+                        <td colspan="5" class="button-container">
                             <button type="submit" class="edit-button">修正</button>
                         </td>
                     </tr>

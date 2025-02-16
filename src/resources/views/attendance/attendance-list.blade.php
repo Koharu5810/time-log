@@ -55,7 +55,6 @@
                                         {{-- データがない場合は空欄 --}}
                                     @endif
                                 </td>
-                                {{-- <td>詳細</td> --}}
                                 <td>
                                     <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}" class="detail-btn">詳細</a>
                                 </td>
