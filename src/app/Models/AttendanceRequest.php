@@ -33,6 +33,10 @@ class AttendanceRequest extends Model
     {
         return $this->belongsTo(Attendance::class, 'attendance_id');
     }
+    public function requestedBreaks()
+    {
+        return $this->hasMany(AttendanceRequestBreak::class, 'attendance_request_id');
+    }
     public function approvedBy()
     {
         return $this->belongsTo(Admin::class, 'admin_id');
