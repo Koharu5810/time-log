@@ -44,7 +44,7 @@ class AttendanceUpdateRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $clockIn = \Carbon\Carbon::createFromFormat('H:i', $this->requested_clock_in);
-            $clockEnd = \Carbon\Carbon::createFromFormat('H:i', $this->requester_clock_end);
+            $clockEnd = \Carbon\Carbon::createFromFormat('H:i', $this->requested_clock_end);
 
             // 勤務時間（分単位）
             $workMinutes = $clockIn->diffInMinutes($clockEnd);

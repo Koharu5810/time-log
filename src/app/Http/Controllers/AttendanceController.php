@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AttendanceUpdateRequest;
-use App\Models\User;
 use App\Models\Attendance;
 use App\Models\BreakTime;
+use App\Models\AttendanceRequest;
+use App\Models\AttendanceRequestBreak;
 use Carbon\Carbon;
 
 class AttendanceController extends Controller
@@ -103,9 +104,40 @@ class AttendanceController extends Controller
 
         return view('attendance.detail', compact('user', 'attendance'));
     }
-    public function update(AttendanceUpdateRequest $request) {
+    public function updateRequest(AttendanceUpdateRequest $request) {
+        try {
+            // **1. 勤怠修正リクエストを新規作成**
+            $attendanceRequest = AttendanceRequest::create([
+                'user_id' => $request->user_id,
+                'attendance_id' => $request->attendance_id,
+                'target_date' => $request->target_date,
+                'request_type' => '修正',
+                'requested_clock_in' => $request->requested_clock_in,
+                'requested_clock_end' => $request->requested_clock_end,
+                'requested_remarks' => $request->requested_remarks,
+                'status' => '承認待ち',
+                'admin_id' => null,
+                'approved_at' => null,
+            ]);
 
-        return redirect()->back();
+            // **2. 修正リクエストの休憩データを保存**
+            if (!empty($request->requested_break_times)) {
+                foreach ($request->requested_break_times as $break) {
+                    if (!empty($break['start']) && !empty($break['end'])) {
+                        AttendanceRequestBreak::create([
+                            'attendance_request_id' => $attendanceRequest->id,
+                            'requested_break_time_start' => $break['start'],
+                            'requested_break_time_end' => $break['end'],
+                        ]);
+                    }
+                }
+            }
+
+            return redirect()->route('create');
+
+        } catch (\Exception $e) {
+            return redirect()->back();
+        }
     }
 
 // 申請一覧画面表示（一般ユーザ）
