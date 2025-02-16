@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('attendance_request_breaks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('attendance_request_id')->constrained()->cascadeOnDelete();
-            $table->time('requested_break_time_start');
-            $table->time('requested_break_time_end');
+            $table->time('requested_break_time_start')->nullable();
+            $table->time('requested_break_time_end')->nullable();
             $table->timestamps();
         });
     }
