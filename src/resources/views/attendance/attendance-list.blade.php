@@ -13,9 +13,15 @@
         <h2 class="content__sub-title">@yield('sub-title')</h2>
 
         <div class="month-selector">
-            <a href="{{ route('attendance.list', ['year' => $month == 1 ? $year - 1 : $year, 'month' => $month == 1 ? 12 : $month - 1]) }}">←</a>
-            <span class="current-month">{{ \Carbon\Carbon::create($year, $month)->format('Y/m') }}</span>
-            <a href="{{ route('attendance.list', ['year' => $month == 12 ? $year + 1 : $year, 'month' => $month == 12 ? 1 : $month + 1]) }}">→</a>
+        {{-- 前月リンク --}}
+            <a href="{{ route('attendance.list', ['year' => $month == 1 ? $year - 1 : $year, 'month' => $month == 1 ? 12 : $month - 1]) }}">←前月</a>
+        {{-- 年月表示 --}}
+            <div class="current-month">
+                <img class="calendar" src="{{ asset('storage/calendar.png') }}" alt="月" />
+                <span>{{ \Carbon\Carbon::create($year, $month)->format('Y/m') }}</span>
+            </div>
+        {{-- 次月リンク --}}
+            <a href="{{ route('attendance.list', ['year' => $month == 12 ? $year + 1 : $year, 'month' => $month == 12 ? 1 : $month + 1]) }}">翌月→</a>
         </div>
 
         <div class="table-container">
@@ -39,18 +45,20 @@
                         @foreach($attendances as $attendance)
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('m/d(D)') }}</td>
-                                <td>{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '-' }}</td>
-                                <td>{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '-' }}</td>
-                                <td>{{ $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '-' }}</td>
+                                <td>{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}</td>
+                                <td>{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '' }}</td>
+                                <td>{{ $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '' }}</td>
                                 <td>
                                     @if ($attendance->clock_in && $attendance->clock_end)
                                        {{ gmdate('H:i', ($attendance->duration_in_minutes - $attendance->total_break_time) * 60) }}
                                     @else
-                                        -
+                                        {{-- データがない場合は空欄 --}}
                                     @endif
                                 </td>
-                                <td>詳細</td>
-                                {{-- <td><button class="detail-btn"><a href="{{ route("request.detail") }}">詳細</a></button></td> --}}
+                                {{-- <td>詳細</td> --}}
+                                <td>
+                                    <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}" class="detail-btn">詳細</a>
+                                </td>
                             </tr>
                         @endforeach
                     @endif
@@ -94,10 +102,21 @@
             color: #666;
         }
 
-        .month-selector .current-month {
+        .month-selector,
+        .current-month {
             font-weight: 500;
         }
 
+        .current-month {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .current-month img {
+            width: 25px;
+            height: auto;
+        }
         .table-container {
             overflow-x: auto;
         }

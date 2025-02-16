@@ -93,8 +93,12 @@ class AttendanceController extends Controller
     }
 
 // 勤怠詳細画面表示（一般ユーザ）
-    public function showAttendanceDetail() {
-        return view('attendance.detail');
+    public function showAttendanceDetail($id) {
+        $user = Auth::user();
+
+        $attendances = Attendance::with('breakTimes')->findOrFail($id);
+
+        return view('attendance.detail', compact('user', 'attendances'));
     }
 // 申請一覧画面表示（一般ユーザ）
     public function showRequestList() {
