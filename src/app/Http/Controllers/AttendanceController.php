@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AttendanceUpdateRequest;
 use App\Models\User;
 use App\Models\Attendance;
 use App\Models\BreakTime;
@@ -102,6 +103,11 @@ class AttendanceController extends Controller
 
         return view('attendance.detail', compact('user', 'attendance'));
     }
+    public function update(AttendanceUpdateRequest $request) {
+
+        return redirect()->back();
+    }
+
 // 申請一覧画面表示（一般ユーザ）
     public function showRequestList() {
         return view('attendance.request-list');

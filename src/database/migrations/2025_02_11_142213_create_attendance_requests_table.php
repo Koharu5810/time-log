@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('attendance_id')->constrained()->cascadeOnDelete();
             $table->enum('request_type', ['修正', '申請'])->default('修正');
+            $table->date('target_date');
             $table->time('requested_clock_in');
             $table->time('requested_clock_end');
             $table->string('requested_remarks', 255);

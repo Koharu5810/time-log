@@ -12,16 +12,29 @@
     <div class="container">
         <h2 class="content__sub-title">@yield('sub-title')</h2>
 
-        <form class="attendance-form">
+        <form method="POST" action="{{ route('update') }}" class="attendance-form">
+        @csrf
             <table class="attendance-table">
                 <tbody class="table-body">
                     <tr>
                         <th>名前</th>
-                        <td colspan="4" class="name-value">{{ $attendance->user->name }}</td>
+                        <td colspan="4" class="name-value">
+                            <input
+                                type="hidden"
+                                name="user_id"
+                                value="{{ $attendance_request->user_id }}"
+                            />
+                            {{ $attendance->user->name }}
+                        </td>
                     </tr>
                     <tr>
                         <th>日付</th>
                         <td class="date-container">
+                            <input
+                                type="hidden"
+                                name="target_date"
+                                value="{{ \Carbon\Carbon::parse($attendance->work_date)->format('Y-m-d') }}"
+                            />
                             {{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('Y年') }}
                         </td>
                         <td class="time-separator"></td>
@@ -33,11 +46,20 @@
                     <tr>
                         <th>出勤・退勤</th>
                         <td class="time">
-                            <input type="time" class="time-input" value="{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}" required>
+                            <input
+                                type="time"
+                                class="time-input" name="requested_clock_in"
+                                value="{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}" required
+                            />
                         </td>
                         <td class="time-separator">〜</td>
                         <td class="time">
-                            <input type="time" class="time-input" value="{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '' }}" required>
+                            <input
+                                type="time"
+                                class="time-input"
+                                name="requested_clock_end"
+                                value="{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '' }}" required
+                            />
                         </td>
                         <td></td>
                     </tr>
@@ -45,11 +67,21 @@
                         <tr>
                             <th>{{ $index == 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                             <td>
-                                <input type="time" class="time-input" value="{{ $break->break_time_start ? \Carbon\Carbon::parse($break->break_time_start)->format('H:i') : '' }}">
+                                <input
+                                    type="time"
+                                    class="time-input"
+                                    name="requested_break_times[{{ $index }}][start]"
+                                    value="{{ $break->break_time_start ? \Carbon\Carbon::parse($break->break_time_start)->format('H:i') : '' }}"
+                                />
                             </td>
                             <td class="time-separator">〜</td>
                             <td class="time">
-                                <input type="time" class="time-input" value="{{ $break->break_time_end ? \Carbon\Carbon::parse($break->break_time_end)->format('H:i') : '' }}">
+                                <input
+                                    type="time"
+                                    class="time-input"
+                                    name="requested_break_times[{{ $index }}][end]"
+                                    value="{{ $break->break_time_end ? \Carbon\Carbon::parse($break->break_time_end)->format('H:i') : '' }}"
+                                />
                             </td>
                             <td></td>
                         </tr>
@@ -57,7 +89,9 @@
                     <tr>
                         <th>備考</th>
                         <td colspan="3">
-                            <textarea placeholder="電車遅延のため"></textarea>
+                            <textarea name="requested_remarks" placeholder="電車遅延のため">
+                                {{ old('requested_remarks', '') }}
+                            </textarea>
                         </td>
                         <td></td>
                     </tr>

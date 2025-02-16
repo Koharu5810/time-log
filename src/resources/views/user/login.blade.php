@@ -12,7 +12,7 @@
 
     <form method="POST" action="{{ route('user.login') }}" class="login-container">
     @csrf
-{{-- ユーザー名/メールアドレス --}}
+{{-- メールアドレス --}}
         <div class="form__group">
             <label for="email">メールアドレス</label>
             <input type="text" name="email" value="{{ old('email') }}" class="form__group-input" />
