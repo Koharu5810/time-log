@@ -125,7 +125,7 @@
                         <th>備考</th>
                         <td colspan="3">
                             <textarea name="requested_remarks" placeholder="電車遅延のため">
-                                {{ old('requested_remarks', '') }}
+                                {{ old('requested_remarks') }}
                             </textarea>
                             @if ($errors->has('requested_remarks'))
                                 <div class="error-message">

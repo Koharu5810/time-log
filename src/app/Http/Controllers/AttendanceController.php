@@ -106,7 +106,7 @@ class AttendanceController extends Controller
     }
     public function updateRequest(AttendanceUpdateRequest $request) {
         $clockIn = Carbon::createFromFormat('H:i', $request->requested_clock_in)->format('H:i:s');
-        $clockEnd = Carbon::createFromFormat('H:i', $request->requested_clock_out)->format('H:i:s');
+        $clockEnd = Carbon::createFromFormat('H:i', $request->requested_clock_end)->format('H:i:s');
 
         try {
             // **1. 勤怠修正リクエストを新規作成**

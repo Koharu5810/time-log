@@ -22,12 +22,12 @@ class AttendanceUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'requested_clock_in' => 'required|date_format:H:i',
-            'requested_clock_end' => 'required|date_format:H:i|after:requested_clock_in',
+            'requested_clock_in' => 'required|regex:/^\d{2}:\d{2}$/',
+            'requested_clock_end' => 'required|regex:/^\d{2}:\d{2}$/|after:requested_clock_in',
 
-            'requested_break_times' => 'required|array', // 休憩時間の配列
-            'requested_break_times.*.start' => 'required|date_format:H:i',
-            'requested_break_times.*.end' => 'required|date_format:H:i|after:requested_break_times.*.start',
+            'requested_break_times' => 'nullable|array', // 休憩時間の配列
+            'requested_break_times.*.start' => 'nullable|regex:/^\d{2}:\d{2}$/',
+            'requested_break_times.*.end' => 'nullable|regex:/^\d{2}:\d{2}$/|after:requested_break_times.*.start',
 
             'requested_remarks' => 'required|string|max:255',
         ];
@@ -35,6 +35,8 @@ class AttendanceUpdateRequest extends FormRequest
     public function messages()
     {
         return [
+            'requested_clock_in.required' => '出勤時間を入力してください',
+            'requested_clock_end.required' => '退勤時間を入力してください',
             'requested_clock_end.after' => '出勤時間もしくは退勤時間が不適切な値です',
             'requested_break_times.*.end.after' => '休憩入時間もしくは休憩戻時間が不適切な値です',
             'requested_remarks.required' => '備考を記入してください',
