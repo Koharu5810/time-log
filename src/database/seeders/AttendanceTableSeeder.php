@@ -16,8 +16,8 @@ class AttendanceTableSeeder extends Seeder
     public function run(): void
     {
         $userId = 1;
-        for ($i = 0; $i < 30; $i++) {
-            $workDate = Carbon::now()->subDays($i)->format('Y-m-d'); // 過去30日間
+        for ($i = 0; $i < 90; $i++) {
+            $workDate = Carbon::now()->subDays($i)->format('Y-m-d'); // 過去90日間
 
             $clockIn = Carbon::createFromTime(9, 0, 0); // 9:00 出勤
             $breakStart = (clone $clockIn)->addHours(4); // 13:00 休憩開始

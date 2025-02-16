@@ -78,7 +78,10 @@ class AttendanceController extends Controller
 
 // 勤怠一覧画面表示（一般ユーザ）
     public function showUserAttendanceList() {
-        return view('attendance.attendance-list');
+        $user = Auth::user();
+        $today = Carbon::today();
+
+        return view('attendance.attendance-list', compact('user', 'today'));
     }
     // public function index()
     // {

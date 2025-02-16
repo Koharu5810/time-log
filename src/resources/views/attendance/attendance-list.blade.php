@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="{{ asset('css/user/login.css') }}" />
 @endsection
 
-{{-- @section('title', 'ホームページ') --}}
 @section('sub-title', '勤怠一覧')
 
 @section('content')
@@ -15,7 +14,7 @@
 
         <div class="month-selector">
             <button>←</button>
-            <span class="current-month">2023/06</span>
+            <span class="current-month">{{ now()->translatedFormat('Y/n') }}</span>
             <button>→</button>
         </div>
 
@@ -44,7 +43,8 @@
                             <td>18:00</td>
                             <td>1:00</td>
                             <td>8:00</td>
-                            <td><button class="detail-btn"><a href="{{ route("request.detail") }}">詳細</a></button></td>
+                            <td>詳細</td>
+                            {{-- <td><button class="detail-btn"><a href="{{ route("request.detail") }}">詳細</a></button></td> --}}
                         </tr>
                     {{-- @endforeach --}}
                 </tbody>
