@@ -50,7 +50,7 @@
                         <th>出勤・退勤</th>
                         <td class="time">
                             <input
-                                type="time"
+                                type="text"
                                 class="time-input" name="requested_clock_in"
                                 value="{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}" required
                             />
@@ -58,7 +58,7 @@
                         <td class="time-separator">〜</td>
                         <td class="time">
                             <input
-                                type="time"
+                                type="text"
                                 class="time-input"
                                 name="requested_clock_end"
                                 value="{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '' }}" required
@@ -87,7 +87,7 @@
                             <th>{{ $index == 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                             <td>
                                 <input
-                                    type="time"
+                                    type="text"
                                     class="time-input"
                                     name="requested_break_times[{{ $index }}][start]"
                                     value="{{ $break->break_time_start ? \Carbon\Carbon::parse($break->break_time_start)->format('H:i') : '' }}"
@@ -96,7 +96,7 @@
                             <td class="time-separator">〜</td>
                             <td class="time">
                                 <input
-                                    type="time"
+                                    type="text"
                                     class="time-input"
                                     name="requested_break_times[{{ $index }}][end]"
                                     value="{{ $break->break_time_end ? \Carbon\Carbon::parse($break->break_time_end)->format('H:i') : '' }}"
@@ -127,21 +127,16 @@
                             <textarea name="requested_remarks" placeholder="電車遅延のため">
                                 {{ old('requested_remarks', '') }}
                             </textarea>
-                        </td>
-                        <td></td>
-                    </tr>
-                    @if ($errors->has('requested_remarks'))
-                        <tr>
-                            <th></th>
-                            <td colspan="3">
+                            @if ($errors->has('requested_remarks'))
                                 <div class="error-message">
                                     @error('requested_remarks')
                                         {{ $message }}
                                     @enderror
                                 </div>
-                            </td>
-                        </tr>
-                    @endif
+                            @endif
+                        </td>
+                        <td></td>
+                    </tr>
                 </tbody>
                 <tfoot>
                     <tr>

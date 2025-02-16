@@ -105,6 +105,9 @@ class AttendanceController extends Controller
         return view('attendance.detail', compact('user', 'attendance'));
     }
     public function updateRequest(AttendanceUpdateRequest $request) {
+        $clockIn = Carbon::createFromFormat('H:i', $request->requested_clock_in)->format('H:i:s');
+        $clockEnd = Carbon::createFromFormat('H:i', $request->requested_clock_out)->format('H:i:s');
+
         try {
             // **1. 勤怠修正リクエストを新規作成**
             $attendanceRequest = AttendanceRequest::create([
@@ -112,8 +115,8 @@ class AttendanceController extends Controller
                 'attendance_id' => $request->attendance_id,
                 'target_date' => $request->target_date,
                 'request_type' => '修正',
-                'requested_clock_in' => $request->requested_clock_in,
-                'requested_clock_end' => $request->requested_clock_end,
+                'requested_clock_in' => $clockIn,
+                'requested_clock_end' => $clockEnd,
                 'requested_remarks' => $request->requested_remarks,
                 'status' => '承認待ち',
                 'admin_id' => null,
@@ -126,8 +129,8 @@ class AttendanceController extends Controller
                     if (!empty($break['start']) && !empty($break['end'])) {
                         AttendanceRequestBreak::create([
                             'attendance_request_id' => $attendanceRequest->id,
-                            'requested_break_time_start' => $break['start'],
-                            'requested_break_time_end' => $break['end'],
+                            'requested_break_time_start' => Carbon::createFromFormat('H:i', $break['start'])->format('H:i:s'),
+                            'requested_break_time_end' => Carbon::createFromFormat('H:i', $break['end'])->format('H:i:s'),
                         ]);
                     }
                 }
