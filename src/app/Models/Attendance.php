@@ -32,28 +32,15 @@ class Attendance extends Model
     // 勤務時間の計算
     public function getDurationInMinutesAttribute()
     {
-        if ($this->clock_in && $this->clock_out) {
-            $start = Carbon::parse($this->clock_in);
-            $end = Carbon::parse($this->clock_out);
+        if ($this->clock_in && $this->clock_end) {
+            $start = Carbon::today()->setTimeFromTimeString($this->clock_in);
+            $end = Carbon::today()->setTimeFromTimeString($this->clock_end);
             return $start->diffInMinutes($end);
         }
         return 0; // 両方の値が揃っていない場合は0を返す
     }
-    // 休憩時間の合計
-    public function getTotalBleakTimeAttribute()
+    public function getTotalBreakTimeAttribute()
     {
-        if ($this->breakTimes->isNotEmpty()) {
-            $totalBreakTime = 0;
-
-            foreach ($this->breakTimes as $break) {
-                if ($break->break_time_start && $break->break_time_end) {
-                    $start = Carbon::parse($this->break_time_start);
-                    $end = Carbon::parse($this->break_time_end);
-                    $totalBreakTime += $start->diffInMinutes($end);
-                }
-            }
-            return $totalBreakTime;
-        }
-        return 0; // 休憩データがない場合は0を返す
+        return $this->breakTimes->sum('duration'); // BreakTimeモデルの getDurationAttribute()を利用
     }
 }

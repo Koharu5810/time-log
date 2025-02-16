@@ -38,13 +38,13 @@
                     @else
                         @foreach($attendances as $attendance)
                             <tr>
-                                <td>{{ \Carbon\Carbon::create($attendance->work_date)->translatedFormat('m/d(D)') }}</td>
-                                <td>{{ $attendance->clock_in ? \Carbon\Carbon::create($attendance->clock_in)->format('H:i') : '-' }}</td>
-                                <td>{{ $attendance->clock_end ? \Carbon\Carbon::create($attendance->clock_end)->format('H:i') : '-' }}</td>
+                                <td>{{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('m/d(D)') }}</td>
+                                <td>{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '-' }}</td>
+                                <td>{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '-' }}</td>
                                 <td>{{ $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '-' }}</td>
                                 <td>
                                     @if ($attendance->clock_in && $attendance->clock_end)
-                                       {{ gmdate('H:i', (\Carbon\Carbon::create($attendance->clock_end)->diffInSeconds(\Carbon\Carbon::create($attendance->clock_in)) - ($attendance->break_time * 60))) }}
+                                       {{ gmdate('H:i', ($attendance->duration_in_minutes - $attendance->total_break_time) * 60) }}
                                     @else
                                         -
                                     @endif

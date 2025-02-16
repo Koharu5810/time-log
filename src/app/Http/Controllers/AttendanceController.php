@@ -79,8 +79,8 @@ class AttendanceController extends Controller
 // 勤怠一覧画面表示（一般ユーザ）
     public function showUserAttendanceList(Request $request) {
         $user = Auth::user();
-        $year = $request->query('year', Carbon::now()->year);
-        $month = $request->query('month', Carbon::now()->month);
+        $year = $request->query('year', Carbon::today()->year);
+        $month = $request->query('month', Carbon::today()->month);
 
         $attendances = Attendance::with('breakTimes')
             ->where('user_id', $user->id)
