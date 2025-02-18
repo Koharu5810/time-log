@@ -52,7 +52,7 @@
                             <input
                                 type="text"
                                 class="time-input" name="requested_clock_in"
-                                value="{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}" required
+                                value="{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}"
                             />
                         </td>
                         <td class="time-separator">〜</td>
@@ -61,7 +61,7 @@
                                 type="text"
                                 class="time-input"
                                 name="requested_clock_end"
-                                value="{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '' }}" required
+                                value="{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '' }}"
                             />
                         </td>
                         <td></td>
@@ -69,7 +69,7 @@
                     @if ($errors->has('requested_clock_in') || $errors->has('requested_clock_end'))
                         <tr>
                             <th></th>
-                            <td colspan="3">
+                            <td colspan="4">
                                 <div class="error-message">
                                     @error('requested_clock_in')
                                         {{ $message }}
@@ -107,12 +107,9 @@
                         @if ($errors->has('requested_break_times.*.start') || $errors->has('requested_break_times.*.end'))
                             <tr>
                                 <th></th>
-                                <td colspan="3">
+                                <td colspan="4">
                                     <div class="error-message">
-                                        @error('requested_break_times.*.start')
-                                            {{ $message }}
-                                        @enderror
-                                        @error('requested_break_times.*.end')
+                                        @error("requested_break_times.$index.start")
                                             {{ $message }}
                                         @enderror
                                     </div>
