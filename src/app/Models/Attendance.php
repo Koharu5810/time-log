@@ -43,4 +43,12 @@ class Attendance extends Model
     {
         return $this->breakTimes->sum('duration'); // BreakTimeモデルの getDurationAttribute()を利用
     }
+
+    // 特定の日付の勤怠情報を取得
+    public function getAttendanceByDate($date)
+    {
+        return Attendance::whereDate('clock_in', $date)
+                        ->with('user')
+                        ->get();
+    }
 }
