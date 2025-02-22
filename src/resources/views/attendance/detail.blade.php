@@ -95,8 +95,8 @@
                         <tr>
                             <th>{{ $index == 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                             <td class="time">
-                                @if ($attendanceRequest && isset($attendanceRequest->breakTimes[$index]))
-                                    {{ \Carbon\Carbon::parse($attendanceRequest->breakTimes[$index]->requested_break_time_start)->format('H:i') }}
+                                @if ($attendanceRequest && isset($attendanceRequest->attendanceBreakTimes[$index]))
+                                    {{ \Carbon\Carbon::parse($attendanceRequest->attendanceBreakTimes[$index]->requested_break_time_start)->format('H:i') }}
                                 @else
                                     <input
                                         type="text"
@@ -108,8 +108,8 @@
                             </td>
                             <td class="time-separator">〜</td>
                             <td class="time">
-                                @if ($attendanceRequest && isset($attendanceRequest->breakTimes[$index]))
-                                    {{ \Carbon\Carbon::parse($attendanceRequest->breakTimes[$index]->requested_break_time_end)->format('H:i') }}
+                                @if ($attendanceRequest && isset($attendanceRequest->attendanceBreakTimes[$index]))
+                                    {{ \Carbon\Carbon::parse($attendanceRequest->attendanceBreakTimes[$index]->requested_break_time_end)->format('H:i') }}
                                 @else
                                     <input
                                         type="text"
