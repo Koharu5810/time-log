@@ -137,5 +137,7 @@ http://localhost:8025
 ## URL
 
 - 開発環境 : http://localhost/
+- 開発環境（管理者）：http://localhost/admin/login
+  （AdminsTableSeederに記述のメールアドレス、パスワードを使用）
 - phpMyAdmin : http://localhost:8080/
 - MailHog : http://localhost:8025/

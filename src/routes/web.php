@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminDashboardController;
 
 // 会員登録画面
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->withoutMiddleware(['auth'])->name('register');
@@ -33,7 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/stamp_correction_request/list', [AttendanceController::class, 'showRequestList'])->name('request.list');
 });
 
-Route::middleware('admin')->group(function () {
+Route::middleware('auth:admin')->group(function () {
     //
-    Route::get('/admin/attendance/list', [AdminController::class, 'showAdminDashBoard']);
+    Route::get('/admin/attendance/list', [AdminDashboardController::class, 'showAdminDashBoard'])->name('admin.dashboard');
 });
