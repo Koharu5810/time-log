@@ -14,6 +14,7 @@
 
         <form method="POST" action="{{ route('attendance.update', ['id' => $attendance->id]) }}" class="attendance-form">
         @csrf
+        <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
             <table class="attendance-table">
                 <tbody class="table-body">
             {{-- 名前 --}}
@@ -35,7 +36,7 @@
                             <input
                                 type="hidden"
                                 name="target_date"
-                                value="{{ \Carbon\Carbon::parse($attendance->work_date)->format('Y-m-d') }}"
+                                value="{{ old('target_date', \Carbon\Carbon::parse($attendance->work_date)->format('Y-m-d')) }}"
                             />
                             {{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('Y年') }}
                         </td>
@@ -61,7 +62,7 @@
                                 type="text"
                                 class="time-input"
                                 name="requested_clock_end"
-                                value="{{ old('requested_clock_out', $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '') }}"
+                                value="{{ old('requested_clock_end', $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '') }}"
                             />
                         </td>
                         <td></td>
@@ -90,7 +91,7 @@
                                     type="text"
                                     class="time-input"
                                     name="requested_break_times[{{ $index }}][start]"
-                                    value="{{ old('requested_break_times.' . $index . '. start', $break->break_time_start ? \Carbon\Carbon::parse($break->break_time_start)->format('H:i') : '') }}"
+                                    value="{{ old('requested_break_times.' . $index . '.start', $break->break_time_start ? \Carbon\Carbon::parse($break->break_time_start)->format('H:i') : '') }}"
                                 />
                             </td>
                             <td class="time-separator">〜</td>
@@ -99,7 +100,7 @@
                                     type="text"
                                     class="time-input"
                                     name="requested_break_times[{{ $index }}][end]"
-                                    value="{{ old('requested_break_times.' . $index . '. end', $break->break_time_end ? \Carbon\Carbon::parse($break->break_time_end)->format('H:i') : '') }}"
+                                    value="{{ old('requested_break_times.' . $index . '.end', $break->break_time_end ? \Carbon\Carbon::parse($break->break_time_end)->format('H:i') : '') }}"
                                 />
                             </td>
                             <td></td>

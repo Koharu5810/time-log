@@ -21,8 +21,8 @@ return new class extends Migration
             $table->time('requested_clock_end');
             $table->string('requested_remarks', 255);
             $table->enum('status', ['承認待ち', '承認済み'])->default('承認待ち');
-            $table->foreignId('admin_id')->constrained()->cascadeOnDelete();
-            $table->timestamp('approved_at');
+            $table->foreignId('admin_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->timestamp('approved_at')->nullable();
             $table->timestamps();
         });
     }

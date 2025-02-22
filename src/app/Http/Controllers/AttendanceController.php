@@ -10,6 +10,7 @@ use App\Models\BreakTime;
 use App\Models\AttendanceRequest;
 use App\Models\AttendanceRequestBreak;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
 {
@@ -104,7 +105,9 @@ class AttendanceController extends Controller
 
         return view('attendance.detail', compact('user', 'attendance'));
     }
+// 勤怠詳細画面から修正申請（一般ユーザ）
     public function updateRequest(AttendanceUpdateRequest $request) {
+
         $clockIn = Carbon::createFromFormat('H:i', $request->requested_clock_in)->format('H:i:s');
         $clockEnd = Carbon::createFromFormat('H:i', $request->requested_clock_end)->format('H:i:s');
 
