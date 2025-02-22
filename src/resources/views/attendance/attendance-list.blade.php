@@ -42,7 +42,7 @@
                             <td colspan="6" class="text-center">今月の申請はありません。</td>
                         </tr>
                     @else
-                        @foreach ($attendanceRequests as $attendanceRequest)
+                        @foreach ($attendances as $attendance)
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('m/d(D)') }}</td>
                                 <td>{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}</td>

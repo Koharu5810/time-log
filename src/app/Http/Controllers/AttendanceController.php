@@ -10,7 +10,6 @@ use App\Models\BreakTime;
 use App\Models\AttendanceRequest;
 use App\Models\AttendanceRequestBreak;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
 {
