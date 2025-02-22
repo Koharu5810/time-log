@@ -151,11 +151,23 @@ class AttendanceController extends Controller
     public function showRequestList(Request $request) {
         $user = Auth::user();
 
-        $attendanceRequests = AttendanceRequest::with(['user', 'attendance'])
-            ->where('user_id', $user->id)
-            ->orderBy('target_date', 'asc')
-            ->get();
+        $tab = $request->query('tab', 'pending');  // デフォルトは承認待ち
+        $query = $request->query('query');
 
-        return view('attendance.request-list', compact('user', 'attendanceRequests'));
+        if ($tab === 'approved') {
+            // 承認済みリストを取得
+            $attendanceRequests = AttendanceRequest::with(['user', 'attendance'])
+                ->where('status', '承認済み')
+                ->orderBy('target_date', 'asc')
+                ->get();
+        } else {
+            // 承認待ちリストを取得
+            $attendanceRequests = AttendanceRequest::with(['user', 'attendance'])
+                ->where('status', '承認待ち')
+                ->orderBy('target_date', 'asc')
+                ->get();
+        }
+
+        return view('attendance.request-list', compact('user', 'attendanceRequests', 'tab', 'query'));
     }
 }

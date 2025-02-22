@@ -12,10 +12,17 @@
     <div class="container">
         <h2 class="content__sub-title">@yield('sub-title')</h2>
         <div class="flex items-center gap-8 px-4 py-2 text-sm text-gray-600">
-            <span>承認待ち</span>
-            <span>承認済み</span>
+            <div class="request-list__header">
+                <a href="{{ route('request.list', ['tab' => 'pending', 'query' => request('query')]) }}" class="home__tab {{ $tab === 'pending' ? 'active' : '' }}">
+                    <h3>承認待ち</h3>
+                </a>
+                <a href="{{ route('request.list', ['tab' => 'approved', 'query' => request('query')]) }}" class="home__tab {{ $tab === 'approved' ? 'active' : '' }}">
+                    <h3>承認済み</h3>
+                </a>
+            </div>
         </div>
-        <div className="h-px bg-gray-200" /></div>
+
+        <hr class="divider">
 
         <div class="table-container">
             <table>
@@ -29,10 +36,17 @@
                         <th>詳細</th>
                     </tr>
                 </thead>
+        {{-- タブの切替表示 --}}
                 <tbody>
-                    @if ($attendanceRequests->isEmpty())
+                    @if (count($attendanceRequests) === 0)
                         <tr>
-                            <td colspan="6" class="text-center">修正待ちの申請はありません。</td>
+                            <td colspan="6" class="text-center">
+                                @if ($tab === 'approved')
+                                    承認済みの申請はありません。
+                                @else
+                                    承認待ちの申請はありません。
+                                @endif
+                            </td>
                         </tr>
                     @else
                         @foreach ($attendanceRequests as $request)
@@ -67,6 +81,14 @@
             /* max-width: 1000px; */
             margin: 0 auto;
             padding: 20px;
+        }
+
+        .request-list__header {
+            display: flex;
+            margin-bottom: 0;
+        }
+        .request-list__header h3 {
+            margin-right: 50px;
         }
 
         .month-selector {
