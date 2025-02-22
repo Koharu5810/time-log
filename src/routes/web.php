@@ -12,12 +12,14 @@ Route::post('/register', [AuthController::class, 'register'])->withoutMiddleware
 // ログイン画面（一般）
 Route::get('/login', [AuthController::class, 'showUsersLoginForm'])->name('login.show');
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
-// ログアウト機能
+// ログアウト機能（一般）
 Route::post('/logout', [AuthController::class, 'userDestroy'])->name('user.logout');
 
 // ログイン画面（管理者）
 Route::get('/admin/login', [AdminController::class, 'showAdminLoginForm'])->name('admin.login.show');
 Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login');
+// ログアウト機能（管理者）
+Route::post('/admin/logout', [AdminController::class, 'adminDestroy'])->name('admin.logout');
 
 Route::middleware('auth')->group(function () {
     // 勤怠登録画面（一般）

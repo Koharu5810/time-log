@@ -1,6 +1,5 @@
 {{-- ログイン画面（管理者） --}}
-{{-- ログイン画面（一般） --}}
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/user/login.css') }}" />
@@ -31,8 +30,8 @@
                 @error('password')
                     {{ $message }}
                 @enderror
-                @if (session('auth_error'))
-                    {{ session('auth_error') }}
+                @if (session('admin_error'))
+                    {{ session('admin_error') }}
                 @endif
             </div>
         </div>
