@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AdminController;
 
 // 会員登録画面
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->withoutMiddleware(['auth'])->name('register');
@@ -12,6 +13,10 @@ Route::get('/login', [AuthController::class, 'showUsersLoginForm'])->name('login
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
 // ログアウト機能
 Route::post('/logout', [AuthController::class, 'userDestroy'])->name('user.logout');
+
+// ログイン画面（管理者）
+Route::get('/admin/login', [AdminController::class, 'showAdminLoginForm'])->name('admin.login.show');
+Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login');
 
 Route::middleware('auth')->group(function () {
     // 勤怠登録画面（一般）
@@ -26,4 +31,9 @@ Route::middleware('auth')->group(function () {
 
     // 勤怠申請一覧（↓一般・管理者同様パス。認証ミドルウェアで区別を実装）
     Route::get('/stamp_correction_request/list', [AttendanceController::class, 'showRequestList'])->name('request.list');
+});
+
+Route::middleware('admin')->group(function () {
+    //
+    Route::get('/admin/attendance/list', [AdminController::class, 'showAdminDashBoard']);
 });
