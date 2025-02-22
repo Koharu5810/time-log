@@ -102,8 +102,9 @@ class AttendanceController extends Controller
         $attendance = Attendance::with(['user', 'breakTimes'])
             ->where('user_id', $user->id)
             ->findOrFail($id);
+        $attendanceRequest = AttendanceRequest::with('breakTimes')->where('attendance_id', $id)->first();
 
-        return view('attendance.detail', compact('user', 'attendance'));
+        return view('attendance.detail', compact('user', 'attendance', 'attendanceRequest'));
     }
 // 勤怠詳細画面から修正申請（一般ユーザ）
     public function updateRequest(AttendanceUpdateRequest $request) {
@@ -139,7 +140,7 @@ class AttendanceController extends Controller
                 }
             }
 
-            return redirect()->route('create');
+            return redirect()->route('attendance.edit', ['id' => $request->attendance_id]);
 
         } catch (\Exception $e) {
             return redirect()->back();

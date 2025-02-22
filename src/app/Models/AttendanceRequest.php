@@ -34,7 +34,7 @@ class AttendanceRequest extends Model
     {
         return $this->belongsTo(Attendance::class, 'attendance_id');
     }
-    public function requestedBreaks()
+    public function breakTimes()
     {
         return $this->hasMany(AttendanceRequestBreak::class, 'attendance_request_id');
     }
