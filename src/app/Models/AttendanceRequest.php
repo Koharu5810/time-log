@@ -34,7 +34,7 @@ class AttendanceRequest extends Model
     {
         return $this->belongsTo(Attendance::class, 'attendance_id');
     }
-    public function breakTimes()
+    public function attendanceBreakTimes()
     {
         return $this->hasMany(AttendanceRequestBreak::class, 'attendance_request_id');
     }
@@ -47,10 +47,15 @@ class AttendanceRequest extends Model
     public function getDurationInMinutesAttribute()
     {
         if ($this->requested_clock_in && $this->requested_clock_out) {
-            $start = Carbon::parse($this->requested_clock_in);
-            $end = Carbon::parse($this->requested_clock_out);
+            $start = Carbon::today()->setTimeFromTimeString($this->requested_clock_in);
+            $end = Carbon::today()->setTimeFromTimeString($this->requested_clock_out);
             return $start->diffInMinutes($end);
         }
         return 0; // 両方の値が揃っていない場合は0を返す
+    }
+    // 休憩時間の計算
+    public function getTotalBreakTimeAttribute()
+    {
+        return $this->attendanceBreakTimes->sum('duration'); // AttendanceBreakTimeモデルの getDurationAttribute()を利用
     }
 }

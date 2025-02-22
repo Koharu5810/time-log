@@ -5,8 +5,7 @@
 <link rel="stylesheet" href="{{ asset('css/user/login.css') }}" />
 @endsection
 
-@section('sub-title', '2025年2月22日の勤怠')
-{{-- @section('title', \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('Y/m/d')'の勤怠') --}}
+@section('sub-title', \Carbon\Carbon::create($year, $month, $day)->translatedFormat('Y年m月d日の勤怠'))
 
 @section('content')
     <div class="body">
@@ -22,14 +21,14 @@
             ]) }}">←前日</a>
         {{-- 日付表示 --}}
             <div class="current-month">
-                <img class="calendar" src="{{ asset('storage/calendar.png') }}" alt="月" />
+                <img class="calendar" src="{{ asset('storage/calendar.png') }}" alt="日付" />
                 <span>{{ \Carbon\Carbon::create($year, $month, $day)->format('Y/m/d') }}</span>
             </div>
         {{-- 次日リンク --}}
             <a href="{{ route('admin.dashboard', [
-                'year' => \Carbon\Carbon::create($year, $month, $day)->subDay()->year,
-                'month' => \Carbon\Carbon::create($year, $month, $day)->subDay()->month,
-                'day' => \Carbon\Carbon::create($year, $month, $day)->subDay()->day
+                'year' => \Carbon\Carbon::create($year, $month, $day)->addDay()->year,
+                'month' => \Carbon\Carbon::create($year, $month, $day)->addDay()->month,
+                'day' => \Carbon\Carbon::create($year, $month, $day)->addDay()->day
             ]) }}">翌日→</a>
         </div>
 
@@ -46,22 +45,40 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if ($attendances->isEmpty())
+                    @if ($finalAttendances->isEmpty())
                         <tr>
                             <td colspan="6" class="text-center">今日の申請はありません。</td>
                         </tr>
                     @else
-                        @foreach ($attendances as $attendance)
+                        @foreach ($finalAttendances as $attendance)
                             <tr>
                                 <td>{{ $attendance->user->name }}</td>
-                                <td>{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}</td>
-                                <td>{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '' }}</td>
-                                <td>{{ $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '' }}</td>
+                                <td>
+                                    {{ $attendance->clock_in
+                                        ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i')
+                                        : ($attendance->requested_clock_in
+                                            ? \Carbon\Carbon::parse($attendance->requested_clock_in)->format('H:i')
+                                            : '') }}
+                                </td>
+                                <td>
+                                    {{ $attendance->clock_end
+                                        ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i')
+                                        : ($attendance->requested_clock_end
+                                            ? \Carbon\Carbon::parse($attendance->requested_clock_end)->format('H:i')
+                                            : '') }}
+                                </td>
+                                <td>
+                                    @php
+                                        // 休憩時間を attendance_request_breaks から取得
+                                        $breakTime = $attendance->total_break_time ??
+                                                    $attendance->requestBreakTimes->sum('duration');
+                                    @endphp
+                                    {{ $breakTime ? gmdate('H:i', $breakTime * 60) : '' }}
+                                    {{-- {{ $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '' }} --}}
+                                </td>
                                 <td>
                                     @if ($attendance->clock_in && $attendance->clock_end)
-                                       {{ gmdate('H:i', ($attendance->duration_in_minutes - $attendance->total_break_time) * 60) }}
-                                    @else
-                                        {{-- データがない場合は空欄 --}}
+                                        {{ gmdate('H:i', (($attendance->duration_in_minutes ?? 0) - ($attendance->total_break_time ?? 0)) * 60) }}
                                     @endif
                                 </td>
                                 <td>
