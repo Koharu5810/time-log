@@ -24,6 +24,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/{id}', [AttendanceController::class, 'showAttendanceDetail'])->name('attendance.detail');
     Route::post('/attendance/{id}', [AttendanceController::class, 'updateRequest'])->name('attendance.update');
 
-    // ↓一般・管理者同様パス。認証ミドルウェアで区別を実装
+    // 勤怠申請一覧（↓一般・管理者同様パス。認証ミドルウェアで区別を実装）
     Route::get('/stamp_correction_request/list', [AttendanceController::class, 'showRequestList'])->name('request.list');
 });

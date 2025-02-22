@@ -30,21 +30,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @foreach($attendances as $attendance) --}}
+                    @if ($attendanceRequests->isEmpty())
                         <tr>
-                            {{-- <td>{{ $attendance->date->format('m/d') }}</td>
-                            <td>{{ $attendance->start_time->format('H:i') }}</td>
-                            <td>{{ $attendance->end_time->format('H:i') }}</td>
-                            <td>{{ $attendance->break_time->format('H:i') }}</td>
-                            <td>{{ $attendance->working_hours->format('H:i') }}</td> --}}
-                            <td>承認待ち</td>
-                            <td>西 怜奈</td>
-                            <td>2023/06/01</td>
-                            <td>遅延のため</td>
-                            <td>2023/06/02</td>
-                            <td><button class="detail-btn"><a href="{{ route("request.detail") }}">詳細</a></button></td>
+                            <td colspan="6" class="text-center">修正待ちの申請はありません。</td>
                         </tr>
-                    {{-- @endforeach --}}
+                    @else
+                        @foreach ($attendanceRequests as $request)
+                            <tr>
+                                <td>{{ $request->status }}</td>
+                                <td>{{ $request->user->name }}</td>
+                                <td>{{ \Carbon\Carbon::parse($request->target_date)->format('Y/m/d') }}</td>
+                                <td>{{ $request->requested_remarks }}</td>
+                                <td>{{ \Carbon\Carbon::parse($request->created_at)->format('Y/m/d') }}</td>
+                                <td><button class="detail-btn"><a href="{{ route("attendance.detail", ['id' => $request->attendance_id]) }}">詳細</a></button></td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>

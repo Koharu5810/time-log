@@ -148,7 +148,14 @@ class AttendanceController extends Controller
     }
 
 // 申請一覧画面表示（一般ユーザ）
-    public function showRequestList() {
-        return view('attendance.request-list');
+    public function showRequestList(Request $request) {
+        $user = Auth::user();
+
+        $attendanceRequests = AttendanceRequest::with(['user', 'attendance'])
+            ->where('user_id', $user->id)
+            ->orderBy('target_date', 'asc')
+            ->get();
+
+        return view('attendance.request-list', compact('user', 'attendanceRequests'));
     }
 }
