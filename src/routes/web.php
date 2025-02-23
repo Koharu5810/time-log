@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceCreateController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminDashboardController;
 
@@ -23,8 +24,8 @@ Route::post('/admin/logout', [AdminController::class, 'adminDestroy'])->name('ad
 
 Route::middleware('auth')->group(function () {
     // 勤怠登録画面（一般）
-    Route::get('/attendance', [AttendanceController::class, 'index'])->name('create');
-    Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+    Route::get('/attendance', [AttendanceCreateController::class, 'index'])->name('create');
+    Route::post('/attendance', [AttendanceCreateController::class, 'store'])->name('attendance.store');
 
     // 勤怠一覧画面（一般）
     Route::get('/attendance/list', [AttendanceController::class, 'showUserAttendanceList'])->name('attendance.list');
@@ -44,5 +45,5 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/admin/staff/list', [AdminDashboardController::class, 'showStaffList'])->name('staff.list');
 
     // 勤怠一覧画面（管理者）
-    Route::get('/attendance/list', [AdminDashboardController::class, 'showStaffAttendanceList'])->name('staff.attendance.list');
+    Route::get('/attendance/list', [AdminDashboardController::class, 'showStaffAttendanceList'])->name('attendance.list');
 });
