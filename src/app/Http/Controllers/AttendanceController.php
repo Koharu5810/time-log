@@ -28,8 +28,6 @@ class AttendanceController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        // $authUser = Auth::user();
-
         $year = $request->query('year', Carbon::today()->year);
         $month = $request->query('month', Carbon::today()->month);
         $day = $request->query('day', Carbon::today()->day);

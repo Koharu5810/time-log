@@ -23,12 +23,14 @@ Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.logi
 // ログアウト機能（管理者）
 Route::post('/admin/logout', [AdminController::class, 'adminDestroy'])->name('admin.logout');
 
+// 一般ユーザ
 Route::middleware('auth')->group(function () {
-    // 勤怠登録画面（一般）
+    // 勤怠登録画面
     Route::get('/attendance', [AttendanceCreateController::class, 'index'])->name('create');
     Route::post('/attendance', [AttendanceCreateController::class, 'store'])->name('attendance.store');
 });
 
+// 管理者
 Route::middleware('auth:admin')->group(function () {
     // 勤怠一覧表示
     Route::get('/admin/attendance/list', [AdminDashboardController::class, 'showAdminDashBoard'])->name('admin.dashboard');
@@ -37,7 +39,6 @@ Route::middleware('auth:admin')->group(function () {
 });
 
 Route::middleware(['auth:web,admin'])->group(function () {
-
     // 勤怠一覧画面（一般、管理者）
     Route::get('/attendance/list', [AttendanceController::class, 'showAttendanceList'])->name('attendance.list');
     // スタッフ別勤怠一覧画面（管理者）

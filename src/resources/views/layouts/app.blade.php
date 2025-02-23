@@ -26,11 +26,11 @@
 {{-- {{ dd(auth()->user()->role) }} --}}
             {{-- 管理者用ヘッダー --}}
                     @if (auth('admin')->check())
-                        <button class="header__create-button"><a href="">勤怠一覧</a></button>
+                        <button class="header__create-button"><a href="{{ route('admin.dashboard') }}">勤怠一覧</a></button>
                     {{-- 勤怠一覧ボタン --}}
                         <button class="header__list-button"><a href="{{ route('staff.list') }}">スタッフ一覧</a></button>
                     {{-- 申請ボタン --}}
-                        <button class="header__request-button"><a href="">申請一覧</a></button>
+                        <button class="header__request-button"><a href="{{ route('request.list') }}">申請一覧</a></button>
                     {{-- ログアウトボタン --}}
                         <form action="{{ route('admin.logout') }}" method="POST" class="header__logout">
                             @csrf

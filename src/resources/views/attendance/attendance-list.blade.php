@@ -15,15 +15,38 @@
         <h2 class="content__sub-title">@yield('sub-title')</h2>
 
         <div class="month-selector">
-        {{-- 前月リンク --}}
-            <a href="{{ route('attendance.list', ['year' => $month == 1 ? $year - 1 : $year, 'month' => $month == 1 ? 12 : $month - 1]) }}">←前月</a>
-        {{-- 年月表示 --}}
+            @php
+                // 認証ユーザー情報を取得
+                $authUser = auth('admin')->check() ? auth('admin')->user() : auth('web')->user();
+
+                // ルートの切り替え
+                $routeName = auth('admin')->check() ? 'admin.attendance.list' : 'attendance.list';
+                $routeParams = [
+                    'year' => $month == 1 ? $year - 1 : $year,
+                    'month' => $month == 1 ? 12 : $month - 1
+                ];
+
+                // 管理者の場合、IDを追加
+                if (auth('admin')->check()) {
+                    $routeParams['id'] = isset($staff) ? $staff->id : '';
+                }
+            @endphp
+
+            {{-- 前月リンク --}}
+            <a href="{{ route($routeName, $routeParams) }}">←前月</a>
+
+            {{-- 年月表示 --}}
             <div class="current-month">
                 <img class="calendar" src="{{ asset('storage/calendar.png') }}" alt="月" />
                 <span>{{ \Carbon\Carbon::create($year, $month)->format('Y/m') }}</span>
             </div>
-        {{-- 次月リンク --}}
-            <a href="{{ route('attendance.list', ['year' => $month == 12 ? $year + 1 : $year, 'month' => $month == 12 ? 1 : $month + 1]) }}">翌月→</a>
+
+            {{-- 次月リンク --}}
+            @php
+                $routeParams['year'] = ($month == 12) ? $year + 1 : $year;
+                $routeParams['month'] = ($month == 12) ? 1 : $month + 1;
+            @endphp
+            <a href="{{ route($routeName, $routeParams) }}">翌月→</a>
         </div>
 
         <div class="table-container">
