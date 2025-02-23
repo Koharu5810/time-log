@@ -21,11 +21,11 @@
             </div>
 
     {{-- ボタンコンテナ（ログイン時のみ表示） --}}
-            @if (auth()->check() && !request()->is('user/register') && !request()->is('user/login'))
+            @if (auth()->check() && !request()->is('user/register') && !request()->is('user/login') && !request()->is('admin/login'))
                 <div class="header-right">
-
+{{-- {{ dd(auth()->user()->role) }} --}}
             {{-- 管理者用ヘッダー --}}
-                    @if (auth()->user()->role === 'admin')
+                    @if (auth('admin')->check())
                         <button class="header__create-button"><a href="">勤怠一覧</a></button>
                     {{-- 勤怠一覧ボタン --}}
                         <button class="header__list-button"><a href="{{ route('staff.list') }}">スタッフ一覧</a></button>
@@ -38,7 +38,7 @@
                         </form>
 
             {{-- 一般ユーザ用ヘッダー --}}
-                    @else
+                    @elseif (auth('web')->check())
                     {{-- 勤怠ボタン --}}
                         <button class="header__create-button"><a href="{{ route('create') }}">勤怠</a></button>
                     {{-- 勤怠一覧ボタン --}}

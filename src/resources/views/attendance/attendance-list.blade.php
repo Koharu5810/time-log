@@ -5,7 +5,9 @@
 <link rel="stylesheet" href="{{ asset('css/user/login.css') }}" />
 @endsection
 
-@section('sub-title', '勤怠一覧')
+@section('sub-title', auth('admin')->check()
+    ? (isset($staff) ? $staff->name . 'さんの勤怠' : '')
+    : (auth('web')->check() ? '勤怠一覧' : ''))
 
 @section('content')
     <div class="body">

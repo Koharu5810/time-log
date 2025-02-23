@@ -1,5 +1,5 @@
 {{-- スタッフ一覧画面（管理者） --}}
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/user/login.css') }}" />
@@ -27,7 +27,7 @@
                             <td>{{ $staff->name }}</td>
                             <td>{{ $staff->email }}</td>
                             <td>
-                                <a href="{{ route('attendance.list', ['id' => $staff->id]) }}" class="detail-btn">詳細</a>
+                                <a href="{{ route('admin.attendance.list', ['id' => $staff->id]) }}" class="detail-btn">詳細</a>
                             </td>
                         </tr>
                     @endforeach

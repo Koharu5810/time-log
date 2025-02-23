@@ -1,5 +1,5 @@
 {{-- 管理者ダッシュボード --}}
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/user/login.css') }}" />

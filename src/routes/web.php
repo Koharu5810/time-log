@@ -27,24 +27,26 @@ Route::middleware('auth')->group(function () {
     // 勤怠登録画面（一般）
     Route::get('/attendance', [AttendanceCreateController::class, 'index'])->name('create');
     Route::post('/attendance', [AttendanceCreateController::class, 'store'])->name('attendance.store');
-
-    // 勤怠一覧画面（一般）
-    Route::get('/attendance/list', [AttendanceController::class, 'showUserAttendanceList'])->name('attendance.list');
-    // 勤怠詳細画面（一般）
-    Route::get('/attendance/{id}', [AttendanceController::class, 'showAttendanceDetail'])->name('attendance.detail');
-    Route::post('/attendance/{id}', [AttendanceController::class, 'updateRequest'])->name('attendance.update');
-
-    // 勤怠申請一覧（↓一般・管理者同様パス。認証ミドルウェアで区別を実装）
-    Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'showRequestList'])->name('request.list');
 });
 
 Route::middleware('auth:admin')->group(function () {
     // 勤怠一覧表示
     Route::get('/admin/attendance/list', [AdminDashboardController::class, 'showAdminDashBoard'])->name('admin.dashboard');
-
     // スタッフ一覧画面
     Route::get('/admin/staff/list', [AdminDashboardController::class, 'showStaffList'])->name('staff.list');
+});
 
-    // 勤怠一覧画面
-    Route::get('/attendance/list', [AttendanceController::class, 'showStaffAttendanceList'])->name('admin.attendance.list');
+Route::middleware(['auth:web,admin'])->group(function () {
+
+    // 勤怠一覧画面（一般、管理者）
+    Route::get('/attendance/list', [AttendanceController::class, 'showAttendanceList'])->name('attendance.list');
+    // スタッフ別勤怠一覧画面（管理者）
+    Route::get('/admin/attendance/staff/{id}', [AttendanceController::class, 'showAttendanceList'])->name('admin.attendance.list');
+
+    // 勤怠詳細画面（一般、管理者）
+    Route::get('/attendance/{id}', [AttendanceController::class, 'showAttendanceDetail'])->name('attendance.detail');
+    Route::post('/attendance/{id}', [AttendanceController::class, 'updateRequest'])->name('attendance.update');
+
+    // 勤怠申請一覧（↓一般・管理者同様パス。認証ミドルウェアで区別を実装）
+    Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'showRequestList'])->name('request.list');
 });

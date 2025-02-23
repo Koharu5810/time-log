@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AttendanceUpdateRequest;
 use App\Models\User;
+use App\Models\Admin;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use App\Models\AttendanceRequest;
@@ -14,29 +15,36 @@ use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
-// 勤怠一覧画面表示（一般ユーザ）
-    public function showUserAttendanceList(Request $request) {
-        $authUser = Auth::user();
+// 勤怠一覧画面表示（一般ユーザは自分の月次勤怠、管理者は任意のスタッフの月次勤怠）
+    public function showAttendanceList(Request $request, $id = null) {
+        if (auth('admin')->check()) {
+            $authUser = auth('admin')->user();
+            $staff = $id ? User::findOrFail($id) : null;
+        } elseif (auth('web')->check()) {
+            // 一般ユーザーの場合
+            $authUser = auth('web')->user();
+            $staff = null;
+        } else {
+            abort(403, 'Unauthorized');
+        }
+
+        // $authUser = Auth::user();
 
         $year = $request->query('year', Carbon::today()->year);
         $month = $request->query('month', Carbon::today()->month);
         $day = $request->query('day', Carbon::today()->day);
         $date = Carbon::create($year, $month, $day)->toDateString();
 
-        // 管理者なら特定のユーザの勤怠データを取得
-        if ($authUser->role === 'admin') {
-            $targetUserId = $request->query('user_id');
-
-            if (!$targetUserId) {
-                return redirect()->back();
-            }
-
-            $user = User::find($targetUserId);
-            if (!$user) {
-                return redirect()->back();
+        // 表示対象のユーザを決定
+        if (auth('admin')->check()) {
+            // 管理者は対象のスタッフ
+            if ($staff) {
+                $user = $staff;
+            } else {
+                return view('attendance.attendance-list');
             }
         } else {
-            // 一般ユーザは自分の勤怠データを取得
+            // 一般ユーザは自分の勤怠データ
             $user = $authUser;
         }
 
@@ -76,7 +84,7 @@ class AttendanceController extends Controller
                 $finalAttendances->push($request);
             }
         }
-        return view('attendance.attendance-list', compact('user', 'year', 'month', 'finalAttendances'));
+        return view('attendance.attendance-list', compact('user', 'staff', 'year', 'month', 'finalAttendances'));
     }
 
 // 勤怠詳細画面表示
