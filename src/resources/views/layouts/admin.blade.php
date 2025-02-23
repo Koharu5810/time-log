@@ -26,7 +26,7 @@
             {{-- 勤怠ボタン --}}
                     <button class="header__create-button"><a href="">勤怠一覧</a></button>
             {{-- 勤怠一覧ボタン --}}
-                    <button class="header__list-button"><a href="">スタッフ一覧</a></button>
+                    <button class="header__list-button"><a href="{{ route('staff.list') }}">スタッフ一覧</a></button>
             {{-- 申請ボタン --}}
                     <button class="header__request-button"><a href="">申請一覧</a></button>
             {{-- ログアウトボタン --}}

@@ -37,6 +37,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth:admin')->group(function () {
-    //
+    // 勤怠一覧表示（管理者）
     Route::get('/admin/attendance/list', [AdminDashboardController::class, 'showAdminDashBoard'])->name('admin.dashboard');
+
+    // スタッフ一覧画面（管理者）
+    Route::get('/admin/staff/list', [AdminDashboardController::class, 'showStaffList'])->name('staff.list');
+
+    // 勤怠一覧画面（管理者）
+    Route::get('/attendance/list', [AdminDashboardController::class, 'showStaffAttendanceList'])->name('staff.attendance.list');
 });
