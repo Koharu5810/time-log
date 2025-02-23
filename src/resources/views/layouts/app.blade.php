@@ -20,20 +20,38 @@
                 </a>
             </div>
 
-    {{-- ボタンコンテナ --}}
+    {{-- ボタンコンテナ（ログイン時のみ表示） --}}
             @if (auth()->check() && !request()->is('user/register') && !request()->is('user/login'))
                 <div class="header-right">
-            {{-- 勤怠ボタン --}}
-                    <button class="header__create-button"><a href="{{ route('create') }}">勤怠</a></button>
-            {{-- 勤怠一覧ボタン --}}
-                    <button class="header__list-button"><a href="{{ route('attendance.list') }}">勤怠一覧</a></button>
-            {{-- 申請ボタン --}}
-                    <button class="header__request-button"><a href="{{ route('request.list') }}">申請</a></button>
-            {{-- ログアウトボタン --}}
-                    <form action="{{ route('user.logout') }}" method="POST" class="header__logout">
-                        @csrf
-                        <button type="submit" class="header__logout-button">ログアウト</button>
-                    </form>
+
+            {{-- 管理者用ヘッダー --}}
+                    @if (auth()->user()->role === 'admin')
+                        <button class="header__create-button"><a href="">勤怠一覧</a></button>
+                    {{-- 勤怠一覧ボタン --}}
+                        <button class="header__list-button"><a href="{{ route('staff.list') }}">スタッフ一覧</a></button>
+                    {{-- 申請ボタン --}}
+                        <button class="header__request-button"><a href="">申請一覧</a></button>
+                    {{-- ログアウトボタン --}}
+                        <form action="{{ route('admin.logout') }}" method="POST" class="header__logout">
+                            @csrf
+                            <button type="submit" class="header__logout-button">ログアウト</button>
+                        </form>
+
+            {{-- 一般ユーザ用ヘッダー --}}
+                    @else
+                    {{-- 勤怠ボタン --}}
+                        <button class="header__create-button"><a href="{{ route('create') }}">勤怠</a></button>
+                    {{-- 勤怠一覧ボタン --}}
+                        <button class="header__list-button"><a href="{{ route('attendance.list') }}">勤怠一覧</a></button>
+                    {{-- 申請ボタン --}}
+                        <button class="header__request-button"><a href="{{ route('request.list') }}">申請</a></button>
+                    {{-- ログアウトボタン --}}
+                        <form action="{{ route('user.logout') }}" method="POST" class="header__logout">
+                            @csrf
+                            <button type="submit" class="header__logout-button">ログアウト</button>
+                        </form>
+
+                    @endif
                 </div>
             @endif
         </div>

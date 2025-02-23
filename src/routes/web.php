@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceCreateController;
+use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminDashboardController;
 
@@ -34,16 +35,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/{id}', [AttendanceController::class, 'updateRequest'])->name('attendance.update');
 
     // 勤怠申請一覧（↓一般・管理者同様パス。認証ミドルウェアで区別を実装）
-    Route::get('/stamp_correction_request/list', [AttendanceController::class, 'showRequestList'])->name('request.list');
+    Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'showRequestList'])->name('request.list');
 });
 
 Route::middleware('auth:admin')->group(function () {
-    // 勤怠一覧表示（管理者）
+    // 勤怠一覧表示
     Route::get('/admin/attendance/list', [AdminDashboardController::class, 'showAdminDashBoard'])->name('admin.dashboard');
 
-    // スタッフ一覧画面（管理者）
+    // スタッフ一覧画面
     Route::get('/admin/staff/list', [AdminDashboardController::class, 'showStaffList'])->name('staff.list');
 
-    // 勤怠一覧画面（管理者）
-    Route::get('/attendance/list', [AdminDashboardController::class, 'showStaffAttendanceList'])->name('attendance.list');
+    // 勤怠一覧画面
+    Route::get('/attendance/list', [AttendanceController::class, 'showStaffAttendanceList'])->name('admin.attendance.list');
 });
