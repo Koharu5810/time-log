@@ -15,9 +15,7 @@
         <div class="header">
         {{-- ロゴ表示 --}}
             <div class="header-left">
-                <a href="{{ route('create') }}">
-                    <img class="header__logo" src="{{ asset('storage/logo.svg') }}" alt="ロゴ" />
-                </a>
+                <img class="header__logo" src="{{ asset('storage/logo.svg') }}" alt="ロゴ" />
             </div>
 
     {{-- ボタンコンテナ（ログイン時のみ表示） --}}

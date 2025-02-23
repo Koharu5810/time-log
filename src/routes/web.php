@@ -39,15 +39,17 @@ Route::middleware('auth:admin')->group(function () {
 });
 
 Route::middleware(['auth:web,admin'])->group(function () {
-    // 勤怠一覧画面（一般、管理者）
+    // 勤怠一覧画面（一般・管理者）
     Route::get('/attendance/list', [AttendanceController::class, 'showAttendanceList'])->name('attendance.list');
     // スタッフ別勤怠一覧画面（管理者）
     Route::get('/admin/attendance/staff/{id}', [AttendanceController::class, 'showAttendanceList'])->name('admin.attendance.list');
 
-    // 勤怠詳細画面（一般、管理者）
+    // 勤怠詳細画面（一般・管理者）
     Route::get('/attendance/{id}', [AttendanceController::class, 'showAttendanceDetail'])->name('attendance.detail');
     Route::post('/attendance/{id}', [AttendanceRequestController::class, 'updateRequest'])->name('attendance.update');
 
-    // 勤怠申請一覧（↓一般・管理者同様パス。認証ミドルウェアで区別を実装）
+    // 勤怠申請一覧（一般・管理者）
     Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'showRequestList'])->name('request.list');
+    // 修正申請承認（管理者）
+    // Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AttendanceRequestController::class, ''])->name('');
 });
