@@ -13,7 +13,6 @@ use Carbon\Carbon;
 
 class AttendanceRequestController extends Controller
 {
-
 // 勤怠詳細画面から修正申請（一般ユーザ）
     public function updateRequest(AttendanceUpdateRequest $request) {
         try {

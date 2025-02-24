@@ -45,36 +45,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if ($finalAttendances->isEmpty())
+                    @if ($attendances->isEmpty())
                         <tr>
                             <td colspan="6" class="text-center">今日の申請はありません。</td>
                         </tr>
                     @else
-                        @foreach ($finalAttendances as $attendance)
+                        @foreach ($attendances as $attendance)
                             <tr>
                                 <td>{{ $attendance->user->name }}</td>
                                 <td>
-                                    {{ $attendance->clock_in
-                                        ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i')
-                                        : ($attendance->requested_clock_in
-                                            ? \Carbon\Carbon::parse($attendance->requested_clock_in)->format('H:i')
-                                            : '') }}
+                                    {{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}
                                 </td>
                                 <td>
-                                    {{ $attendance->clock_end
-                                        ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i')
-                                        : ($attendance->requested_clock_end
-                                            ? \Carbon\Carbon::parse($attendance->requested_clock_end)->format('H:i')
-                                            : '') }}
+                                    {{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '' }}
                                 </td>
                                 <td>
-                                    @php
-                                        // 休憩時間を attendance_request_breaks から取得
-                                        $breakTime = $attendance->total_break_time ??
-                                                    $attendance->requestBreakTimes->sum('duration');
-                                    @endphp
-                                    {{ $breakTime ? gmdate('H:i', $breakTime * 60) : '' }}
-                                    {{-- {{ $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '' }} --}}
+                                    {{ $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '' }}
                                 </td>
                                 <td>
                                     @if ($attendance->clock_in && $attendance->clock_end)

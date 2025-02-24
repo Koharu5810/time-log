@@ -34,7 +34,7 @@ class AdminDashboardController extends Controller
         //     ->orderBy('user_id', 'asc')
         //     ->get();
 
-        $finalAttendances = collect();
+        // $finalAttendances = collect();
 
         foreach ($attendances as $attendance) {
             $userId = $attendance->user_id;
@@ -55,7 +55,7 @@ class AdminDashboardController extends Controller
         //     }
         // }
 
-        return view('admin.dashboard', compact('year', 'month', 'day', 'date', 'finalAttendances'));
+        return view('admin.dashboard', compact('year', 'month', 'day', 'date', 'attendances'));
     }
 
 // スタッフ一覧画面表示
