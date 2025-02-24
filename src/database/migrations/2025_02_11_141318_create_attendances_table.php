@@ -19,6 +19,9 @@ return new class extends Migration
             $table->time('clock_end')->nullable();
             $table->enum('status', ['勤務外', '出勤中', '休憩中', '退勤済'])->default('勤務外');
             $table->string('remarks', 255)->nullable();
+            $table->enum('request_status', ['通常', '承認待ち', '承認済み'])->default('通常');
+            $table->foreignId('admin_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->timestamp('approved_at')->nullable();
             $table->timestamps();
         });
     }

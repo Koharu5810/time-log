@@ -30,8 +30,12 @@ class Admin extends Authenticatable
         }
     }
 
-    public function attendanceRequests()
+    public function attendance()
     {
-        return $this->hasMany(AttendanceRequest::class, 'admin_id');
+        return $this->hasMany(Attendance::class, 'admin_id');
+    }
+    public function attendanceHistory()
+    {
+        return $this->hasMany(AttendanceHistory::class, 'admin_id');
     }
 }
