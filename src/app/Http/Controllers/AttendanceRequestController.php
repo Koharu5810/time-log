@@ -93,7 +93,6 @@ class AttendanceRequestController extends Controller
                     }
                 }
             }
-
             return redirect()->route('attendance.update', ['id' => $request->attendance_id]);
 
         } catch (\Exception $e) {
@@ -101,27 +100,45 @@ class AttendanceRequestController extends Controller
         }
     }
 
+// 修正勤怠承認（管理者）
+    public function approve($id)
+    {
+        $attendance = Attendance::findOrFail($id);
+
+        // 管理者のみが承認できるように制御
+        if (!auth('admin')->user()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $attendance->request_status = '承認済み';
+        $attendance->admin_id = auth('admin')->user()->id;
+        $attendance->approved_at = Carbon::now();
+        $attendance->save();
+
+        return redirect()->back();
+    }
+
 // 申請一覧画面表示（一般ユーザ）
     public function showRequestList(Request $request) {
         $user = Auth::user();
-
         $tab = $request->query('tab', 'pending');  // デフォルトは承認待ち
         $query = $request->query('query');
 
-        if ($tab === 'approved') {
-            // 承認済みリストを取得
-            $attendanceRequests = AttendanceRequest::with(['user', 'attendance'])
-                ->where('status', '承認済み')
-                ->orderBy('target_date', 'asc')
-                ->get();
-        } else {
-            // 承認待ちリストを取得
-            $attendanceRequests = AttendanceRequest::with(['user', 'attendance'])
-                ->where('status', '承認待ち')
-                ->orderBy('target_date', 'asc')
-                ->get();
-        }
+        $attendanceRequests = Attendance::with('user')
+            ->when(!auth('admin')->check(), function ($query) use ($user) {
+                // 一般ユーザは自分の申請のみを取得
+                return $query->where('user_id', $user->id);
+            })
+            ->when($tab === 'approved', function ($query) {
+                // 承認済みリストを取得
+                return $query->where('request_status', '承認済み');
+            }, function ($query) {
+                // 承認待ちリストを取得
+                return $query->where('request_status', '承認待ち');
+            })
+            ->orderBy('work_date', 'asc')
+            ->get();
 
-        return view('attendance.request-list', compact('user', 'attendanceRequests', 'tab', 'query'));
+        return view('attendance.request-list', compact('user', 'tab', 'query', 'attendanceRequests'));
     }
 }

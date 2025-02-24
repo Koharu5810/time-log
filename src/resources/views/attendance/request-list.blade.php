@@ -51,12 +51,12 @@
                     @else
                         @foreach ($attendanceRequests as $request)
                             <tr>
-                                <td>{{ $request->status }}</td>
+                                <td>{{ $request->request_status }}</td>
                                 <td>{{ $request->user->name }}</td>
-                                <td>{{ \Carbon\Carbon::parse($request->target_date)->format('Y/m/d') }}</td>
-                                <td>{{ $request->requested_remarks }}</td>
-                                <td>{{ \Carbon\Carbon::parse($request->created_at)->format('Y/m/d') }}</td>
-                                <td><button class="detail-btn"><a href="{{ route("attendance.detail", ['id' => $request->attendance_id]) }}">詳細</a></button></td>
+                                <td>{{ \Carbon\Carbon::parse($request->work_date)->format('Y/m/d') }}</td>
+                                <td>{{ $request->remarks }}</td>
+                                <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('Y/m/d') }}</td>
+                                <td><button class="detail-btn"><a href="{{ route("attendance.detail", ['id' => $request->id]) }}">詳細</a></button></td>
                             </tr>
                         @endforeach
                     @endif
