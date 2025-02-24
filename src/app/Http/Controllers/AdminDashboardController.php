@@ -29,10 +29,10 @@ class AdminDashboardController extends Controller
             ->orderBy('user_id', 'asc')
             ->get();
 
-        $attendanceRequests = AttendanceRequest::whereDate('target_date', $date)
-            ->with(['user', 'attendanceBreakTimes'])
-            ->orderBy('user_id', 'asc')
-            ->get();
+        // $attendanceRequests = AttendanceRequest::whereDate('target_date', $date)
+        //     ->with(['user', 'attendanceBreakTimes'])
+        //     ->orderBy('user_id', 'asc')
+        //     ->get();
 
         $finalAttendances = collect();
 
@@ -40,20 +40,20 @@ class AdminDashboardController extends Controller
             $userId = $attendance->user_id;
 
             // attendance_requestsに同日の修正勤怠申請がある場合、そちらを優先
-            $requestData = $attendanceRequests->firstWhere('user_id', $userId);
-            if ($requestData) {
-                $finalAttendances->push($requestData);
-            } else {
-                $finalAttendances->push($attendance);
-            }
+            // $requestData = $attendanceRequests->firstWhere('user_id', $userId);
+            // if ($requestData) {
+            //     $finalAttendances->push($requestData);
+            // } else {
+            //     $finalAttendances->push($attendance);
+            // }
         }
 
         // attendance_requests のデータで attendances にないものを追加
-        foreach ($attendanceRequests as $request) {
-            if (!$finalAttendances->contains('user_id', $request->user_id)) {
-                $finalAttendances->push($request);
-            }
-        }
+        // foreach ($attendanceRequests as $request) {
+        //     if (!$finalAttendances->contains('user_id', $request->user_id)) {
+        //         $finalAttendances->push($request);
+        //     }
+        // }
 
         return view('admin.dashboard', compact('year', 'month', 'day', 'date', 'finalAttendances'));
     }

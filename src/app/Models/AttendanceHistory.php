@@ -36,4 +36,8 @@ class AttendanceHistory extends Model
     {
         return $this->belongsTo(Admin::class, 'admin_id');
     }
+    public function breakTimeHistories()
+    {
+        return $this->hasMany(BreakTimeHistory::class, 'attendance_history_id');
+    }
 }

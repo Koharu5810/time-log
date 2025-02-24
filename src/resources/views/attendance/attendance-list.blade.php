@@ -62,30 +62,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if ($finalAttendances->isEmpty())
+                    {{-- @if ($finalAttendances->isEmpty()) --}}
+                    @if ($attendances->isEmpty())
                         <tr>
                             <td colspan="6" class="text-center">今月の申請はありません。</td>
                         </tr>
                     @else
-                        @foreach ($finalAttendances as $attendance)
+                        {{-- @foreach ($finalAttendances as $attendance) --}}
+                        @foreach ($attendances as $attendance)
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('m/d(D)') }}</td>
                                 <td>{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}</td>
-                                {{-- <td>
-                                    {{ $attendance->clock_in
-                                        ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i')
-                                        : ($attendance->requested_clock_in
-                                            ? \Carbon\Carbon::parse($attendance->requested_clock_in)->format('H:i')
-                                            : '') }}
-                                </td> --}}
                                 <td>{{ $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '' }}</td>
-                                {{-- <td>
-                                    {{ $attendance->clock_end
-                                        ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i')
-                                        : ($attendance->requested_clock_end
-                                            ? \Carbon\Carbon::parse($attendance->requested_clock_end)->format('H:i')
-                                            : '') }}
-                                </td> --}}
                                 <td>{{ $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '' }}</td>
                                 <td>
                                     @if ($attendance->clock_in && $attendance->clock_end)

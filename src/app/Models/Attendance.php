@@ -34,6 +34,10 @@ class Attendance extends Model
     {
         return $this->belongsTo(Admin::class, 'admin_id');
     }
+    public function history()
+    {
+        return $this->hasMany(AttendanceHistory::class, 'attendance_id');
+    }
 
     // 勤務時間の計算
     public function getDurationInMinutesAttribute()

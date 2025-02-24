@@ -23,38 +23,37 @@ class AttendanceUpdateRequest extends FormRequest
     {
         return [
             'requested_clock_in' => 'required|date_format:H:i',
-            'requested_clock_end' => 'required|date_format:H:i|after:requested_clock_in',
+            'requested_clock_end' => 'required|date_format:H:i|after:clock_in',
 
-            'requested_break_times' => 'nullable|array', // 休憩時間の配列
-            'requested_break_times.*.start' => 'nullable|date_format:H:i|required_with:requested_break_times.*.end',
-            'requested_break_times.*.end' => 'nullable|date_format:H:i|after:requested_break_times.*.start|required_with:requested_break_times.*.start',
+            'break_times' => 'nullable|array', // 休憩時間の配列
+            'break_times.*.start' => 'nullable|date_format:H:i|required_with:break_times.*.end',
+            'break_times.*.end' => 'nullable|date_format:H:i|after:break_times.*.start|required_with:break_times.*.start',
 
-            'requested_remarks' => 'required|string|max:255',
+            'remarks' => 'required|string|max:255',
         ];
     }
     public function messages()
     {
         return [
-            'requested_clock_in.required' => '出勤時間を入力してください',
-            'requested_clock_end.required' => '退勤時間を入力してください',
-            'requested_clock_end.after' => '出勤時間もしくは退勤時間が不適切な値です',
+            'clock_in.required' => '出勤時間を入力してください',
+            'clock_end.required' => '退勤時間を入力してください',
+            'clock_end.after' => '出勤時間もしくは退勤時間が不適切な値です',
 
-            'requested_break_times.*.start.required_with' => '休憩開始時間と休憩終了時間の両方を入力してください',
-            'requested_break_times.*.end.required_with' => '休憩開始時間と休憩終了時間の両方を入力してください',
-            'requested_break_times.*.end.after' => '休憩開始時間もしくは休憩終了時間が不適切な値です',
-            // 休憩開始時間及び休憩終了時間が，出勤時間及び退勤時間を超えている際に「休憩時間が勤務外です」のバリデーションを実装
+            'break_times.*.start.required_with' => '休憩開始時間と休憩終了時間の両方を入力してください',
+            'break_times.*.end.required_with' => '休憩開始時間と休憩終了時間の両方を入力してください',
+            'break_times.*.end.after' => '休憩開始時間もしくは休憩終了時間が不適切な値です',
 
-            'requested_remarks.required' => '備考を記入してください',
+            'remarks.required' => '備考を記入してください',
         ];
     }
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
             // 出勤時間・退勤時間のバリデーション（両方入力されていることを前提）
-            if (!empty($this->requested_clock_in) && !empty($this->requested_clock_end)) {
+            if (!empty($this->clock_in) && !empty($this->clock_end)) {
                 try {
-                    $clockIn = \Carbon\Carbon::parse($this->requested_clock_in);
-                    $clockEnd = \Carbon\Carbon::parse($this->requested_clock_end);
+                    $clockIn = \Carbon\Carbon::parse($this->clock_in);
+                    $clockEnd = \Carbon\Carbon::parse($this->clock_end);
 
                     // 勤務時間（分単位）
                     $workMinutes = $clockIn->diffInMinutes($clockEnd);
@@ -64,8 +63,8 @@ class AttendanceUpdateRequest extends FormRequest
 
                 // 休憩時間のチェック
                 $totalBreakMinutes = 0;
-                if (!empty($this->requested_break_times)) {
-                    foreach ($this->requested_break_times as $index => $break) {
+                if (!empty($this->break_times)) {
+                    foreach ($this->break_times as $index => $break) {
                         $breakStart = $break['start'] ?? null;
                         $breakEnd = $break['end'] ?? null;
 
@@ -77,7 +76,7 @@ class AttendanceUpdateRequest extends FormRequest
 
                                 // **休憩時間が出勤前 or 退勤後ならエラー**
                                 if ($breakStartTime->lt($clockIn) || $breakEndTime->gt($clockEnd)) {
-                                    $validator->errors()->add("requested_break_times.$index.start", '休憩時間が勤務時間外です');
+                                    $validator->errors()->add("break_times.$index.start", '休憩時間が勤務時間外です');
                                 }
 
                                 // 休憩時間を加算
@@ -91,7 +90,7 @@ class AttendanceUpdateRequest extends FormRequest
 
                 // **総勤務時間より休憩時間が長い場合にエラー**
                 if ($totalBreakMinutes > $workMinutes) {
-                    $validator->errors()->add('requested_break_times', '休憩時間が勤務時間外です');
+                    $validator->errors()->add('break_times', '休憩時間が勤務時間外です');
                 }
             }
         });

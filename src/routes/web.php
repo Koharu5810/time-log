@@ -46,7 +46,8 @@ Route::middleware(['auth:web,admin'])->group(function () {
 
     // 勤怠詳細画面（一般・管理者）
     Route::get('/attendance/{id}', [AttendanceController::class, 'showAttendanceDetail'])->name('attendance.detail');
-    Route::post('/attendance/{id}', [AttendanceRequestController::class, 'updateRequest'])->name('attendance.update');
+    // Route::post('/attendance/{id}', [AttendanceRequestController::class, 'updateRequest'])->name('attendance.update');
+    Route::put('/attendance/{id}', [AttendanceRequestController::class, 'updateRequest'])->name('attendance.update');
 
     // 勤怠申請一覧（一般・管理者）
     Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'showRequestList'])->name('request.list');
