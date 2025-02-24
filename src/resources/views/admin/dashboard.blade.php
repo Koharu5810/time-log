@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{{ asset('css/user/login.css') }}" />
 @endsection
 
-@section('sub-title', \Carbon\Carbon::create($year, $month, $day)->translatedFormat('Y年m月d日の勤怠'))
+@section('sub-title', \Carbon\Carbon::create($date)->translatedFormat('Y年m月d日の勤怠'))
 
 @section('content')
     <div class="body">
@@ -15,20 +15,20 @@
         <div class="month-selector">
         {{-- 前日リンク --}}
             <a href="{{ route('admin.dashboard', [
-                'year' => \Carbon\Carbon::create($year, $month, $day)->subDay()->year,
-                'month' => \Carbon\Carbon::create($year, $month, $day)->subDay()->month,
-                'day' => \Carbon\Carbon::create($year, $month, $day)->subDay()->day
+                'year' => \Carbon\Carbon::create($date)->subDay()->year,
+                'month' => \Carbon\Carbon::create($date)->subDay()->month,
+                'day' => \Carbon\Carbon::create($date)->subDay()->day
             ]) }}">←前日</a>
         {{-- 日付表示 --}}
             <div class="current-month">
                 <img class="calendar" src="{{ asset('storage/calendar.png') }}" alt="日付" />
-                <span>{{ \Carbon\Carbon::create($year, $month, $day)->format('Y/m/d') }}</span>
+                <span>{{ \Carbon\Carbon::create($date)->format('Y/m/d') }}</span>
             </div>
         {{-- 次日リンク --}}
             <a href="{{ route('admin.dashboard', [
-                'year' => \Carbon\Carbon::create($year, $month, $day)->addDay()->year,
-                'month' => \Carbon\Carbon::create($year, $month, $day)->addDay()->month,
-                'day' => \Carbon\Carbon::create($year, $month, $day)->addDay()->day
+                'year' => \Carbon\Carbon::create($date)->addDay()->year,
+                'month' => \Carbon\Carbon::create($date)->addDay()->month,
+                'day' => \Carbon\Carbon::create($date)->addDay()->day
             ]) }}">翌日→</a>
         </div>
 
