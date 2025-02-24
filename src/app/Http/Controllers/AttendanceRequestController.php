@@ -20,6 +20,7 @@ class AttendanceRequestController extends Controller
             // **1. 勤怠修正リクエストを新規作成**
             $attendance = Attendance::find($request->attendance_id);
 
+            // **2. 勤怠修正履歴を作成**
             $attendanceHistory = AttendanceHistory::create([
                 'user_id' => $attendance->user_id,
                 'attendance_id' => $attendance->id,
@@ -27,37 +28,23 @@ class AttendanceRequestController extends Controller
                 'previous_clock_end' => $attendance->clock_end,
                 'requested_clock_in' => Carbon::parse($request->requested_clock_in)->format('H:i:s'),
                 'requested_clock_end' => Carbon::parse($request->requested_clock_end)->format('H:i:s'),
-                // 'target_date' => $attendance->target_date,
-                // 'request_type' => '修正',
-                // 'requested_clock_in' => $clockIn,
-                // 'requested_clock_end' => $clockEnd,
-                // 'requested_remarks' => $attendance->requested_remarks,
-                // 'status' => '承認待ち',
                 'admin_id' => null,
                 'approved_at' => null,
             ]);
 
+            // **3. 勤怠情報を上書き**
             $attendance->update([
                 'clock_in' => $request->filled('requested_clock_in')
                     ? Carbon::parse($request->requested_clock_in)->format('H:i:s')
-                    : $attendance->clock_in, // 出勤時間は変更があれば更新、なければ維持
+                    : $attendance->clock_in, // 変更があれば更新、なければ維持
                 'clock_end' => $request->filled('requested_clock_end')
                     ? Carbon::parse($request->requested_clock_end)->format('H:i:s')
-                    : $attendance->clock_end, // 退勤時間は変更があれば更新、なければ維持
+                    : $attendance->clock_end, // 変更があれば更新、なければ維持
+                'remarks' => $request->remarks,
+                'request_status' => '承認待ち'
             ]);
 
-            // **2. 修正リクエストの休憩データを保存**
-            // if (!empty($request->requested_break_times)) {
-            //     foreach ($request->requested_break_times as $break) {
-            //         if (!empty($break['start']) && !empty($break['end'])) {
-            //             AttendanceRequestBreak::create([
-            //                 'attendance_request_id' => $attendanceRequest->id,
-            //                 'requested_break_time_start' => Carbon::createFromFormat('H:i', $break['start'])->format('H:i:s'),
-            //                 'requested_break_time_end' => Carbon::createFromFormat('H:i', $break['end'])->format('H:i:s'),
-            //             ]);
-            //         }
-            //     }
-            // }
+            // **4. 休憩データを保存**
             if (!empty($request->break_times)) {
                 foreach ($request->break_times as $index => $break) {
                     if (!empty($break['start']) && !empty($break['end'])) {
@@ -66,11 +53,9 @@ class AttendanceRequestController extends Controller
 
                         // **該当の休憩時間を取得**
                         $breakTime = BreakTime::where('attendance_id', $attendance->id)
-                            // ->skip($index)
                             ->orderBy('id')
                             ->get()
                             ->get($index);
-                            // ->first();
 
                         if ($breakTime) {
                             // **修正前のデータを BreakTimeHistory に保存**
