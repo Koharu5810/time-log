@@ -13,7 +13,7 @@ class AuthController extends Controller
 {
 // 会員登録画面表示
     public function showRegistrationForm() {
-        return view('user.register');
+        return view('auth.register');
     }
 // 会員登録処理
     public function register(UserRegisterRequest $request) {
@@ -32,7 +32,7 @@ class AuthController extends Controller
 
 // ログイン画面表示（一般ユーザー）
     public function showUsersLoginForm() {
-        return view('user.login');
+        return view('auth.login');
     }
 // ログイン処理（一般ユーザー）
     public function login(UserLoginRequest $request) {
@@ -47,7 +47,7 @@ class AuthController extends Controller
         }
 
         session()->flash('auth_error', 'ログイン情報が登録されていません');
-        return redirect()->route('user.login')->withInput();  // 入力値を保持してログイン画面にリダイレクト
+        return redirect()->route('auth.login')->withInput();  // 入力値を保持してログイン画面にリダイレクト
     }
 
 // ログアウト処理（一般ユーザー）
@@ -58,6 +58,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('user.login');
+        return redirect()->route('auth.login');
     }
 }
