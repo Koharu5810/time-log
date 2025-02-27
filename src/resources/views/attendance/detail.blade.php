@@ -51,7 +51,7 @@
                     <tr>
                         <th>出勤・退勤</th>
                         <td class="time">
-                            @if ($attendance->attendanceCorrectRequest && $attendance->attendanceCorrectRequest->first())
+                            @if ($attendance->attendanceCorrectRequest)
                                 {{ \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') }}
                             @else
                                 <input
@@ -64,7 +64,7 @@
                         </td>
                         <td class="time-separator">〜</td>
                         <td class="time">
-                            @if ($attendance->attendanceCorrectRequest && $attendance->attendanceCorrectRequest->first())
+                            @if ($attendance->attendanceCorrectRequest)
                                 {{ \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') }}
                             @else
                                 <input
@@ -93,7 +93,7 @@
                         <tr>
                             <th>{{ $index == 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                             <td class="time">
-                                @if ($attendance->attendanceCorrectRequest && $attendance->attendanceCorrectRequest->first())
+                                @if ($attendance->attendanceCorrectRequest)
                                     {{ \Carbon\Carbon::parse(optional($break)->break_time_start)->format('H:i') }}
                                 @else
                                     <input
@@ -106,7 +106,7 @@
                             </td>
                             <td class="time-separator">〜</td>
                             <td class="time">
-                                @if ($attendance->attendanceCorrectRequest && $attendance->attendanceCorrectRequest->first())
+                                @if ($attendance->attendanceCorrectRequest)
                                     {{ \Carbon\Carbon::parse(optional($break)->break_time_end)->format('H:i') }}
                                 @else
                                     <input
@@ -143,7 +143,7 @@
                     <tr>
                         <th>備考</th>
                         <td colspan="3">
-                            @if ($attendance->attendanceCorrectRequest && $attendance->attendanceCorrectRequest->first())
+                            @if ($attendance->attendanceCorrectRequest)
                                 {{ $attendance->remarks }}
                             @else
                                 <textarea name="remarks" placeholder="電車遅延のため">{{ old('remarks') }}</textarea>
@@ -160,18 +160,18 @@
                 <tfoot>
                     <tr>
                         <td colspan="5" class="button-container">
-                            @switch($attendance->request_status)
+                            @switch($attendance->attendanceCorrectRequest->request_status ?? '')
                                 @case('承認待ち')
                                     {{-- 管理者の場合は承認ボタンを表示 --}}
-                                    @if (auth('admin')->user())
+                                    {{-- @if (auth('admin')->user())
                                         <form action="{{ route('request.approve', ['id' => $attendance->id]) }}" method="POST">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="approve-button">承認</button>
                                         </form>
-                                    @else
+                                    @else --}}
                                         <span>*承認待ちのため修正はできません。</span>
-                                    @endif
+                                    {{-- @endif --}}
                                     @break
                                 @case('承認済み')
                                     <span>*すでに修正済みのため、再修正はできません。</span>

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->time('previous_clock_end')->nullable();  // 変更前の退勤時刻
             $table->time('requested_clock_in')->nullable();  // 申請された出勤時刻
             $table->time('requested_clock_end')->nullable(); // 申請された退勤時刻
-            $table->enum('request_status', ['通常', '承認待ち', '承認済み'])->default('通常');
+            $table->enum('request_status', ['承認待ち', '承認済み'])->default('承認待ち');
             $table->foreignId('admin_id')->nullable()->constrained('admins')->cascadeOnDelete();
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();
