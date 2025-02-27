@@ -31,9 +31,9 @@ class Attendance extends Model
     {
         return $this->belongsTo(Admin::class, 'admin_id');
     }
-    public function correctRequest()
+    public function attendanceCorrectRequest()
     {
-        return $this->hasMany(AttendanceCorrectRequest::class, 'attendance_id');
+        return $this->hasOne(AttendanceCorrectRequest::class, 'attendance_id');
     }
 
     // 勤務時間の計算

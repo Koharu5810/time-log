@@ -51,32 +51,28 @@
                     <tr>
                         <th>出勤・退勤</th>
                         <td class="time">
-                            @if ($attendance)
-                                @if ($attendance->request_status !== '通常')
-                                    {{ \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') }}
-                                @else
-                                    <input
-                                        type="text"
-                                        class="time-input"
-                                        name="requested_clock_in"
-                                        value="{{ old('requested_clock_in', $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '') }}"
-                                    />
-                                @endif
+                            @if ($attendance->attendanceCorrectRequest && $attendance->attendanceCorrectRequest->first())
+                                {{ \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') }}
+                            @else
+                                <input
+                                    type="text"
+                                    class="time-input"
+                                    name="requested_clock_in"
+                                    value="{{ old('requested_clock_in', $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '') }}"
+                                />
                             @endif
                         </td>
                         <td class="time-separator">〜</td>
                         <td class="time">
-                            @if ($attendance)
-                                @if ($attendance->request_status !== '通常')
-                                    {{ \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') }}
-                                @else
-                                    <input
-                                        type="text"
-                                        class="time-input"
-                                        name="requested_clock_end"
-                                        value="{{ old('requested_clock_end', $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '') }}"
-                                    />
-                                @endif
+                            @if ($attendance->attendanceCorrectRequest && $attendance->attendanceCorrectRequest->first())
+                                {{ \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') }}
+                            @else
+                                <input
+                                    type="text"
+                                    class="time-input"
+                                    name="requested_clock_end"
+                                    value="{{ old('requested_clock_end', $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '') }}"
+                                />
                             @endif
                         </td>
                         <td></td>
@@ -97,32 +93,28 @@
                         <tr>
                             <th>{{ $index == 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                             <td class="time">
-                                @if ($attendance)
-                                    @if ($attendance->request_status !== '通常')
-                                        {{ \Carbon\Carbon::parse(optional($break)->break_time_start)->format('H:i') }}
-                                    @else
-                                        <input
-                                            type="text"
-                                            class="time-input"
-                                            name="break_times[{{ $index }}][start]"
-                                            value="{{ old('break_times.' . $index . '.start', $break->break_time_start ? \Carbon\Carbon::parse($break->break_time_start)->format('H:i') : '') }}"
-                                        />
-                                    @endif
+                                @if ($attendance->attendanceCorrectRequest && $attendance->attendanceCorrectRequest->first())
+                                    {{ \Carbon\Carbon::parse(optional($break)->break_time_start)->format('H:i') }}
+                                @else
+                                    <input
+                                        type="text"
+                                        class="time-input"
+                                        name="break_times[{{ $index }}][start]"
+                                        value="{{ old('break_times.' . $index . '.start', $break->break_time_start ? \Carbon\Carbon::parse($break->break_time_start)->format('H:i') : '') }}"
+                                    />
                                 @endif
                             </td>
                             <td class="time-separator">〜</td>
                             <td class="time">
-                                @if ($attendance)
-                                    @if ($attendance->request_status !== '通常')
-                                        {{ \Carbon\Carbon::parse(optional($break)->break_time_end)->format('H:i') }}
-                                    @else
-                                        <input
-                                            type="text"
-                                            class="time-input"
-                                            name="break_times[{{ $index }}][end]"
-                                            value="{{ old('break_times.' . $index . '.end', $break->break_time_end ? \Carbon\Carbon::parse($break->break_time_end)->format('H:i') : '') }}"
-                                        />
-                                    @endif
+                                @if ($attendance->attendanceCorrectRequest && $attendance->attendanceCorrectRequest->first())
+                                    {{ \Carbon\Carbon::parse(optional($break)->break_time_end)->format('H:i') }}
+                                @else
+                                    <input
+                                        type="text"
+                                        class="time-input"
+                                        name="break_times[{{ $index }}][end]"
+                                        value="{{ old('break_times.' . $index . '.end', $break->break_time_end ? \Carbon\Carbon::parse($break->break_time_end)->format('H:i') : '') }}"
+                                    />
                                 @endif
                             </td>
                             <td></td>
@@ -151,16 +143,14 @@
                     <tr>
                         <th>備考</th>
                         <td colspan="3">
-                            @if ($attendance)
-                                @if ($attendance->request_status !== '通常')
-                                    {{ $attendance->remarks }}
-                                @else
-                                    <textarea name="remarks" placeholder="電車遅延のため">{{ old('remarks') }}</textarea>
-                                    @if ($errors->has('remarks'))
-                                        <div class="error-message">
-                                            @error('remarks') {{ $message }} @enderror
-                                        </div>
-                                    @endif
+                            @if ($attendance->attendanceCorrectRequest && $attendance->attendanceCorrectRequest->first())
+                                {{ $attendance->remarks }}
+                            @else
+                                <textarea name="remarks" placeholder="電車遅延のため">{{ old('remarks') }}</textarea>
+                                @if ($errors->has('remarks'))
+                                    <div class="error-message">
+                                        @error('remarks') {{ $message }} @enderror
+                                    </div>
                                 @endif
                             @endif
                         </td>
@@ -170,7 +160,25 @@
                 <tfoot>
                     <tr>
                         <td colspan="5" class="button-container">
-                                <button type="submit" class="edit-button">承認</button>
+                            @switch($attendance->request_status)
+                                @case('承認待ち')
+                                    {{-- 管理者の場合は承認ボタンを表示 --}}
+                                    @if (auth('admin')->user())
+                                        <form action="{{ route('request.approve', ['id' => $attendance->id]) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="approve-button">承認</button>
+                                        </form>
+                                    @else
+                                        <span>*承認待ちのため修正はできません。</span>
+                                    @endif
+                                    @break
+                                @case('承認済み')
+                                    <span>*すでに修正済みのため、再修正はできません。</span>
+                                    @break
+                                @default
+                                    <button type="submit" class="edit-button">修正</button>
+                            @endswitch
                         </td>
                     </tr>
                 </tfoot>

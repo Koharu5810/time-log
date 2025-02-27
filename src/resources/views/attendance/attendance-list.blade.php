@@ -62,13 +62,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @if ($finalAttendances->isEmpty()) --}}
                     @if ($attendances->isEmpty())
                         <tr>
                             <td colspan="6" class="text-center">今月の申請はありません。</td>
                         </tr>
                     @else
-                        {{-- @foreach ($finalAttendances as $attendance) --}}
                         @foreach ($attendances as $attendance)
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('m/d(D)') }}</td>

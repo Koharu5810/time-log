@@ -60,7 +60,7 @@ class AttendanceController extends Controller
     public function showAttendanceDetail($id) {
         $user = Auth::user();
 
-        $attendance = Attendance::with(['user', 'breakTimes'])->find($id);
+        $attendance = Attendance::with(['user', 'breakTimes', 'attendanceCorrectRequest'])->find($id);
 
         return view('attendance.detail', compact('user', 'attendance'));
     }

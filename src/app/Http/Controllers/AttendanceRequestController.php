@@ -124,20 +124,20 @@ class AttendanceRequestController extends Controller
         $tab = $request->query('tab', 'pending');  // デフォルトは承認待ち
         $query = $request->query('query');
 
-        $attendanceRequests = AttendanceCorrectRequest::with(['user', 'attendance'])
+        $attendanceRequests = AttendanceCorrectRequest::with('user')
+            ->join('attendances', 'attendance_correct_requests.attendance_id', '=', 'attendances.id')
             ->when(!auth('admin')->check(), function ($query) use ($user) {
                 // 一般ユーザは自分の申請のみを取得
-                return $query->where('user_id', $user->id);
+                return $query->where('attendance_correct_requests.user_id', $user->id);
             })
             ->when($tab === 'approved', function ($query) {
                 // 承認済みリストを取得
-                return $query->where('request_status', '承認済み');
+                return $query->where('attendance_correct_requests.request_status', '承認済み');
             }, function ($query) {
                 // 承認待ちリストを取得
-                return $query->where('request_status', '承認待ち');
+                return $query->where('attendance_correct_requests.request_status', '承認待ち');
             })
-            ->orderByRaw('(SELECT work_date FROM attendances WHERE attendances.id = attendance_correct_requests.attendance_id) asc')
-            // ->orderBy('work_date', 'asc')
+            ->orderBy('attendances.work_date', 'asc')
             ->get();
 
         return view('attendance.request-list', compact('user', 'tab', 'query', 'attendanceRequests'));
