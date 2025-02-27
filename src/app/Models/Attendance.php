@@ -17,9 +17,6 @@ class Attendance extends Model
         'clock_end',
         'status',
         'remarks',
-        'request_status',
-        'admin_id',
-        'approved_at',
     ];
 
     public function user()
@@ -34,9 +31,9 @@ class Attendance extends Model
     {
         return $this->belongsTo(Admin::class, 'admin_id');
     }
-    public function history()
+    public function correctRequest()
     {
-        return $this->hasMany(AttendanceHistory::class, 'attendance_id');
+        return $this->hasMany(AttendanceCorrectRequest::class, 'attendance_id');
     }
 
     // 勤務時間の計算
@@ -45,8 +42,6 @@ class Attendance extends Model
         if ($this->clock_in && $this->clock_end) {
             $start = Carbon::parse($this->clock_in);
             $end = Carbon::parse($this->clock_end);
-            // $start = Carbon::today()->setTimeFromTimeString($this->clock_in);
-            // $end = Carbon::today()->setTimeFromTimeString($this->clock_end);
             return $start->diffInMinutes($end);
         }
         return 0; // 両方の値が揃っていない場合は0を返す
@@ -60,7 +55,6 @@ class Attendance extends Model
             }
             return 0;
         });
-        // return $this->breakTimes->sum('duration'); // BreakTimeモデルの getDurationAttribute()を利用
     }
     // 特定の日付の勤怠情報を取得
     public function getAttendanceByDate($date)

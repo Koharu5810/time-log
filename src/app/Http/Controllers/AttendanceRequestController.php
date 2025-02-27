@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AttendanceUpdateRequest;
 use App\Models\Attendance;
 use App\Models\BreakTime;
-use App\Models\AttendanceHistory;
-use App\Models\BreakTimeHistory;
+use App\Models\AttendanceCorrectRequest;
+use App\Models\BreakTimeCorrectRequest;
 use Carbon\Carbon;
 
 class AttendanceRequestController extends Controller
@@ -20,7 +20,7 @@ class AttendanceRequestController extends Controller
             $attendance = Attendance::find($request->attendance_id);
 
             // **2. 勤怠修正履歴を作成**
-            $attendanceHistory = AttendanceHistory::create([
+            $attendanceCorrectRequest = AttendanceCorrectRequest::create([
                 'user_id' => $attendance->user_id,
                 'attendance_id' => $attendance->id,
                 'previous_clock_in' => $attendance->clock_in,
@@ -57,9 +57,9 @@ class AttendanceRequestController extends Controller
                             ->get($index);
 
                         if ($breakTime) {
-                            // **修正前のデータを BreakTimeHistory に保存**
-                            BreakTimeHistory::create([
-                                'attendance_history_id' => $attendanceHistory->id,
+                            // **修正前のデータを BreakTimeCorrectRequest に保存**
+                            BreakTimeCorrectRequest::create([
+                                'attendance_correct_request_id' => $attendanceCorrectRequest->id,
                                 'break_time_id' => $breakTime->id,
                                 'previous_break_time_start' => $breakTime->break_time_start,
                                 'previous_break_time_end' => $breakTime->break_time_end,
@@ -81,8 +81,8 @@ class AttendanceRequestController extends Controller
                             ]);
 
                             // **BreakTimeHistory に新しい休憩を追加**
-                            BreakTimeHistory::create([
-                                'attendance_history_id' => $attendanceHistory->id,
+                            BreakTimeCorrectRequest::create([
+                                'attendance_correct_request_id' => $attendanceCorrectRequest->id,
                                 'break_time_id' => $newBreakTime->id,
                                 'previous_break_time_start' => null,
                                 'previous_break_time_end' => null,
@@ -124,7 +124,7 @@ class AttendanceRequestController extends Controller
         $tab = $request->query('tab', 'pending');  // デフォルトは承認待ち
         $query = $request->query('query');
 
-        $attendanceRequests = Attendance::with('user')
+        $attendanceRequests = AttendanceCorrectRequest::with(['user', 'attendance'])
             ->when(!auth('admin')->check(), function ($query) use ($user) {
                 // 一般ユーザは自分の申請のみを取得
                 return $query->where('user_id', $user->id);
@@ -136,7 +136,8 @@ class AttendanceRequestController extends Controller
                 // 承認待ちリストを取得
                 return $query->where('request_status', '承認待ち');
             })
-            ->orderBy('work_date', 'asc')
+            ->orderByRaw('(SELECT work_date FROM attendances WHERE attendances.id = attendance_correct_requests.attendance_id) asc')
+            // ->orderBy('work_date', 'asc')
             ->get();
 
         return view('attendance.request-list', compact('user', 'tab', 'query', 'attendanceRequests'));
