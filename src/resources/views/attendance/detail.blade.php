@@ -162,16 +162,7 @@
                         <td colspan="5" class="button-container">
                             @switch($attendance->attendanceCorrectRequest->request_status ?? '')
                                 @case('承認待ち')
-                                    {{-- 管理者の場合は承認ボタンを表示 --}}
-                                    {{-- @if (auth('admin')->user())
-                                        <form action="{{ route('request.approve', ['id' => $attendance->id]) }}" method="POST">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="approve-button">承認</button>
-                                        </form>
-                                    @else --}}
-                                        <span>*承認待ちのため修正はできません。</span>
-                                    {{-- @endif --}}
+                                    <span>*承認待ちのため修正はできません。</span>
                                     @break
                                 @case('承認済み')
                                     <span>*すでに修正済みのため、再修正はできません。</span>

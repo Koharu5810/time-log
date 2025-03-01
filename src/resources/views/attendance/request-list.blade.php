@@ -25,6 +25,22 @@
         <hr class="divider">
 
         <div class="table-container">
+            @php
+                // 認証ユーザー情報を取得
+                $authUser = auth('admin')->check() ? auth('admin')->user() : auth('web')->user();
+
+                // ルートの切り替え
+                $routeName = auth('admin')->check() ? 'admin.attendance.list' : 'attendance.list';
+                $routeParams = [
+                    'year' => $month == 1 ? $year - 1 : $year,
+                    'month' => $month == 1 ? 12 : $month - 1
+                ];
+
+                // 管理者の場合、IDを追加
+                if (auth('admin')->check()) {
+                    $routeParams['id'] = isset($staff) ? $staff->id : '';
+                }
+            @endphp
             <table>
                 <thead>
                     <tr>

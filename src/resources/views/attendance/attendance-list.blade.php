@@ -13,8 +13,6 @@
     <div class="body">
     <div class="container">
         <h2 class="content__sub-title">@yield('sub-title')</h2>
-
-        <div class="month-selector">
             @php
                 // 認証ユーザー情報を取得
                 $authUser = auth('admin')->check() ? auth('admin')->user() : auth('web')->user();
@@ -32,6 +30,7 @@
                 }
             @endphp
 
+        <div class="month-selector">
             {{-- 前月リンク --}}
             <a href="{{ route($routeName, $routeParams) }}">←前月</a>
 

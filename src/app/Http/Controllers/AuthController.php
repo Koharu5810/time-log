@@ -47,7 +47,7 @@ class AuthController extends Controller
         }
 
         session()->flash('auth_error', 'ログイン情報が登録されていません');
-        return redirect()->route('auth.login')->withInput();  // 入力値を保持してログイン画面にリダイレクト
+        return redirect()->route('user.login')->withInput();  // 入力値を保持してログイン画面にリダイレクト
     }
 
 // ログアウト処理（一般ユーザー）

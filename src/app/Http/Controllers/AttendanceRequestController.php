@@ -10,10 +10,11 @@ use App\Models\BreakTime;
 use App\Models\AttendanceCorrectRequest;
 use App\Models\BreakTimeCorrectRequest;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class AttendanceRequestController extends Controller
 {
-// 勤怠詳細画面から修正申請（一般ユーザ）
+// 勤怠詳細画面から修正申請（一般ユーザ・管理者）
     public function updateRequest(AttendanceUpdateRequest $request) {
         try {
             // **1. 勤怠修正リクエストを新規作成**
@@ -57,9 +58,10 @@ class AttendanceRequestController extends Controller
                             ->get($index);
 
                         if ($breakTime) {
-                            // **修正前のデータを BreakTimeCorrectRequest に保存**
+                            // **修正前のデータを BreakTimeCorrect に保存**
                             BreakTimeCorrectRequest::create([
-                                'attendance_correct_request_id' => $attendanceCorrectRequest->id,
+                                // 'attendance_correct_request_id' => $attendanceCorrectRequest->id,
+                                'att_correct_id' => $attendanceCorrectRequest->id,
                                 'break_time_id' => $breakTime->id,
                                 'previous_break_time_start' => $breakTime->break_time_start,
                                 'previous_break_time_end' => $breakTime->break_time_end,
@@ -80,9 +82,10 @@ class AttendanceRequestController extends Controller
                                 'break_time_end' => $breakEnd,
                             ]);
 
-                            // **BreakTimeHistory に新しい休憩を追加**
+                            // **BreakTimeCorrectRequest に新しい休憩を追加**
                             BreakTimeCorrectRequest::create([
-                                'attendance_correct_request_id' => $attendanceCorrectRequest->id,
+                                // 'attendance_correct_request_id' => $attendanceCorrectRequest->id,
+                                'att_correct_id' => $attendanceCorrectRequest->id,
                                 'break_time_id' => $newBreakTime->id,
                                 'previous_break_time_start' => null,
                                 'previous_break_time_end' => null,

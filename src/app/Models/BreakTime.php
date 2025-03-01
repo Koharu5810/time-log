@@ -20,6 +20,10 @@ class BreakTime extends Model
     {
         return $this->belongsTo(Attendance::class, 'attendance_id');
     }
+    public function breakTimeCorrectRequest()
+    {
+        return $this->hasOne(BreakTimeCorrectRequest::class, 'break_time_id');
+    }
 
     // 休憩時間の計算
     public function getDurationAttribute()

@@ -36,8 +36,8 @@ class AttendanceCorrectRequest extends Model
     {
         return $this->belongsTo(Admin::class, 'admin_id');
     }
-    public function breakTimeHistories()
+    public function breakTimeCorrectRequests()
     {
-        return $this->hasMany(BreakTimeCorrectRequest::class, 'attendance_history_id');
+        return $this->hasMany(BreakTimeCorrectRequest::class, 'att_correct_id');
     }
 }
