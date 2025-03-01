@@ -113,21 +113,22 @@ class AttendanceRequestController extends Controller
         return view('admin.request-approval', compact('request', 'attendance'));
     }
 // 修正勤怠承認（管理者）
-    public function approve($id)
+    public function approve(AttendanceCorrectRequest $attendance_correct_request)
     {
-        $attendance = Attendance::findOrFail($id);
-
         // 管理者のみが承認できるように制御
-        if (!auth('admin')->user()) {
-            abort(403, 'Unauthorized action.');
+        if (!auth('admin')->check()) {
+            abort(403, '管理者のみ実行可能です');
         }
 
-        $attendance->request_status = '承認済み';
-        $attendance->admin_id = auth('admin')->user()->id;
-        $attendance->approved_at = Carbon::now();
-        $attendance->save();
+        $admin = auth('admin')->user();
 
-        return redirect()->back();
+        $attendance_correct_request->update([
+            'request_status' => '承認済み',
+            'admin_id' => $admin->id,
+            'approved_at' => Carbon::now(),
+        ]);
+
+        return redirect()->route('request.list');
     }
 
 // 修正申請一覧画面表示（一般ユーザ・管理者）
