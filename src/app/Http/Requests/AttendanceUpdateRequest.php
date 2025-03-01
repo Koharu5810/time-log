@@ -23,7 +23,7 @@ class AttendanceUpdateRequest extends FormRequest
     {
         return [
             'requested_clock_in' => 'required|date_format:H:i',
-            'requested_clock_end' => 'required|date_format:H:i|after:clock_in',
+            'requested_clock_end' => 'required|date_format:H:i|after:requested_clock_in',
 
             'break_times' => 'nullable|array', // 休憩時間の配列
             'break_times.*.start' => 'nullable|date_format:H:i|required_with:break_times.*.end',
@@ -35,9 +35,9 @@ class AttendanceUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'clock_in.required' => '出勤時間を入力してください',
-            'clock_end.required' => '退勤時間を入力してください',
-            'clock_end.after' => '出勤時間もしくは退勤時間が不適切な値です',
+            'requested_clock_in.required' => '出勤時間を入力してください',
+            'requested_clock_end.required' => '退勤時間を入力してください',
+            'requested_clock_end.after' => '出勤時間もしくは退勤時間が不適切な値です',
 
             'break_times.*.start.required_with' => '休憩開始時間と休憩終了時間の両方を入力してください',
             'break_times.*.end.required_with' => '休憩開始時間と休憩終了時間の両方を入力してください',
@@ -50,7 +50,7 @@ class AttendanceUpdateRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             // 出勤時間・退勤時間のバリデーション（両方入力されていることを前提）
-            if (!empty($this->clock_in) && !empty($this->clock_end)) {
+            if (!empty($this->requested_clock_in) && !empty($this->requested_clock_end)) {
                 try {
                     $clockIn = \Carbon\Carbon::parse($this->clock_in);
                     $clockEnd = \Carbon\Carbon::parse($this->clock_end);

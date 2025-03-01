@@ -77,13 +77,13 @@
                         </td>
                         <td></td>
                     </tr>
-                    @if ($errors->has('clock_in') || $errors->has('clock_end'))
+                    @if ($errors->has('requested_clock_in') || $errors->has('requested_clock_end'))
                         <tr>
                             <th></th>
                             <td colspan="4">
                                 <div class="error-message">
-                                    <div>@error('clock_in') {{ $message }} @enderror</div>
-                                    <div>@error('clock_end') {{ $message }} @enderror</div>
+                                    <div>@error('requested_clock_in') {{ $message }} @enderror</div>
+                                    <div>@error('requested_clock_end') {{ $message }} @enderror</div>
                                 </div>
                             </td>
                         </tr>
