@@ -42,6 +42,9 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             auth()->login($user);  // 認証成功
 
+            // 念のため管理者フラグをクリア（一般ユーザーとしてログインしたので）
+            session()->forget('is_admin_session');
+
             // 認証成功後勤怠登録画面にリダイレクト
             return redirect()->route('create');
         }

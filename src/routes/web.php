@@ -49,6 +49,8 @@ Route::middleware(['auth:web,admin'])->group(function () {
 
     // 修正申請一覧（一般・管理者）
     Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'showRequestList'])->name('request.list');
+
     // 修正申請承認（管理者）
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AttendanceRequestController::class, 'showApprove'])->name('show.request.approve');
     Route::patch('/stamp_correction_request/approve/{attendance_correct_request}', [AttendanceRequestController::class, 'approve'])->name('request.approve');
 });

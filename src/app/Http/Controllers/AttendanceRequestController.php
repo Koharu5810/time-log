@@ -103,6 +103,15 @@ class AttendanceRequestController extends Controller
         }
     }
 
+// 修正承認画面表示（管理者）
+    public function showApprove($id)
+    {
+        $request = AttendanceCorrectRequest::with('attendance')->findOrFail($id);
+
+        $attendance = $request->attendance;
+
+        return view('admin.request-approval', compact('request', 'attendance'));
+    }
 // 修正勤怠承認（管理者）
     public function approve($id)
     {
@@ -121,7 +130,7 @@ class AttendanceRequestController extends Controller
         return redirect()->back();
     }
 
-// 修正申請一覧画面表示（一般ユーザ）
+// 修正申請一覧画面表示（一般ユーザ・管理者）
     public function showRequestList(Request $request) {
         $isAdmin = auth('admin')->check();
         $user = $isAdmin ? auth('admin')->user() : auth('web')->user();
@@ -162,7 +171,7 @@ class AttendanceRequestController extends Controller
         }
 
         return view('attendance.request-list', compact(
-            'user', 'tab', 'query', 'year', 'month', 'day', 'attendanceRequests'
+            'isAdmin', 'user', 'tab', 'query', 'year', 'month', 'day', 'attendanceRequests'
         ));
     }
 }

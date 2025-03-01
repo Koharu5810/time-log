@@ -20,6 +20,8 @@ class AdminController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::guard('admin')->attempt($credentials, $request->remember)) {
+            session(['is_admin_session' => true]);
+
             return redirect()->route('admin.dashboard');
         }
 

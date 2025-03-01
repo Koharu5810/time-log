@@ -53,9 +53,11 @@
                                 <td>{{ $request->remarks }}</td>
                                 <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('Y/m/d') }}</td>
                                 <td>
-                                    <button class="detail-btn">
-                                        <a href="{{ route('attendance.detail', ['id' => $request->attendance_id]) }}">詳細</a>
-                                    </button>
+                                    @if ($isAdmin)
+                                        <a href="{{ route('request.approve', ['attendance_correct_request' => $request->id]) }}" class="detail-btn">詳細</a>
+                                    @else
+                                        <a href="{{ route('attendance.detail', ['id' => $request->attendance_id]) }}" class="detail-btn">詳細</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

@@ -51,7 +51,7 @@
                     <tr>
                         <th>出勤・退勤</th>
                         <td class="time">
-                            @if ($attendance)
+                            {{-- @if ($attendance)
                                 @if ($attendance->request_status !== '通常')
                                     {{ \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') }}
                                 @else
@@ -62,11 +62,12 @@
                                         value="{{ old('requested_clock_in', $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '') }}"
                                     />
                                 @endif
-                            @endif
+                            @endif --}}
+                            {{ $attendance->clock_in }}
                         </td>
                         <td class="time-separator">〜</td>
                         <td class="time">
-                            @if ($attendance)
+                            {{-- @if ($attendance)
                                 @if ($attendance->request_status !== '通常')
                                     {{ \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') }}
                                 @else
@@ -77,11 +78,12 @@
                                         value="{{ old('requested_clock_end', $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '') }}"
                                     />
                                 @endif
-                            @endif
+                            @endif --}}
+                            {{ $attendance->clock_end }}
                         </td>
                         <td></td>
                     </tr>
-                    @if ($errors->has('clock_in') || $errors->has('clock_end'))
+                    {{-- @if ($errors->has('clock_in') || $errors->has('clock_end'))
                         <tr>
                             <th></th>
                             <td colspan="4">
@@ -91,7 +93,7 @@
                                 </div>
                             </td>
                         </tr>
-                    @endif
+                    @endif --}}
             {{-- 休憩 --}}
                     @foreach ($attendance->breakTimes as $index => $break)
                         <tr>
@@ -151,7 +153,7 @@
                     <tr>
                         <th>備考</th>
                         <td colspan="3">
-                            @if ($attendance)
+                            {{-- @if ($attendance)
                                 @if ($attendance->request_status !== '通常')
                                     {{ $attendance->remarks }}
                                 @else
@@ -162,7 +164,8 @@
                                         </div>
                                     @endif
                                 @endif
-                            @endif
+                            @endif --}}
+                            {{ $attendance->remarks }}
                         </td>
                         <td></td>
                     </tr>
