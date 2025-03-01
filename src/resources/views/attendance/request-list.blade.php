@@ -13,10 +13,10 @@
         <h2 class="content__sub-title">@yield('sub-title')</h2>
         <div class="flex items-center gap-8 px-4 py-2 text-sm text-gray-600">
             <div class="request-list__header">
-                <a href="{{ route('request.list', ['tab' => 'pending', 'query' => request('query')]) }}" class="home__tab {{ $tab === 'pending' ? 'active' : '' }}">
+                <a href="{{ route('request.list', ['tab' => 'pending', 'query' => $query]) }}" class="home__tab {{ $tab === 'pending' ? 'active' : '' }}">
                     <h3>承認待ち</h3>
                 </a>
-                <a href="{{ route('request.list', ['tab' => 'approved', 'query' => request('query')]) }}" class="home__tab {{ $tab === 'approved' ? 'active' : '' }}">
+                <a href="{{ route('request.list', ['tab' => 'approved', 'query' => $query]) }}" class="home__tab {{ $tab === 'approved' ? 'active' : '' }}">
                     <h3>承認済み</h3>
                 </a>
             </div>
@@ -25,22 +25,6 @@
         <hr class="divider">
 
         <div class="table-container">
-            @php
-                // 認証ユーザー情報を取得
-                $authUser = auth('admin')->check() ? auth('admin')->user() : auth('web')->user();
-
-                // ルートの切り替え
-                $routeName = auth('admin')->check() ? 'admin.attendance.list' : 'attendance.list';
-                $routeParams = [
-                    'year' => $month == 1 ? $year - 1 : $year,
-                    'month' => $month == 1 ? 12 : $month - 1
-                ];
-
-                // 管理者の場合、IDを追加
-                if (auth('admin')->check()) {
-                    $routeParams['id'] = isset($staff) ? $staff->id : '';
-                }
-            @endphp
             <table>
                 <thead>
                     <tr>
@@ -54,14 +38,10 @@
                 </thead>
         {{-- タブの切替表示 --}}
                 <tbody>
-                    @if (count($attendanceRequests) === 0)
+                    @if ($attendanceRequests->isEmpty())
                         <tr>
                             <td colspan="6" class="text-center">
-                                @if ($tab === 'approved')
-                                    承認済みの申請はありません。
-                                @else
-                                    承認待ちの申請はありません。
-                                @endif
+                                {{ $tab === 'approved' ? '承認済みの申請はありません。' : '承認待ちの申請はありません。' }}
                             </td>
                         </tr>
                     @else
@@ -72,7 +52,11 @@
                                 <td>{{ \Carbon\Carbon::parse($request->work_date)->format('Y/m/d') }}</td>
                                 <td>{{ $request->remarks }}</td>
                                 <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('Y/m/d') }}</td>
-                                <td><button class="detail-btn"><a href="{{ route("attendance.detail", ['id' => $request->id]) }}">詳細</a></button></td>
+                                <td>
+                                    <button class="detail-btn">
+                                        <a href="{{ route('attendance.detail', ['id' => $request->attendance_id]) }}">詳細</a>
+                                    </button>
+                                </td>
                             </tr>
                         @endforeach
                     @endif

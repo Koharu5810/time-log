@@ -121,28 +121,48 @@ class AttendanceRequestController extends Controller
         return redirect()->back();
     }
 
-// 申請一覧画面表示（一般ユーザ）
+// 修正申請一覧画面表示（一般ユーザ）
     public function showRequestList(Request $request) {
-        $user = Auth::user();
+        $isAdmin = auth('admin')->check();
+        $user = $isAdmin ? auth('admin')->user() : auth('web')->user();
+
         $tab = $request->query('tab', 'pending');  // デフォルトは承認待ち
         $query = $request->query('query');
 
-        $attendanceRequests = AttendanceCorrectRequest::with('user')
+        $year = $request->query('year', now()->year);
+        $month = $request->query('month', now()->month);
+        $day = $request->query('day', now()->day);
+
+        $attendanceRequests = AttendanceCorrectRequest::with(['user', 'attendance'])
             ->join('attendances', 'attendance_correct_requests.attendance_id', '=', 'attendances.id')
-            ->when(!auth('admin')->check(), function ($query) use ($user) {
-                // 一般ユーザは自分の申請のみを取得
-                return $query->where('attendance_correct_requests.user_id', $user->id);
-            })
-            ->when($tab === 'approved', function ($query) {
-                // 承認済みリストを取得
-                return $query->where('attendance_correct_requests.request_status', '承認済み');
-            }, function ($query) {
-                // 承認待ちリストを取得
-                return $query->where('attendance_correct_requests.request_status', '承認待ち');
-            })
+            ->select('attendance_correct_requests.*', 'attendances.work_date', 'attendances.remarks');
+
+        // 一般ユーザーは自分の申請のみ表示
+        if (!$isAdmin) {
+            $attendanceRequests->where('attendance_correct_requests.user_id', $user->id);
+        }
+
+        $status = $tab === 'approved' ? '承認済み' : '承認待ち';
+        $attendanceRequests->where('attendance_correct_requests.request_status', $status);
+        $attendanceRequests = $attendanceRequests
             ->orderBy('attendances.work_date', 'asc')
             ->get();
 
-        return view('attendance.request-list', compact('user', 'tab', 'query', 'attendanceRequests'));
+        // ルート名（adminとuserで分岐）
+        $routeName = $isAdmin ? 'admin.attendance.list' : 'attendance.list';
+
+        $prevMonthParams = [
+            'year' => $month == 1 ? $year - 1 : $year,
+            'month' => $month == 1 ? 12 : $month - 1,
+            'tab' => $tab,
+            'query' => $query,
+        ];
+        if ($isAdmin) {
+            $prevMonthParams['id'] = $user->id;
+        }
+
+        return view('attendance.request-list', compact(
+            'user', 'tab', 'query', 'year', 'month', 'day', 'attendanceRequests'
+        ));
     }
 }
