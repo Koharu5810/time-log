@@ -56,16 +56,18 @@
             </div>
         </header>
 
-        <main class="content">
-            @hasSection('title')
-                <h1 class="title">@yield('title')</h1>
-            @endif
+        <main>
+            <div class="content">
+                @hasSection('title')
+                    <h1 class="title">@yield('title')</h1>
+                @endif
 
-            @hasSection('sub-title')
-                <h2 class="sub-title">@yield('sub-title')</h2>
-            @endif
-
-            @yield('content')
+                @hasSection('sub-title')
+                    <h2 class="sub-title">@yield('sub-title')</h2>
+                @endif
+                
+                @yield('content')
+            </div>
         </main>
 
     </body>

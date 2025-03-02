@@ -16,6 +16,7 @@ class AttendanceCorrectRequest extends Model
         'previous_clock_end',
         'requested_clock_in',
         'requested_clock_end',
+        'remarks',
         'request_status',
         'admin_id',
         'approved_at',

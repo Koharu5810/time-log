@@ -6,7 +6,6 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceCreateController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AdminDashboardController;
 
 // 会員登録画面
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->withoutMiddleware(['auth'])->name('register');
@@ -44,7 +43,7 @@ Route::middleware('auth:admin')->group(function () {
 
 Route::middleware(['auth:web,admin'])->group(function () {
     // 勤怠詳細画面（一般・管理者）
-    Route::get('/attendance/{id}', [AttendanceController::class, 'showAttendanceDetail'])->name('attendance.detail');
+    Route::get('/attendance/{id}', [AttendanceRequestController::class, 'showAttendanceDetail'])->name('attendance.detail');
     Route::put('/attendance/{id}', [AttendanceRequestController::class, 'updateRequest'])->name('attendance.update');
 
     // 修正申請一覧（一般・管理者）

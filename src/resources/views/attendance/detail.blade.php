@@ -52,7 +52,7 @@
                         <th>出勤・退勤</th>
                         <td class="time">
                             @if ($attendance->attendanceCorrectRequest)
-                                {{ \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($attendance->attendanceCorrectRequest->requested_clock_in)->format('H:i') }}
                             @else
                                 <input
                                     type="text"
@@ -65,7 +65,7 @@
                         <td class="time-separator">〜</td>
                         <td class="time">
                             @if ($attendance->attendanceCorrectRequest)
-                                {{ \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($attendance->attendanceCorrectRequest->requested_clock_end)->format('H:i') }}
                             @else
                                 <input
                                     type="text"
@@ -89,31 +89,33 @@
                         </tr>
                     @endif
             {{-- 休憩 --}}
-                    @foreach ($attendance->breakTimes as $index => $break)
+                    @foreach ($displayBreakTimes as $index => $break)
+                        <input type="hidden" name="break_times[{{ $break['index'] }}][id]" value="{{ $break['id'] }}">
+
                         <tr>
                             <th>{{ $index == 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                             <td class="time">
-                                @if ($attendance->attendanceCorrectRequest)
-                                    {{ \Carbon\Carbon::parse(optional($break)->break_time_start)->format('H:i') }}
+                                @if ($break['is_corrected'])
+                                    {{ \Carbon\Carbon::parse($break['start'])->format('H:i') }}
                                 @else
                                     <input
                                         type="text"
                                         class="time-input"
                                         name="break_times[{{ $index }}][start]"
-                                        value="{{ old('break_times.' . $index . '.start', $break->break_time_start ? \Carbon\Carbon::parse($break->break_time_start)->format('H:i') : '') }}"
+                                        value="{{ old("break_times.{$break['index']}.start", $break['start'] ? \Carbon\Carbon::parse($break['start'])->format('H:i') : '') }}"
                                     />
                                 @endif
                             </td>
                             <td class="time-separator">〜</td>
                             <td class="time">
-                                @if ($attendance->attendanceCorrectRequest)
-                                    {{ \Carbon\Carbon::parse(optional($break)->break_time_end)->format('H:i') }}
+                                @if ($break['is_corrected'])
+                                    {{ \Carbon\Carbon::parse($break['end'])->format('H:i') }}
                                 @else
                                     <input
                                         type="text"
                                         class="time-input"
                                         name="break_times[{{ $index }}][end]"
-                                        value="{{ old('break_times.' . $index . '.end', $break->break_time_end ? \Carbon\Carbon::parse($break->break_time_end)->format('H:i') : '') }}"
+                                        value="{{ old("break_times.{$break['index']}.end", $break['end'] ? \Carbon\Carbon::parse($break['end'])->format('H:i') : '') }}"
                                     />
                                 @endif
                             </td>
@@ -144,7 +146,7 @@
                         <th>備考</th>
                         <td colspan="3">
                             @if ($attendance->attendanceCorrectRequest)
-                                {{ $attendance->remarks }}
+                                {{ $attendance->attendanceCorrectRequest->remarks }}
                             @else
                                 <textarea name="remarks" placeholder="電車遅延のため">{{ old('remarks') }}</textarea>
                                 @if ($errors->has('remarks'))

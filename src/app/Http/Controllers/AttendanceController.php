@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Attendance;
 use Carbon\Carbon;
@@ -54,14 +53,5 @@ class AttendanceController extends Controller
         }
 
         return view('attendance.attendance-list', compact('user', 'staff', 'year', 'month', 'attendances'));
-    }
-
-// 勤怠詳細画面表示
-    public function showAttendanceDetail($id) {
-        $user = Auth::user();
-
-        $attendance = Attendance::with(['user', 'breakTimes', 'attendanceCorrectRequest'])->find($id);
-
-        return view('attendance.detail', compact('user', 'attendance'));
     }
 }

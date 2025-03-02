@@ -3,17 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AttendanceUpdateRequest;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use App\Models\AttendanceCorrectRequest;
 use App\Models\BreakTimeCorrectRequest;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class AttendanceRequestController extends Controller
 {
+// 勤怠詳細画面表示
+    public function showAttendanceDetail($id) {
+        $attendance = Attendance::with([
+            'user',
+            'breakTimes',
+            'attendanceCorrectRequest.breakTimeCorrectRequests'  // ネストリレーションの取得
+        ])->find($id);
+
+        $displayBreakTimes = [];
+
+        foreach ($attendance->breakTimes as $index => $breakTime) {
+            $correction = null;
+            if ($attendance->attendanceCorrectRequest) {
+                $correction = $attendance->attendanceCorrectRequest->breakTimeCorrectRequests
+                    ->where('break_time_id', $breakTime->id)
+                    ->first();
+            }
+
+            $displayBreakTimes[] = [
+                'id' => $breakTime->id,
+                'index' => $index,
+                'is_corrected' => !is_null($correction),
+                'start' => $correction ? $correction->requested_break_time_start : $breakTime->break_time_start,
+                'end' => $correction ? $correction->requested_break_time_end : $breakTime->break_time_end,
+            ];
+        }
+        return view('attendance.detail', compact('attendance', 'displayBreakTimes'));
+    }
 // 勤怠詳細画面から修正申請（一般ユーザ・管理者）
     public function updateRequest(AttendanceUpdateRequest $request) {
         try {
@@ -28,71 +54,36 @@ class AttendanceRequestController extends Controller
                 'previous_clock_end' => $attendance->clock_end,
                 'requested_clock_in' => Carbon::parse($request->requested_clock_in)->format('H:i:s'),
                 'requested_clock_end' => Carbon::parse($request->requested_clock_end)->format('H:i:s'),
+                'remarks' => $request->remarks,
+                'request_status' => '承認待ち',
                 'admin_id' => null,
                 'approved_at' => null,
             ]);
 
-            // **3. 勤怠情報を上書き**
-            $attendance->update([
-                'clock_in' => $request->filled('requested_clock_in')
-                    ? Carbon::parse($request->requested_clock_in)->format('H:i:s')
-                    : $attendance->clock_in, // 変更があれば更新、なければ維持
-                'clock_end' => $request->filled('requested_clock_end')
-                    ? Carbon::parse($request->requested_clock_end)->format('H:i:s')
-                    : $attendance->clock_end, // 変更があれば更新、なければ維持
-                'remarks' => $request->remarks,
-                'request_status' => '承認待ち'
-            ]);
-
-            // **4. 休憩データを保存**
+            // **3. 休憩データを保存**
             if (!empty($request->break_times)) {
                 foreach ($request->break_times as $index => $break) {
                     if (!empty($break['start']) && !empty($break['end'])) {
                         $breakStart = Carbon::createFromFormat('H:i', $break['start'])->format('H:i:s');
                         $breakEnd = Carbon::createFromFormat('H:i', $break['end'])->format('H:i:s');
 
-                        // **該当の休憩時間を取得**
-                        $breakTime = BreakTime::where('attendance_id', $attendance->id)
-                            ->orderBy('id')
-                            ->get()
-                            ->get($index);
-
-                        if ($breakTime) {
-                            // **修正前のデータを BreakTimeCorrect に保存**
-                            BreakTimeCorrectRequest::create([
-                                // 'attendance_correct_request_id' => $attendanceCorrectRequest->id,
-                                'att_correct_id' => $attendanceCorrectRequest->id,
-                                'break_time_id' => $breakTime->id,
-                                'previous_break_time_start' => $breakTime->break_time_start,
-                                'previous_break_time_end' => $breakTime->break_time_end,
-                                'requested_break_time_start' => $breakStart,
-                                'requested_break_time_end' => $breakEnd,
-                            ]);
-
-                            // **BreakTime を上書き**
-                            $breakTime->update([
-                                'break_time_start' => $breakStart,
-                                'break_time_end' => $breakEnd,
-                            ]);
+                        if (!empty($break['id'])) {
+                            // **該当の休憩時間を取得**
+                            $breakTime = BreakTime::find($break['id']);
                         } else {
-                            // **新しい休憩時間を作成**
-                            $newBreakTime = BreakTime::create([
-                                'attendance_id' => $attendance->id,
-                                'break_time_start' => $breakStart,
-                                'break_time_end' => $breakEnd,
-                            ]);
-
-                            // **BreakTimeCorrectRequest に新しい休憩を追加**
-                            BreakTimeCorrectRequest::create([
-                                // 'attendance_correct_request_id' => $attendanceCorrectRequest->id,
-                                'att_correct_id' => $attendanceCorrectRequest->id,
-                                'break_time_id' => $newBreakTime->id,
-                                'previous_break_time_start' => null,
-                                'previous_break_time_end' => null,
-                                'requested_break_time_start' => $breakStart,
-                                'requested_break_time_end' => $breakEnd,
-                            ]);
+                            $breakTime = null;
                         }
+
+                        // **修正前のデータを BreakTimeCorrect に保存**
+                        BreakTimeCorrectRequest::create([
+                            'attendance_id' => $attendance->id,
+                            'att_correct_id' => $attendanceCorrectRequest->id,
+                            'break_time_id' => $breakTime->id,
+                            'previous_break_time_start' => $breakTime->break_time_start,
+                            'previous_break_time_end' => $breakTime->break_time_end,
+                            'requested_break_time_start' => $breakStart,
+                            'requested_break_time_end' => $breakEnd,
+                        ]);
                     }
                 }
             }
@@ -119,7 +110,6 @@ class AttendanceRequestController extends Controller
         if (!auth('admin')->check()) {
             abort(403, '管理者のみ実行可能です');
         }
-
         $admin = auth('admin')->user();
 
         $attendance_correct_request->update([
@@ -127,6 +117,34 @@ class AttendanceRequestController extends Controller
             'admin_id' => $admin->id,
             'approved_at' => Carbon::now(),
         ]);
+
+        // 実際のattendanceデータを更新
+        $attendance = $attendance_correct_request->attendance;
+        $attendance->update([
+            'clock_in' => $attendance_correct_request->requested_clock_in,
+            'clock_end' => $attendance_correct_request->requested_clock_end,
+            'remarks' => $attendance_correct_request->remarks,
+        ]);
+
+        // 休憩時間の更新処理
+        $correctBreakTimes = BreakTimeCorrectRequest::where('att_correct_id', $attendance_correct_request->id)->get();
+
+        foreach ($correctBreakTimes as $correctBreak) {
+            $breakTime = BreakTime::find($correctBreak->break_time_id);
+
+            if ($breakTime) {
+                $breakTime->update([
+                    'break_time_start' => $correctBreak->requested_break_time_start,
+                    'break_time_end' => $correctBreak->requested_break_time_end,
+                ]);
+            } else {
+                BreakTime::create([
+                    'attendance_id' => $attendance->id,
+                    'break_time_start' => $correctBreak->requested_break_time_start,
+                    'break_time_end' => $correctBreak->requested_break_time_end,
+                ]);
+            }
+        }
 
         return redirect()->route('request.list');
     }

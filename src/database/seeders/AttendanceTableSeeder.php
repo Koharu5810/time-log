@@ -67,9 +67,8 @@ class AttendanceTableSeeder extends Seeder
                 }
 
                 // 修正申請がある日は備考を入れる
-                $remarks = in_array($date->format('Y-m-d'), $correctionDays)
-                    ? ['電車遅延のため', '早退のため', '打刻漏れ'][array_rand(['電車遅延のため', '早退申請', '打刻漏れ'])]
-                    : null;
+                $remarksList = ['電車遅延のため', '早退のため', '打刻漏れ'];
+                $remarks = in_array($date->format('Y-m-d'), $correctionDays) ? $remarksList[array_rand($remarksList)] : null;
 
                 // 勤怠データの作成
                 $attendance = Attendance::create([
@@ -78,7 +77,6 @@ class AttendanceTableSeeder extends Seeder
                     'clock_in' => $clockIn->format('H:i:s'),
                     'clock_end' => $clockEnd->format('H:i:s'),
                     'status' => '退勤済',
-                    'remarks' => $remarks,
                 ]);
 
                 // 修正申請の作成
@@ -94,6 +92,7 @@ class AttendanceTableSeeder extends Seeder
                         'requested_clock_end' => Carbon::parse($attendance->clock_end)
                             ->addMinutes(rand(-30, 30)) // 少し前後にズラして修正申請
                             ->format('H:i:s'),
+                        'remarks' => $remarks,
                         'request_status' => '承認待ち',
                         'admin_id' => null,
                         'approved_at' => null,
@@ -163,7 +162,6 @@ class AttendanceTableSeeder extends Seeder
                 'clock_in' => $clockIn->format('H:i:s'),
                 'clock_end' => null,
                 'status' => '出勤中',
-                'remarks' => '出勤中ダミーデータ',
             ]);
 
             // ステータスごとの処理
@@ -183,7 +181,6 @@ class AttendanceTableSeeder extends Seeder
                     $this->endBreakTime($attendance, $break);
                     $attendance->update([
                         'status' => '出勤中',
-                        'remarks' => '1回目の休憩後出勤中ダミーデータ'
                     ]);
                     break;
 
@@ -201,14 +198,12 @@ class AttendanceTableSeeder extends Seeder
 
                     $attendance->update([
                         'status' => '出勤中',
-                        'remarks' => '1回目の休憩後出勤中ダミーデータ'
                     ]);
 
                     $break2 = $this->startBreakTime($attendance, $break1->break_time_end, '2回目の休憩中');
                     $this->endBreakTime($attendance, $break2);
                     $attendance->update([
                         'status' => '出勤中',
-                        'remarks' => '2回目の休憩後出勤中ダミーデータ'
                     ]);
                     break;
 
@@ -218,8 +213,7 @@ class AttendanceTableSeeder extends Seeder
                     $this->safeClockOut($attendance, $clockIn, $workDuration);
 
                     $attendance->update([
-                        // 'status' => '出勤中',
-                        'remarks' => '休憩なしで退勤済ダミーデータ'
+                        'status' => '出勤中',
                     ]);
                     break;
 
@@ -230,7 +224,6 @@ class AttendanceTableSeeder extends Seeder
 
                     $attendance->update([
                         'status' => '出勤中',
-                        'remarks' => '1回目の休憩後出勤中ダミーデータ'
                     ]);
 
                     $workDuration = rand(300, 540); // 5〜9時間
@@ -244,7 +237,6 @@ class AttendanceTableSeeder extends Seeder
 
                     $attendance->update([
                         'status' => '出勤中',
-                        'remarks' => '1回目の休憩後出勤ダミーデータ'
                     ]);
 
                     $break2 = $this->startBreakTime($attendance, $break1->break_time_end, '2回目の休憩中');
@@ -252,7 +244,6 @@ class AttendanceTableSeeder extends Seeder
 
                     $attendance->update([
                         'status' => '出勤中',
-                        'remarks' => '2回目の休憩後出勤ダミーデータ'
                     ]);
 
                     $workDuration = rand(480, 600); // 8〜10時間
@@ -278,7 +269,6 @@ class AttendanceTableSeeder extends Seeder
         // 休憩中に更新
         $attendance->update([
             'status' => '休憩中',
-            'remarks' => $breakLabel . 'ダミーデータ'
         ]);
 
         return $break; // 休憩終了時間を返す
@@ -298,7 +288,6 @@ class AttendanceTableSeeder extends Seeder
         if (strpos($currentRemarks, '休憩後出勤') === false) {
             $attendance->update([
                 'status' => '出勤中',
-                'remarks' => '休憩後出勤ダミーデータ'
             ]);
         }
     }
@@ -321,7 +310,6 @@ class AttendanceTableSeeder extends Seeder
         $clockOut = (clone $clockIn)->addMinutes($workDuration);
         $attendance->update([
             'clock_end' => $clockOut->format('H:i:s'),
-            'status' => '退勤済',
         ]);
     }
 }
