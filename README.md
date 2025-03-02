@@ -10,7 +10,7 @@
 
 1. アプリケーションをクローンするディレクトリに移動。
 2. `git clone git@github.com:Koharu5810/time-log.git`
-3. `cd time_log`
+3. `cd time-log`
 4. DockerDesktop アプリを立ち上げる（`open -a docker`）。
 5. `docker-compose up -d --build`
 
@@ -50,15 +50,9 @@ php artisan key:generate
 6. マイグレーション・シーディングの実行
 
 ```bash
-php artisan migrate
-php artisan db:seed
+php artisan migrate --seed
 ```
 
-7. シンボリックリンクの作成
-
-``` bash
-php artisan storage:link
-```
 
 **テスト用データベースの設定**
 

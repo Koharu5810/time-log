@@ -21,7 +21,7 @@
             ]) }}">←前日</a>
         {{-- 日付表示 --}}
             <div class="current-month">
-                <img class="calendar" src="{{ asset('storage/calendar.png') }}" alt="日付" />
+                <img class="calendar" src="{{ asset('images/icons/calendar.png') }}" alt="日付" />
                 <span>{{ \Carbon\Carbon::create($date)->format('Y/m/d') }}</span>
             </div>
         {{-- 次日リンク --}}

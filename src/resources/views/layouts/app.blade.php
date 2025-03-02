@@ -15,7 +15,7 @@
         <div class="header">
         {{-- ロゴ表示 --}}
             <div class="header-left">
-                <img class="header__logo" src="{{ asset('storage/logo.svg') }}" alt="ロゴ" />
+                <img class="header__logo" src="{{ asset('images/icons/logo.svg') }}" alt="ロゴ" />
             </div>
 
     {{-- ボタンコンテナ（ログイン時のみ表示） --}}

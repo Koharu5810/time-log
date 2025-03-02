@@ -52,8 +52,8 @@ class AttendanceUpdateRequest extends FormRequest
             // 出勤時間・退勤時間のバリデーション（両方入力されていることを前提）
             if (!empty($this->requested_clock_in) && !empty($this->requested_clock_end)) {
                 try {
-                    $clockIn = \Carbon\Carbon::parse($this->clock_in);
-                    $clockEnd = \Carbon\Carbon::parse($this->clock_end);
+                    $clockIn = \Carbon\Carbon::parse($this->requested_clock_in);
+                    $clockEnd = \Carbon\Carbon::parse($this->requested_clock_end);
 
                     // 勤務時間（分単位）
                     $workMinutes = $clockIn->diffInMinutes($clockEnd);

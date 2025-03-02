@@ -36,7 +36,7 @@
 
             {{-- 年月表示 --}}
             <div class="current-month">
-                <img class="calendar" src="{{ asset('storage/calendar.png') }}" alt="月" />
+                <img class="calendar" src="{{ asset('images/icons/calendar.png') }}" alt="月" />
                 <span>{{ \Carbon\Carbon::create($year, $month)->format('Y/m') }}</span>
             </div>
 
