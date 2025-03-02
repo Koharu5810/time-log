@@ -1,2 +1,15 @@
-docker/mysql/data/*
-!.gitkeep
+# MySQL data
+docker/mysql/data/
+
+# Docker関連
+docker-compose.override.yml
+
+# Laravel
+/vendor
+/node_modules
+/.env
+/.env.*
+/storage/*.log
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
