@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/user/login.css') }}" />
+<link rel="stylesheet" href="{{ asset('css/attendance/create.css') }}" />
 @endsection
 
 @section('content')
@@ -67,63 +67,5 @@
         document.getElementById('statusForm').submit();
     }
 </script>
-
-    <style>
-        .body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* min-height: 100vh; */
-            width: 100%;
-            border: 1px solid green
-        }
-
-        .container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            padding: 2rem;
-            border: 1px solid orange
-        }
-
-        .status-badge {
-            background-color: #e0e0e0;
-            color: #333;
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 0.875rem;
-        }
-
-        .date {
-            font-size: 1rem;
-            color: #333;
-            margin-top: 10px;
-        }
-
-        .time {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #000;
-            margin: 10px 0;
-        }
-
-        .clock-in-btn {
-            background-color: #000;
-            color: white;
-            border: none;
-            padding: 12px 40px;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .clock-in-btn:hover {
-            background-color: #333;
-        }
-    </style>
 
 @endsection
