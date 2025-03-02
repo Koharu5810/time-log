@@ -108,7 +108,7 @@ class AttendanceRequestController extends Controller
 
         $attendanceRequests = AttendanceCorrectRequest::with(['user', 'attendance'])
             ->join('attendances', 'attendance_correct_requests.attendance_id', '=', 'attendances.id')
-            ->select('attendance_correct_requests.*', 'attendances.work_date', 'attendances.remarks');
+            ->select('attendance_correct_requests.*', 'attendances.work_date');
 
         // 一般ユーザーは自分の申請のみ表示
         if (!$isAdmin) {
