@@ -83,13 +83,13 @@ main {
 }
 
 .title {
-    font: normal 700 36px "Charm", cursive;
+    font: normal 700 36px "Inter", sans-serif;
     margin-top: 80px;
     margin-bottom: 30px;
 }
 .sub-title {
     border-left: solid 8px #000;
-    font: normal 700 30px "Charm", cursive;
+    font: normal 700 30px "Inter", sans-serif;
     margin-top: 80px;
     margin-bottom: 30px;
 }
@@ -105,7 +105,7 @@ main {
 }
 /* 入力フォーム・ラベル */
 .form__group label {
-    font: normal 700 24px "Charm", cursive;
+    font: normal 700 24px "Inter", sans-serif;
     height: 36px;
 }
 .form__group-input {
@@ -123,7 +123,7 @@ main {
     height: 60px;
     background-color: #000000;
     color: #fff;
-    font: normal 700 24px "Charm", cursive;
+    font: normal 700 24px "Inter", sans-serif;
     padding-top: 3px;
     padding-bottom: 3px;
     justify-content: center;
@@ -134,7 +134,7 @@ main {
 }
 /* リンク用 青文字ボタン */
 .blue-button {
-    font: normal 400 20px "Charm", cursive;
+    font: normal 400 20px "Inter", sans-serif;
     color: #0073CC;
     margin-top: 17px;
     text-decoration: none;
