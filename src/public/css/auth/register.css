@@ -6,7 +6,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 1px solid green;
 }
 .register-form__button {
     margin-top: 40px;

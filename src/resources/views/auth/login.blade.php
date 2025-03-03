@@ -8,8 +8,6 @@
 @section('title', 'ログイン')
 
 @section('content')
-    <h1 class="content__title">@yield('title')</h1>
-
     <form method="POST" action="{{ route('user.login') }}" class="login-container">
     @csrf
 {{-- メールアドレス --}}
@@ -25,7 +23,7 @@
 {{-- パスワード --}}
         <div class="form__group">
             <label for="password">パスワード</label>
-            <input type="password" name="password"  class="form__group-input" />
+            <input type="password" name="password" class="form__group-input" />
             <div class="error-message">
                 @error('password')
                     {{ $message }}
