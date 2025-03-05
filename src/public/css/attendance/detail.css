@@ -15,7 +15,8 @@ table {
     border-radius: 10px;
 }
 .table__label {
-    background-color: #fff;
+    background-color: #FFF;
+    color: #737373;
     padding-left: 64px;
     border-bottom: 2px solid #E1E1E1;
     font: normal 700 16px "Inter", sans-serif;
