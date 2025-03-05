@@ -6,6 +6,7 @@ td {
 
 .attendance-list__container{
     margin-left: 15px;
+    width: 900px;
 }
 
 .month-selector {

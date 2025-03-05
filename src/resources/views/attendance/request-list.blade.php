@@ -8,18 +8,14 @@
 @section('sub-title', '申請一覧')
 
 @section('content')
-<div class="body">
-    <div class="container">
-        <h2 class="content__sub-title">@yield('sub-title')</h2>
-        <div class="flex items-center gap-8 px-4 py-2 text-sm text-gray-600">
-            <div class="request-list__header">
-                <a href="{{ route('request.list', ['tab' => 'pending', 'query' => $query]) }}" class="home__tab {{ $tab === 'pending' ? 'active' : '' }}">
-                    <h3>承認待ち</h3>
-                </a>
-                <a href="{{ route('request.list', ['tab' => 'approved', 'query' => $query]) }}" class="home__tab {{ $tab === 'approved' ? 'active' : '' }}">
-                    <h3>承認済み</h3>
-                </a>
-            </div>
+    <div class="request-list__container">
+        <div class="request-list__header">
+            <a href="{{ route('request.list', ['tab' => 'pending', 'query' => $query]) }}" class="pending {{ $tab === 'pending' ? 'active' : '' }}">
+                承認待ち
+            </a>
+            <a href="{{ route('request.list', ['tab' => 'approved', 'query' => $query]) }}" class="approved {{ $tab === 'approved' ? 'active' : '' }}">
+                承認済み
+            </a>
         </div>
 
         <hr class="divider">
@@ -40,7 +36,7 @@
                 <tbody>
                     @if ($attendanceRequests->isEmpty())
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="6">
                                 {{ $tab === 'approved' ? '承認済みの申請はありません。' : '承認待ちの申請はありません。' }}
                             </td>
                         </tr>
@@ -54,9 +50,9 @@
                                 <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('Y/m/d') }}</td>
                                 <td>
                                     @if ($isAdmin)
-                                        <a href="{{ route('request.approve', ['attendance_correct_request' => $request->id]) }}" class="detail-btn">詳細</a>
+                                        <a href="{{ route('request.approve', ['attendance_correct_request' => $request->id]) }}" class="detail-button">詳細</a>
                                     @else
-                                        <a href="{{ route('attendance.detail', ['id' => $request->attendance_id]) }}" class="detail-btn">詳細</a>
+                                        <a href="{{ route('attendance.detail', ['id' => $request->attendance_id]) }}" class="detail-button">詳細</a>
                                     @endif
                                 </td>
                             </tr>
@@ -66,6 +62,5 @@
             </table>
         </div>
     </div>
-</div>
 
 @endsection

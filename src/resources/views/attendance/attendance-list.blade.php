@@ -30,7 +30,7 @@
 
         <div class="month-selector">
             {{-- 前月リンク --}}
-            <a href="{{ route($routeName, $routeParams) }}">←前月</a>
+            <a href="{{ route($routeName, $routeParams) }}">← 前月</a>
 
             {{-- 年月表示 --}}
             <div class="current-month">
@@ -43,7 +43,7 @@
                 $routeParams['year'] = ($month == 12) ? $year + 1 : $year;
                 $routeParams['month'] = ($month == 12) ? 1 : $month + 1;
             @endphp
-            <a href="{{ route($routeName, $routeParams) }}">翌月→</a>
+            <a href="{{ route($routeName, $routeParams) }}">翌月 →</a>
         </div>
 
         <div class="table-container">
