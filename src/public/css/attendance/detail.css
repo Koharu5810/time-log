@@ -74,3 +74,8 @@
 .edit-button:hover {
     background-color: #333;
 }
+.edit-message {
+    font: normal 800 18px "Inter", sans-serif;
+    color: #FF0000;
+    margin-top: 22px;
+}

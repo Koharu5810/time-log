@@ -134,10 +134,10 @@
                     <td colspan="2" class="button-container">
                         @switch($attendance->attendanceCorrectRequest->request_status ?? '')
                             @case('承認待ち')
-                                <span>*承認待ちのため修正はできません。</span>
+                                <div class="edit-message">*承認待ちのため修正はできません。</div>
                                 @break
                             @case('承認済み')
-                                <span>*すでに修正済みのため、再修正はできません。</span>
+                                <div class="edit-message">*すでに修正済みのため、再修正はできません。</div>
                                 @break
                             @default
                                 <button type="submit" class="edit-button">修正</button>
