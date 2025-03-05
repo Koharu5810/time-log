@@ -12,12 +12,13 @@
         @csrf
         @method('PUT')
         <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
+
         <table class="attendance-table">
             <tbody class="table-body">
         {{-- 名前 --}}
                 <tr>
                     <td class="table__label">名前</td>
-                    <td colspan="4" class="table__input">
+                    <td class="table__input">
                         <input
                             type="hidden"
                             name="user_id"
@@ -35,13 +36,9 @@
                             name="work_date"
                             value="{{ old('work_date', \Carbon\Carbon::parse($attendance->work_date)->format('Y-m-d')) }}"
                         />
-                        {{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('Y年') }}
+                        <div>{{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('Y年') }}</div>
+                        <div>{{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('n月j日') }}</div>
                     </td>
-                    <td class="table__input"></td>
-                    <td class="table__input">
-                        {{ \Carbon\Carbon::parse($attendance->work_date)->translatedFormat('n月j日') }}
-                    </td>
-                    <td> </td>
                 </tr>
         {{-- 出勤・退勤 --}}
                 <tr>
@@ -52,38 +49,30 @@
                         @else
                             <input
                                 type="text"
-                                class="time-input"
                                 name="requested_clock_in"
                                 value="{{ old('requested_clock_in', $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '') }}"
                             />
                         @endif
-                    </td>
-                    <td class="table__input">〜</td>
-                    <td class="table__input">
+
+                        <span>〜</span>
+
                         @if ($attendance->attendanceCorrectRequest)
                             {{ \Carbon\Carbon::parse($attendance->attendanceCorrectRequest->requested_clock_end)->format('H:i') }}
                         @else
                             <input
                                 type="text"
-                                class="time-input"
                                 name="requested_clock_end"
                                 value="{{ old('requested_clock_end', $attendance->clock_end ? \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') : '') }}"
                             />
                         @endif
-                    </td>
-                    <td> </td>
-                </tr>
-                @if ($errors->has('requested_clock_in') || $errors->has('requested_clock_end'))
-                    <tr>
-                        <td></td>
-                        <td colspan="4">
+                        @if ($errors->has('requested_clock_in') || $errors->has('requested_clock_end'))
                             <div class="error-message">
                                 <div>@error('requested_clock_in') {{ $message }} @enderror</div>
                                 <div>@error('requested_clock_end') {{ $message }} @enderror</div>
                             </div>
-                        </td>
-                    </tr>
-                @endif
+                        @endif
+                    </td>
+                </tr>
         {{-- 休憩 --}}
                 @foreach ($displayBreakTimes as $index => $break)
                     <input type="hidden" name="break_times[{{ $break['index'] }}][id]" value="{{ $break['id'] }}">
@@ -96,51 +85,35 @@
                             @else
                                 <input
                                     type="text"
-                                    class="time-input"
                                     name="break_times[{{ $index }}][start]"
                                     value="{{ old("break_times.{$break['index']}.start", $break['start'] ? \Carbon\Carbon::parse($break['start'])->format('H:i') : '') }}"
                                 />
                             @endif
-                        </td>
-                        <td class="table__input">〜</td>
-                        <td class="table__input">
+
+                            <span>〜</span>
+
                             @if ($break['is_corrected'])
                                 {{ \Carbon\Carbon::parse($break['end'])->format('H:i') }}
                             @else
                                 <input
                                     type="text"
-                                    class="time-input"
                                     name="break_times[{{ $index }}][end]"
                                     value="{{ old("break_times.{$break['index']}.end", $break['end'] ? \Carbon\Carbon::parse($break['end'])->format('H:i') : '') }}"
                                 />
                             @endif
-                        </td>
-                        <td> </td>
-                    </tr>
-                    @if ($errors->has("break_times.{$index}.start") || $errors->has("break_times.{$index}.end"))
-                        <tr>
-                            <td></td>
-                            <td colspan="4">
+                            @if ($errors->has("break_times.{$index}.start") || $errors->has("break_times.{$index}.end"))
                                 <div class="error-message">
-                                    <div>
-                                        @error("break_times.{$index}.start")
-                                            {{ $message }}
-                                        @enderror
-                                    </div>
-                                    <div>
-                                        @error("break_times.{$index}.end")
-                                            {{ $message }}
-                                        @enderror
-                                    </div>
+                                    <div>@error("break_times.{$index}.start") {{ $message }} @enderror</div>
+                                    <div>@error("break_times.{$index}.end"){{ $message }} @enderror</div>
                                 </div>
-                            </td>
-                        </tr>
-                    @endif
+                            @endif
+                        </td>
+                    </tr>
                 @endforeach
         {{-- 備考 --}}
                 <tr>
                     <td class="table__label">備考</td>
-                    <td colspan="3" class="table__input">
+                    <td class="table__input">
                         @if ($attendance->attendanceCorrectRequest)
                             {{ $attendance->attendanceCorrectRequest->remarks }}
                         @else
@@ -152,12 +125,13 @@
                             @endif
                         @endif
                     </td>
-                    <td> </td>
                 </tr>
             </tbody>
+
+    {{-- 修正ボタン --}}
             <tfoot class="tfoot">
                 <tr>
-                    <td colspan="5" class="button-container">
+                    <td colspan="2" class="button-container">
                         @switch($attendance->attendanceCorrectRequest->request_status ?? '')
                             @case('承認待ち')
                                 <span>*承認待ちのため修正はできません。</span>

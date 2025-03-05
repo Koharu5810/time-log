@@ -9,37 +9,37 @@
     margin: auto;
     border-collapse: collapse;
 }
-table {
+.attendance-table table {
     width: 100%;
     border-collapse: collapse;   /* セルの境界線の統合 */
     border-radius: 10px;
 }
-.table__label {
+.attendance-table tr {
     background-color: #FFF;
-    color: #737373;
-    padding-left: 64px;
     border-bottom: 2px solid #E1E1E1;
     font: normal 700 16px "Inter", sans-serif;
     letter-spacing: 2px;
 }
+.table__label {
+    color: #737373;
+    padding-left: 64px;
+}
 .table__input {
-    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
     text-align: left;
     color: #000;
+    width: 320px;
     padding: 35px 0;
-    border-bottom: 2px solid #E1E1E1;
-    font: normal 700 16px "Inter", sans-serif;
-    letter-spacing: 2px;
-    border: 1px solid orange;
 }
 .table__input input {
     text-align: center;
     font: normal 700 16px "Inter", sans-serif;
+    letter-spacing: 2px;
     width: 103px;
     height: 29px;
     padding: 5px;
     border: 1px solid #E1E1E1;
-    letter-spacing: 2px;
 }
 .table__input textarea {
     font: normal 700 14px "Inter", sans-serif;
@@ -51,8 +51,12 @@ table {
     resize: none;
 }
 
+.tfoot tr {
+    border: none;
+}
 .button-container {
     text-align: right;
+    background-color: #F5F5F5;
 }
 .edit-button {
     font: normal 700 22px "Inter", sans-serif;
