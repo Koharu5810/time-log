@@ -10,25 +10,23 @@
     : (auth('web')->check() ? '勤怠一覧' : ''))
 
 @section('content')
-    <div class="body">
-    <div class="container">
-        <h2 class="content__sub-title">@yield('sub-title')</h2>
-            @php
-                // 認証ユーザー情報を取得
-                $authUser = auth('admin')->check() ? auth('admin')->user() : auth('web')->user();
+    <div class="attendance-list__container">
+        @php
+            // 認証ユーザー情報を取得
+            $authUser = auth('admin')->check() ? auth('admin')->user() : auth('web')->user();
 
-                // ルートの切り替え
-                $routeName = auth('admin')->check() ? 'admin.attendance.list' : 'attendance.list';
-                $routeParams = [
-                    'year' => $month == 1 ? $year - 1 : $year,
-                    'month' => $month == 1 ? 12 : $month - 1
-                ];
+            // ルートの切り替え
+            $routeName = auth('admin')->check() ? 'admin.attendance.list' : 'attendance.list';
+            $routeParams = [
+                'year' => $month == 1 ? $year - 1 : $year,
+                'month' => $month == 1 ? 12 : $month - 1
+            ];
 
-                // 管理者の場合、IDを追加
-                if (auth('admin')->check()) {
-                    $routeParams['id'] = isset($staff) ? $staff->id : '';
-                }
-            @endphp
+            // 管理者の場合、IDを追加
+            if (auth('admin')->check()) {
+                $routeParams['id'] = isset($staff) ? $staff->id : '';
+            }
+        @endphp
 
         <div class="month-selector">
             {{-- 前月リンク --}}
@@ -74,13 +72,13 @@
                                 <td>{{ $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '' }}</td>
                                 <td>
                                     @if ($attendance->clock_in && $attendance->clock_end)
-                                       {{ gmdate('H:i', ($attendance->duration_in_minutes - $attendance->total_break_time) * 60) }}
+                                        {{ gmdate('H:i', ($attendance->duration_in_minutes - $attendance->total_break_time) * 60) }}
                                     @else
                                         {{-- データが揃っていない場合は空欄 --}}
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}" class="detail-btn">詳細</a>
+                                    <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}" class="detail-button">詳細</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -89,7 +87,6 @@
             </table>
         </div>
     </div>
-</div>
 
 @endsection
 

@@ -72,8 +72,7 @@ main {
     justify-content: center;
 }
 .content {
-    width: 90vw;
-    max-width: 1230px;
+    max-width: 900px;
     padding-bottom: 30px;
     display: flex;
     flex-direction: column;
@@ -92,6 +91,8 @@ main {
     font: normal 700 30px "Inter", sans-serif;
     margin-top: 80px;
     margin-bottom: 30px;
+    padding-left: 21px;
+    align-self: flex-start;
 }
 
 /* 入力フォーム・グループ */
