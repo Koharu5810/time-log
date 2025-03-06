@@ -8,9 +8,7 @@
 @section('sub-title', \Carbon\Carbon::create($date)->translatedFormat('Y年m月d日の勤怠'))
 
 @section('content')
-    <div class="body">
-    <div class="container">
-        <h2 class="content__sub-title">@yield('sub-title')</h2>
+    <div class="dashboard-container">
 
         <div class="month-selector">
         {{-- 前日リンク --}}
@@ -18,7 +16,7 @@
                 'year' => \Carbon\Carbon::create($date)->subDay()->year,
                 'month' => \Carbon\Carbon::create($date)->subDay()->month,
                 'day' => \Carbon\Carbon::create($date)->subDay()->day
-            ]) }}">←前日</a>
+            ]) }}">← 前日</a>
         {{-- 日付表示 --}}
             <div class="current-month">
                 <img class="calendar" src="{{ asset('images/icons/calendar.png') }}" alt="日付" />
@@ -29,7 +27,7 @@
                 'year' => \Carbon\Carbon::create($date)->addDay()->year,
                 'month' => \Carbon\Carbon::create($date)->addDay()->month,
                 'day' => \Carbon\Carbon::create($date)->addDay()->day
-            ]) }}">翌日→</a>
+            ]) }}">翌日 →</a>
         </div>
 
         <div class="table-container">
@@ -68,7 +66,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}" class="detail-btn">詳細</a>
+                                    <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}" class="detail-button">詳細</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -77,6 +75,5 @@
             </table>
         </div>
     </div>
-</div>
 
 @endsection
