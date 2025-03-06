@@ -8,9 +8,7 @@
 @section('sub-title', 'スタッフ一覧')
 
 @section('content')
-    <div class="body">
-    <div class="container">
-        <h2 class="content__sub-title">@yield('sub-title')</h2>
+    <div class="staff-list__container">
 
         <div class="table-container">
             <table>
@@ -27,7 +25,7 @@
                             <td>{{ $staff->name }}</td>
                             <td>{{ $staff->email }}</td>
                             <td>
-                                <a href="{{ route('admin.attendance.list', ['id' => $staff->id]) }}" class="detail-btn">詳細</a>
+                                <a href="{{ route('admin.attendance.list', ['id' => $staff->id]) }}" class="detail-button">詳細</a>
                             </td>
                         </tr>
                     @endforeach
