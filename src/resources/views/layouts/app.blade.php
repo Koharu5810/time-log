@@ -27,11 +27,11 @@
 
             {{-- 管理者用ヘッダー --}}
                     @if (auth('admin')->check())
-                        <button class="header__create-button"><a href="{{ route('admin.dashboard') }}">勤怠一覧</a></button>
+                        <a href="{{ route('admin.dashboard') }}" class="header__create-button">勤怠一覧</a>
                     {{-- 勤怠一覧ボタン --}}
-                        <button class="header__list-button"><a href="{{ route('staff.list') }}">スタッフ一覧</a></button>
+                        <a href="{{ route('staff.list') }}" class="header__list-button">スタッフ一覧</a>
                     {{-- 申請ボタン --}}
-                        <button class="header__request-button"><a href="{{ route('request.list') }}">申請一覧</a></button>
+                        <a href="{{ route('request.list') }}" class="header__request-button">申請一覧</a>
                     {{-- ログアウトボタン --}}
                         <form action="{{ route('admin.logout') }}" method="POST" class="header__logout">
                             @csrf
@@ -41,11 +41,11 @@
             {{-- 一般ユーザ用ヘッダー --}}
                     @elseif (auth('web')->check())
                     {{-- 勤怠ボタン --}}
-                        <button class="header__create-button"><a href="{{ route('create') }}">勤怠</a></button>
+                        <a href="{{ route('create') }}" class="header__create-button">勤怠</a>
                     {{-- 勤怠一覧ボタン --}}
-                        <button class="header__list-button"><a href="{{ route('attendance.list') }}">勤怠一覧</a></button>
+                        <a href="{{ route('attendance.list') }}" class="header__list-button">勤怠一覧</a>
                     {{-- 申請ボタン --}}
-                        <button class="header__request-button"><a href="{{ route('request.list') }}">申請</a></button>
+                        <a href="{{ route('request.list') }}" class="header__request-button">申請</a>
                     {{-- ログアウトボタン --}}
                         <form action="{{ route('user.logout') }}" method="POST" class="header__logout">
                             @csrf

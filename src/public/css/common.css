@@ -2,7 +2,7 @@ html {
     overflow-y: scroll; /* 常にスクロールバーを表示 */
 }
 body {
-    background-color: #f5f5f5;
+    background-color: #F5F5F5;
 }
 .header {
     background-color: #000;
@@ -31,8 +31,7 @@ body {
     justify-content: flex-start;
 }
 .header__logo {
-    width: 370px;
-    max-width: 100%;
+    width: clamp(180px, 25vw, 370px);
     height: auto;
     display: block;
 }
@@ -40,7 +39,7 @@ body {
 /* ボタン類 */
 .header-right {
     justify-content: flex-end;
-    gap: 10px;
+    gap: clamp(20px, 2vw, 43px);
 }
 .header__logout-button,
 .header__create-button,
@@ -48,21 +47,22 @@ body {
 .header__request-button {
     display: flex;
     align-items: center;
-    line-height: normal;
+    /* line-height: normal; */
     padding: 0;
-    margin-right: 10px;
     background-color: transparent;
+    font: normal 700 24px "Inter", sans-serif;
+    font-size: clamp(16px, 2vw, 24px); /* 画面幅による可変 */
     color: #FFF;
-    font-size: 24px;
     border: none;
     cursor: pointer;
-}
-.header__logout-button a,
-.header__create-button a,
-.header__list-button a,
-.header__request-button a {
-    color: #FFF;
     text-decoration: none;
+    white-space: nowrap;
+}
+.header__logout-button:hover,
+.header__create-button:hover,
+.header__list-button:hover,
+.header__request-button:hover {
+    text-decoration: underline;
 }
 
 main {
@@ -148,7 +148,7 @@ main {
 }
 
 /* タブレット幅用スタイル */
-@media screen and (min-width: 768px) and (max-width: 850px) {
+/* @media screen and (min-width: 768px) and (max-width: 850px) {
     .header__logo {
         width: 90%;
         height: auto;
@@ -161,11 +161,11 @@ main {
     }
     .form__black-button {
         width: 100%;
-    }
-}
+    } */
+/* } */
 /* スマートフォン幅用スタイル */
 @media screen and (max-width: 767px) {
-    .header {
+    /* .header {
         padding: 0;
         gap: 2px;
     }
@@ -193,5 +193,5 @@ main {
     }
     .form__black-button {
         width: 100%;
-    }
+    } */
 }
