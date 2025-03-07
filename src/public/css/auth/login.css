@@ -1,5 +1,5 @@
 .login-container {
-    width: 680px;
+    width: 100%;
     padding-top: 5px;
     padding-bottom: 5px;
     display: flex;
@@ -16,7 +16,7 @@
 
 /* タブレット幅用スタイル */
 @media screen and (min-width: 768px) and (max-width: 850px) {
-    .login-form__button {
+    /* .login-form__button {
         width: 100%;
-    }
+    } */
 }
