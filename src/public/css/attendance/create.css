@@ -1,23 +1,26 @@
 .container {
     font: normal 700 18px "Inter", sans-serif;
-    width: 680px;
+    max-width: 680px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    border: 1px solid green;
 }
 
 .status-badge {
-    background-color: #e8e8e8;
-    color: #696969;
-    font: normal 700 18px "Inter", sans-serif;
-    border-radius: 50px;
-    margin-top: 100px;
-    padding: 4px 12px;
     width: 100px;
     height: 40px;
-    line-height: 35px;
+    margin-top: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    background-color: #C8C8C8;
+    color: #696969;
+    font: normal 700 18px "Inter", sans-serif;
+    letter-spacing: calc(18px * 0.15);
+    border-radius: 50px;
 }
 .date {
     font: normal 400 40px "Inter", sans-serif;
@@ -39,32 +42,27 @@
     gap: 82px;
 }
 
+.attendance-button,
+.break-button {
+    width: 221px;
+    height: 77px;
+    font: normal 700 32px "Inter", sans-serif;
+    letter-spacing: calc(32px * 0.15);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.attendance-button:hover,
+.break-button:hover {
+    background-color: #CCC;
+}
 .attendance-button {
     background-color: #000;
     color: #FFF;
-    font: normal 700 32px "Inter", sans-serif;
-    border: none;
-    width: 221px;
-    padding: 19px 0px;
-    border-radius: 20px;
-    cursor: pointer;
 }
-.attendance-button:hover {
-    background-color: #ccc;
-}
-
 .break-button {
     background-color: #FFF;
     color: #000;
-    font: normal 700 32px "Inter", sans-serif;
-    border: none;
-    width: 221px;
-    padding: 19px 0px;
-    border-radius: 20px;
-    cursor: pointer;
-}
-.break-button:hover {
-    background-color: #ccc;
 }
 
 .clock_end-message {
