@@ -1,19 +1,21 @@
 .request-list__container{
-    padding-left: 20px;
-    width: 900px;
+    padding-left: 10px;
+    max-width: 900px;
+    width: 100%;
 }
 
 .request-list__header {
     font: normal 400 16px "Inter", sans-serif;
     display: flex;
-    padding-left: 50px;
+    padding-left: clamp(20px, 5vw, 50px);
     margin-bottom: 0;
-    gap: 106px;
+    gap: clamp(80px, 5vw, 106px);
 }
 .request-list__header a {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+    white-space: nowrap;
 }
 .request-list__header a.active {
     font-weight: 700;
@@ -42,9 +44,11 @@ table {
     border-radius: 10px;
 }
 th, td {
-    font: normal 700 16px "Inter", sans-serif;
+    font: normal 700 clamp(12px, 6vw, 16px) "Inter", sans-serif;
     text-align: center;
     vertical-align: top;
+    white-space: nowrap;
+    min-width: 90px;
 }
 th {
     height: 31px;
@@ -53,7 +57,7 @@ th {
 }
 td {
     height: 33px;
-    padding: 14px 20px 12px;
+    padding: clamp(10px, 5vw, 14px) clamp(15px, 5vw, 20px) clamp(8px, 5vw, 12px);
     border-bottom: 2px solid #E1E1E1;
 }
 .detail-button {
@@ -63,4 +67,17 @@ td {
 }
 .detail-button:hover {
     text-decoration: underline;
+}
+
+/* タブレットサイズ */
+@media (min-width: 768px) {
+    td {
+        padding: clamp(10px, 5vw, 14px) clamp(10px, 5vw, 15px) clamp(8px, 5vw, 12px);
+    }
+}
+/* スマホサイズ */
+@media (max-width: 767px) {
+    td {
+        padding: 8px 10px 6px;
+    }
 }
