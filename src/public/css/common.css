@@ -46,7 +46,8 @@ body {
 }
 .header__buttons-row {
     display: flex;
-    gap: 10px;
+    margin-left: 43px;
+    gap: 43px;
     justify-content: center;
 }
 
@@ -211,6 +212,7 @@ main {
         width: 100%;
         display: flex;
         justify-content: space-between;
+        margin-left: 0;
         padding-left: 10px;
         gap: 15px;
     }
