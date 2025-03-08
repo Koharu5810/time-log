@@ -1,6 +1,6 @@
 .container {
     font: normal 700 18px "Inter", sans-serif;
-    max-width: 680px;
+    /* max-width: 680px; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,31 +23,33 @@
     border-radius: 50px;
 }
 .date {
-    font: normal 400 40px "Inter", sans-serif;
     color: #000;
+    font: normal 400 clamp(28px, 2vw, 40px) "Inter", sans-serif;
     margin-top: 32px;
     height: 48px;
 }
 .time {
-    font: normal 700 80px "Inter", sans-serif;
-    color: #000;
-    margin-top: 32px;
-    margin-bottom: 87px;
-    width: 242px;
+    max-width: 242px;
     height: 97px;
+    color: #000;
+    font: normal 700 clamp(72px, 2vw, 80px) "Inter", sans-serif;
+    margin: 32px 0 87px;
 }
 
 .button-group {
     display: flex;
-    gap: 82px;
+    gap: clamp(30px, 6vw, 82px);
 }
-
 .attendance-button,
 .break-button {
-    width: 221px;
-    height: 77px;
-    font: normal 700 32px "Inter", sans-serif;
-    letter-spacing: calc(32px * 0.15);
+    /* width: 221px; */
+    width: clamp(120px, 15vw, 221px);
+    /* height: 77px; */
+    height: clamp(50px, 5vw, 77px);
+    /* font: normal 700 32px "Inter", sans-serif; */
+    font: normal 700 clamp(20px, 2vw, 32px) "Inter", sans-serif;
+    /* letter-spacing: calc(32px * 0.15); */
+    letter-spacing: calc(clamp(20px, 2vw, 32px) * 0.15);
     border: none;
     border-radius: 20px;
     cursor: pointer;
@@ -68,4 +70,11 @@
 .clock_end-message {
     font: normal 700 26px "Inter", sans-serif;
     color: #000;
+}
+
+/* スマホ用 */
+@media screen and (max-width: 768px) {
+    .button-group {
+        /* gap: clamp(45px, 6vw, 82px); */
+    }
 }
