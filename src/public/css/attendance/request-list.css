@@ -44,11 +44,11 @@ table {
     border-radius: 10px;
 }
 th, td {
+    min-width: 90px;
     font: normal 700 clamp(12px, 6vw, 16px) "Inter", sans-serif;
     text-align: center;
     vertical-align: top;
     white-space: nowrap;
-    min-width: 90px;
 }
 th {
     height: 31px;

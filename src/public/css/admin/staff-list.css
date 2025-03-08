@@ -1,6 +1,7 @@
 .staff-list__container {
-    margin-left: 20px;
-    width: 900px;
+    padding-left: 10px;
+    max-width: 900px;
+    width: 100%;
 }
 
 .table-container {
@@ -15,9 +16,11 @@ table {
     border-radius: 10px;
 }
 th, td {
-    font: normal 700 16px "Inter", sans-serif;
+    min-width: 90px;
+    font: normal 700 clamp(12px, 6vw, 16px) "Inter", sans-serif;
     text-align: center;
     vertical-align: top;
+    white-space: nowrap;
 }
 th {
     height: 31px;
@@ -26,7 +29,7 @@ th {
 }
 td {
     height: 33px;
-    padding: 14px 20px 12px;
+    padding: clamp(10px, 5vw, 14px) clamp(15px, 5vw, 20px) clamp(8px, 5vw, 12px);
     border-bottom: 2px solid #E1E1E1;
 }
 
@@ -37,4 +40,17 @@ td {
 }
 .detail-button:hover {
     text-decoration: underline;
+}
+
+/* タブレットサイズ */
+@media (min-width: 768px) {
+    td {
+        padding: clamp(10px, 5vw, 14px) clamp(10px, 5vw, 15px) clamp(8px, 5vw, 12px);
+    }
+}
+/* スマホサイズ */
+@media (max-width: 767px) {
+    td {
+        padding: 8px 10px 6px;
+    }
 }

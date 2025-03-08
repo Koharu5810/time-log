@@ -81,13 +81,13 @@ td {
 }
 
 /* タブレットサイズ */
-@media (min-width: 768px) {
+@media (min-width: 426px) {
     td {
         padding: clamp(10px, 5vw, 14px) clamp(10px, 5vw, 25px) clamp(8px, 5vw, 12px);
     }
 }
 /* スマホサイズ */
-@media (max-width: 767px) {
+@media (max-width: 425px) {
     .month-selector {
         padding: 12px 5px;
     }
