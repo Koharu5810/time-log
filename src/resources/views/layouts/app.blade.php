@@ -44,17 +44,21 @@
 
             {{-- 一般ユーザ用ヘッダー --}}
                     @elseif (auth('web')->check())
-                    {{-- 勤怠ボタン --}}
-                        <a href="{{ route('create') }}" class="header__create-button">勤怠</a>
-                    {{-- 勤怠一覧ボタン --}}
-                        <a href="{{ route('attendance.list') }}" class="header__list-button">勤怠一覧</a>
-                    {{-- 申請ボタン --}}
-                        <a href="{{ route('request.list') }}" class="header__request-button">申請</a>
-                    {{-- ログアウトボタン --}}
-                        <form action="{{ route('user.logout') }}" method="POST" class="header__logout">
-                            @csrf
-                            <button type="submit" class="header__logout-button">ログアウト</button>
-                        </form>
+                            <div class="header__buttons-row">
+                        {{-- 勤怠ボタン --}}
+                            <a href="{{ route('create') }}" class="header__create-button">勤怠</a>
+                        {{-- 勤怠一覧ボタン --}}
+                            <a href="{{ route('attendance.list') }}" class="header__list-button">勤怠一覧</a>
+                        </div>
+                        <div class="header__buttons-row">
+                        {{-- 申請ボタン --}}
+                            <a href="{{ route('request.list') }}" class="header__request-button">申請</a>
+                        {{-- ログアウトボタン --}}
+                            <form action="{{ route('user.logout') }}" method="POST" class="header__logout">
+                                @csrf
+                                <button type="submit" class="header__logout-button">ログアウト</button>
+                            </form>
+                        </div>
                     @endif
 
                 </div>

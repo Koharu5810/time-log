@@ -105,7 +105,7 @@
 }
 
 /* タブレットサイズ */
-@media (min-width: 768px) {
+@media (min-width: 426px) {
     .table__input input {
         width: 110px;
     }
@@ -115,7 +115,7 @@
     }
 }
 /* スマホサイズ */
-@media (max-width: 767px) {
+@media (max-width: 425px) {
     .table__input input {
         width: 90px;
     }

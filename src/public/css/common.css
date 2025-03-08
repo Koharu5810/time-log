@@ -38,17 +38,17 @@ body {
 
 /* ボタン類 */
 .header-right {
-    /* display: flex;
-    flex-direction: column;
-    align-items: center; */
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
     justify-content: flex-end;
     gap: clamp(20px, 2vw, 43px);
 }
-/* .header-buttons-row {
+.header__buttons-row {
     display: flex;
     gap: 10px;
     justify-content: center;
-} */
+}
 
 .header__logout-button,
 .header__create-button,
@@ -58,7 +58,7 @@ body {
     align-items: center;
     padding: 0;
     background-color: transparent;
-    font: normal 700 clamp(16px, 2vw, 24px) "Inter", sans-serif;
+    font: normal 700 clamp(16px, 5vw, 24px) "Inter", sans-serif;
     color: #FFF;
     border: none;
     cursor: pointer;
@@ -96,11 +96,11 @@ main {
     margin-bottom: 30px;
 }
 .title {
-    font: normal 700 clamp(30px, 4vw, 36px) "Inter", sans-serif;
+    font: normal 700 clamp(28px, 4vw, 36px) "Inter", sans-serif;
 }
 .sub-title {
     border-left: solid 8px #000;
-    font: normal 700 clamp(24px, 4vw, 30px) "Inter", sans-serif;
+    font: normal 700 clamp(20px, 4vw, 30px) "Inter", sans-serif;
     padding-left: 21px;
     align-self: flex-start;
 }
@@ -178,7 +178,14 @@ main {
     }
 }
 /* タブレット幅用スタイル */
-@media screen and (min-width: 768px) and (max-width: 850px) {
+@media screen and (min-width: 670px)  {
+    .header__logout-button,
+    .header__create-button,
+    .header__list-button,
+    .header__request-button {
+        font: normal 700 20px "Inter", sans-serif;
+    }
+
     .title,
     .sub-title  {
         margin-top: 60px;
@@ -188,12 +195,35 @@ main {
     }
 }
 /* スマートフォン幅用スタイル */
-@media screen and (max-width: 767px) {
-    /* .header__buttons-row {
-        flex-direction: column;
-        width: 100%;
+@media screen and (max-width: 669px) {
+    .header {
+        margin-left: 0;
+        padding-left: 7px;
+    }
+
+    .header-right {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 5px;
         align-items: center;
-    } */
+    }
+    .header__buttons-row {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding-left: 10px;
+        gap: 15px;
+    }
+    .header__logout-button,
+    .header__create-button,
+    .header__list-button,
+    .header__request-button {
+        font: normal 700 clamp(12px, 3vw, 18px) "Inter", sans-serif;
+        margin: 0;
+        padding: 3px 0;
+        line-height: 1;
+    }
+
     .title,
     .sub-title  {
         margin-top: 50px;
