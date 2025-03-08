@@ -24,7 +24,7 @@
                             name="user_id"
                             value="{{ $attendance->user_id }}"
                         />
-                        {{ $attendance->user->name }}
+                        <div>{{ $attendance->user->name }}</div>
                     </td>
                 </tr>
         {{-- 日付 --}}
@@ -118,12 +118,12 @@
                             {{ $attendance->attendanceCorrectRequest->remarks }}
                         @else
                             <textarea name="remarks" placeholder="電車遅延のため">{{ old('remarks') }}</textarea>
+                        @endif
                             @if ($errors->has('remarks'))
                                 <div class="error-message">
                                     @error('remarks') {{ $message }} @enderror
                                 </div>
                             @endif
-                        @endif
                     </td>
                 </tr>
             </tbody>

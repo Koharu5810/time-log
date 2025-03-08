@@ -2,7 +2,7 @@ html {
     overflow-y: scroll; /* 常にスクロールバーを表示 */
 }
 body {
-    background-color: #e6e6e6;
+    background-color: #E6E6E6;
 }
 .header {
     background-color: #000;
@@ -78,7 +78,6 @@ main {
     display: flex;
     align-items: flex-start; /* 上寄せ */
     justify-content: center;
-    border: 1px solid orange;
 }
 .content {
     width: 90%;
@@ -89,7 +88,6 @@ main {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    border: 1px solid pink;
 }
 
 .title,
