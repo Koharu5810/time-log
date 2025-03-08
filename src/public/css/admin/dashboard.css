@@ -1,12 +1,15 @@
+.dashboard-container {
+    padding-left: 10px;
+    max-width: 900px;
+    width: 100%;
+}
+
 .month-selector,
 th,
 td {
-    font: normal 700 16px "Inter", sans-serif;
-}
-
-.dashboard-container {
-    margin-left: 15px;
-    width: 900px;
+    font: normal 700 clamp(12px, 6vw, 16px) "Inter", sans-serif;
+    white-space: nowrap;
+    min-width: 90px;
 }
 
 .month-selector {
@@ -33,7 +36,7 @@ td {
 }
 
 .current-month {
-    font: normal 700 20px "Inter", sans-serif;
+    font: normal 700 clamp(14px, 6vw, 20px) "Inter", sans-serif;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -65,7 +68,7 @@ th {
 }
 td {
     height: 33px;
-    padding: 14px 40px 12px;
+    padding: clamp(10px, 5vw, 14px) clamp(15px, 5vw, 40px) clamp(8px, 5vw, 12px);
     border-bottom: 2px solid #E1E1E1;
 }
 .detail-button {
@@ -75,4 +78,27 @@ td {
 }
 .detail-button:hover {
     text-decoration: underline;
+}
+
+/* タブレットサイズ */
+@media (min-width: 768px) {
+    td {
+        padding: clamp(10px, 5vw, 14px) clamp(10px, 5vw, 25px) clamp(8px, 5vw, 12px);
+    }
+}
+/* スマホサイズ */
+@media (max-width: 767px) {
+    .month-selector {
+        padding: 12px 5px;
+    }
+    .current-month {
+        font: normal 700 14px "Inter", sans-serif;
+    }
+    .current-month img {
+        width: 15px;
+        height: auto;
+    }
+    td {
+        padding: 8px 10px 6px;
+    }
 }

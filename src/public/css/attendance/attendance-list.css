@@ -36,7 +36,7 @@ td {
 }
 
 .current-month {
-    font: normal 700 20px "Inter", sans-serif;
+    font: normal 700 clamp(14px, 6vw, 20px) "Inter", sans-serif;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -88,6 +88,16 @@ td {
 }
 /* スマホサイズ */
 @media (max-width: 767px) {
+    .month-selector {
+        padding: 12px 5px;
+    }
+    .current-month {
+        font: normal 700 14px "Inter", sans-serif;
+    }
+    .current-month img {
+        width: 15px;
+        height: auto;
+    }
     td {
         padding: 8px 10px 6px;
     }
