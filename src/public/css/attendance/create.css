@@ -23,17 +23,17 @@
     border-radius: 50px;
 }
 .date {
-    color: #000;
-    font: normal 400 clamp(28px, 2vw, 40px) "Inter", sans-serif;
-    margin-top: 32px;
     height: 48px;
+    margin-top: 32px;
+    color: #000;
+    font: normal 400 clamp(28px, 6vw, 40px) "Inter", sans-serif;
 }
 .time {
     max-width: 242px;
     height: 97px;
-    color: #000;
-    font: normal 700 clamp(72px, 2vw, 80px) "Inter", sans-serif;
     margin: 32px 0 87px;
+    color: #000;
+    font: normal 700 clamp(72px, 6vw, 80px) "Inter", sans-serif;
 }
 
 .button-group {
@@ -42,16 +42,12 @@
 }
 .attendance-button,
 .break-button {
-    /* width: 221px; */
     width: clamp(120px, 15vw, 221px);
-    /* height: 77px; */
     height: clamp(50px, 5vw, 77px);
-    /* font: normal 700 32px "Inter", sans-serif; */
     font: normal 700 clamp(20px, 2vw, 32px) "Inter", sans-serif;
-    /* letter-spacing: calc(32px * 0.15); */
     letter-spacing: calc(clamp(20px, 2vw, 32px) * 0.15);
     border: none;
-    border-radius: 20px;
+    border-radius: clamp(15px, 2vw, 20px);
     cursor: pointer;
 }
 .attendance-button:hover,
@@ -68,13 +64,6 @@
 }
 
 .clock_end-message {
-    font: normal 700 26px "Inter", sans-serif;
     color: #000;
-}
-
-/* スマホ用 */
-@media screen and (max-width: 768px) {
-    .button-group {
-        /* gap: clamp(45px, 6vw, 82px); */
-    }
+    font: normal 700 clamp(20px, 5vw, 26px) "Inter", sans-serif;
 }
