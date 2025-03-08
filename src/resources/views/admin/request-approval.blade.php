@@ -74,7 +74,8 @@
     {{-- 修正ボタン --}}
             <tfoot class="tfoot">
                 <tr>
-                    <td colspan="2" class="button-container">
+                    <td>  </td>  {{-- colspanが効かないため --}}
+                    <td class="button-container">
                         @if ($request->request_status === '承認待ち')
                             <button type="submit" class="approve-button">承認</button>
                         @else

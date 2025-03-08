@@ -1,86 +1,84 @@
 .approval-form {
-    padding-left: 20px;
-    width: 900px;
+    padding-left: 10px;
+    max-width: 900px;
+    width: 100%;
     margin-bottom: 20px;
+    overflow-x: auto;
 }
 
 .approval-table {
     width: 100%;
-    table-layout: fixed;
     margin: auto;
     border-collapse: collapse;
-    border: 1px solid green;
+    position: relative;
 }
-.approval-table table {
-    width: 100%;
-    border-collapse: collapse;   /* セルの境界線の統合 */
-    border-radius: 10px;
+
+.approval-table tbody {
+    position: relative;
 }
-.approval-table tr {
+/* 疑似要素で角丸を適用 */
+.approval-table tbody::before {
+    z-index: -1;
     background-color: #FFF;
-    border-bottom: 2px solid #E1E1E1;
-    font: normal 700 16px "Inter", sans-serif;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.approval-table tr {
+    font: normal 700 clamp(12px, 6vw, 16px) "Inter", sans-serif;
     letter-spacing: 2px;
+    border-bottom: 2px solid #E1E1E1;
+    white-space: nowrap;
 }
 
 .table__label {
     color: #737373;
-    padding-left: 64px;
+    padding-left: clamp(25px, 2vw, 64px);
+    padding-right: clamp(15px, 2vw, 32px);
+    width: clamp(100px, 25vw, 300px);
 }
 .table__input {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     text-align: left;
+    gap: clamp(5px, 5vw, 20px);
     color: #000;
-    width: 320px;
-    padding: 35px 0;
-    border: 1px solid orange;
-}
-.table__input input {
-    text-align: center;
-    font: normal 700 16px "Inter", sans-serif;
-    letter-spacing: 2px;
-    width: 103px;
-    height: 29px;
-    padding: 5px;
-    border: 1px solid #E1E1E1;
-}
-.table__input textarea {
-    font: normal 700 14px "Inter", sans-serif;
-    width: 316px;
-    height: 72px;
-    padding: 8px;
-    border: 1px solid #D9D9D9;
-    border-radius: 4px;
-    resize: none;
+    max-width: 320px;
+    width: 100%;
+    padding: 35px 20px 35px 0;
 }
 
 .tfoot tr {
     border: none;
 }
 .button-container {
-    text-align: right;
-    background-color: #F5F5F5;
-    height: 120px; /* 親の高さを確保 */
+    background-color: #E6E6E6;
+    height: clamp(130px, 5vw, 170px);
+    padding-right: 10px;
     display: flex;
-    align-items: flex-end; /* 下揃え */
-    justify-content: flex-end; /* 右寄せ */
-    padding-right: 10px; /* 右側余白 */
-    border: 1px solid blue;
+    text-align: right;
+    align-items: flex-end;
+    justify-content: flex-end;
 }
 .approve-button,
 .approved-message {
+    width: 130px;
+    height: 50px;
+    padding: 8px 24px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    font: normal 700 22px "Inter", sans-serif;
-    letter-spacing: 2px;
     color: #FFF;
+    font: normal 700 clamp(16px, 2vw, 22px) "Inter", sans-serif;
+    letter-spacing: 2px;
     border: none;
-    width: 130px;
-    height: 50px;
-    /* margin-top: 120px; */
-    padding: 8px 24px;
     border-radius: 5px;
 }
 .approve-button {
@@ -92,4 +90,23 @@
 }
 .approved-message {
     background-color: #696969;
+}
+
+/* タブレットサイズ */
+@media (min-width: 768px) {
+    .approval-table tr {
+        font: normal 700 14px "Inter", sans-serif;
+    }
+    .button-container {
+        height: 150px;
+    }
+}
+/* スマホサイズ */
+@media (max-width: 767px) {
+    .approval-table tr {
+        font: normal 700 12px "Inter", sans-serif;
+    }
+    .button-container {
+        height: 130px;
+    }
 }
