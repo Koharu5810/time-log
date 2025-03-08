@@ -38,9 +38,18 @@ body {
 
 /* ボタン類 */
 .header-right {
+    /* display: flex;
+    flex-direction: column;
+    align-items: center; */
     justify-content: flex-end;
     gap: clamp(20px, 2vw, 43px);
 }
+/* .header-buttons-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+} */
+
 .header__logout-button,
 .header__create-button,
 .header__list-button,
@@ -182,6 +191,11 @@ main {
 }
 /* スマートフォン幅用スタイル */
 @media screen and (max-width: 767px) {
+    /* .header__buttons-row {
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+    } */
     .title,
     .sub-title  {
         margin-top: 50px;

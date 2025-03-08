@@ -27,16 +27,20 @@
 
             {{-- 管理者用ヘッダー --}}
                     @if (auth('admin')->check())
-                        <a href="{{ route('admin.dashboard') }}" class="header__create-button">勤怠一覧</a>
-                    {{-- 勤怠一覧ボタン --}}
-                        <a href="{{ route('staff.list') }}" class="header__list-button">スタッフ一覧</a>
-                    {{-- 申請ボタン --}}
-                        <a href="{{ route('request.list') }}" class="header__request-button">申請一覧</a>
-                    {{-- ログアウトボタン --}}
-                        <form action="{{ route('admin.logout') }}" method="POST" class="header__logout">
-                            @csrf
-                            <button type="submit" class="header__logout-button">ログアウト</button>
-                        </form>
+                        <div class="header__buttons-row">
+                            <a href="{{ route('admin.dashboard') }}" class="header__create-button">勤怠一覧</a>
+                        {{-- 勤怠一覧ボタン --}}
+                            <a href="{{ route('staff.list') }}" class="header__list-button">スタッフ一覧</a>
+                        </div>
+                        <div class="header__buttons-row">
+                        {{-- 申請ボタン --}}
+                            <a href="{{ route('request.list') }}" class="header__request-button">申請一覧</a>
+                        {{-- ログアウトボタン --}}
+                            <form action="{{ route('admin.logout') }}" method="POST" class="header__logout">
+                                @csrf
+                                <button type="submit" class="header__logout-button">ログアウト</button>
+                            </form>
+                        </div>
 
             {{-- 一般ユーザ用ヘッダー --}}
                     @elseif (auth('web')->check())
