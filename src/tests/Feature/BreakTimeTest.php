@@ -54,5 +54,8 @@ class BreakTimeTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect(route('create'));
+
+        $response = $this->get(route('create'));
+        $response->assertStatus(200)->assertSee('休憩中');
     }
 }
