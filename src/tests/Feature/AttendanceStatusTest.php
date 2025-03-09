@@ -16,11 +16,13 @@ class AttendanceStatusTest extends TestCase
      */
     use RefreshDatabase;
 
+// ステータスが勤務外のユーザー
     public function test_attendance_status_display_for_off_duty_user(): void
     {
-        $user = TestHelper::userLogin();
+        $user = TestHelper::userLogin()->first();
+        $this->actingAs($user);
 
-        $today = Carbon::today()->format('Y-m-d');
+        $today = now()->format('Y-m-d');
 
         // 勤怠データを「勤務外」で作成
         Attendance::create([
@@ -31,12 +33,27 @@ class AttendanceStatusTest extends TestCase
             'status' => '勤務外',
         ]);
 
-        // 2. 勤怠打刻画面を開く
-        $response = $this->actingAs($user)->get(route('create'));
+        $response = $this->get(route('create'));
+        $response->assertStatus(200)->assertSee('勤務外');
+    }
+// ステータスが出勤中のユーザー
+    public function test_attendance_status_display_for_working_user(): void
+    {
+        $user = TestHelper::userLogin()->first();
+        $this->actingAs($user);
 
-        // 3. 画面に「勤務外」と表示されていることを確認
-        $response->assertStatus(200)
-                 ->assertSee('勤務外'); // Bladeテンプレートに「勤務外」があるかチェック
+        $today = now()->format('Y-m-d');
 
+        // 勤怠データを「出勤中」で作成
+        Attendance::create([
+            'user_id' => $user->id,
+            'work_date' => $today,
+            'clock_in' => now()->format('H:i:s'),
+            'clock_end' => null,
+            'status' => '出勤中',
+        ]);
+
+        $response = $this->get(route('create'));
+        $response->assertStatus(200)->assertSee('出勤中');
     }
 }
