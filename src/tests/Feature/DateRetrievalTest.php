@@ -17,7 +17,9 @@ class DateRetrievalTest extends TestCase
     public function test_login_user_can_see_date_and_time()
     {
         $now = Carbon::now();
-        $user = TestHelper::userLogin();
+
+        $user = TestHelper::userLogin()->first();
+        $this->actingAs($user);
 
         $response = $this->get(route('create'));
         $response->assertStatus(200);
