@@ -74,6 +74,7 @@ class BreakTimeTest extends TestCase
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('休憩入');
     }
+// 休憩戻ボタン機能確認
     public function test_user_can_end_break_time(): void
     {
         $user = TestHelper::userLogin();
@@ -114,5 +115,21 @@ class BreakTimeTest extends TestCase
 
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('出勤中');
+    }
+// 休憩戻は一日に何回もできる
+    public function test_user_can_take_multiple_break_end_in_one_day(): void
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        $this->actingAs($user);
+
+        $attendance = $this->createAttendanceStatus($user, '出勤中');
+
+        $this->post(route('attendance.store'), ['status' => '休憩入']);
+        $this->post(route('attendance.store'), ['status' => '休憩戻']);
+        $this->post(route('attendance.store'), ['status' => '休憩入']);
+
+        $response = $this->get(route('create'));
+        $response->assertStatus(200)->assertSee('休憩戻');
     }
 }
