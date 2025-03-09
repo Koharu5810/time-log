@@ -3,9 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\Attendance;
-use App\Models\BreakTime;
 use Tests\Helpers\TestHelper;
 use Tests\TestCase;
 
@@ -65,7 +63,7 @@ class AttendanceClockInTest extends TestCase
         $response->assertStatus(200)->assertDontSee('出勤');
     }
 // 出勤時刻が管理画面で確認できる
-    public function test_clock_in_time_is_displayed_on_attendance_list(): void
+    public function test_clock_in_time_is_displayed_on_attendance_detail(): void
     {
         $user = TestHelper::userLogin();
         /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記

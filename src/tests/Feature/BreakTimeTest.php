@@ -3,11 +3,11 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use Tests\Helpers\TestHelper;
 use Tests\TestCase;
+use Carbon\Carbon;
 
 class BreakTimeTest extends TestCase
 {
@@ -66,7 +66,7 @@ class BreakTimeTest extends TestCase
         /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
         $this->actingAs($user);
 
-        $attendance = $this->createAttendanceStatus($user, '出勤中');
+        $this->createAttendanceStatus($user, '出勤中');
 
         $this->post(route('attendance.store'), ['status' => '休憩入']);
         $this->post(route('attendance.store'), ['status' => '休憩戻']);
@@ -81,36 +81,10 @@ class BreakTimeTest extends TestCase
         /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
         $this->actingAs($user);
 
-        $attendance = $this->createAttendanceStatus($user, '出勤中');
-
-        $now = now();
+        $this->createAttendanceStatus($user, '出勤中');
 
         $this->post(route('attendance.store'), ['status' => '休憩入']);
-
-        $breakTime = BreakTime::where('attendance_id', $attendance->id)->latest()->first();
-        $breakStartTime = $breakTime->break_time_start;
-
-        $this->assertDatabaseHas('break_times', [
-            'id' => $breakTime->id,
-            'attendance_id' => $attendance->id,
-            'break_time_start' => $breakStartTime,
-        ]);
-
         $this->post(route('attendance.store'), ['status' => '休憩戻']);
-
-        $breakTime = BreakTime::where('attendance_id', $attendance->id)->latest()->first();
-        $breakEndTime = $breakTime->break_time_end;
-
-        $this->assertDatabaseHas('break_times', [
-            'id' => $breakTime->id,
-            'attendance_id' => $attendance->id,
-            'break_time_end' => $breakEndTime,
-        ]);
-
-        $this->assertDatabaseHas('attendances', [
-            'user_id' => $user->id,
-            'status' => '出勤中',
-        ]);
 
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('出勤中');
@@ -132,28 +106,50 @@ class BreakTimeTest extends TestCase
         $response->assertStatus(200)->assertSee('休憩戻');
     }
 // 休憩の日付が管理画面で確認できる
-    public function test_clock_in_time_is_displayed_on_attendance_list(): void
+    public function test_break_time_is_displayed_on_attendance_detail(): void
     {
-        $user = TestHelper::userLogin()->first();
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
         $this->actingAs($user);
 
-        $this->createAttendanceStatus($user, '勤務外');
+        $attendance = $this->createAttendanceStatus($user, '出勤中');
 
-        $now = now();
-        $clockInDbFormat = $now->format('H:i:s');
-        $clockInViewFormat = $now->format('H:i');
+        $this->post(route('attendance.store'), ['status' => '休憩入']);
 
-        $this->post(route('attendance.store'), [
-            'status' => '出勤',
+        $breakTime = BreakTime::where('attendance_id', $attendance->id)->latest()->first();
+
+        $breakStartCarbon = Carbon::parse($breakTime->break_time_start);
+        $breakStartDbFormat = $breakStartCarbon->format('H:i:s');
+        $breakStartViewFormat = $breakStartCarbon->format('H:i');
+
+        $this->assertDatabaseHas('break_times', [
+            'id' => $breakTime->id,
+            'attendance_id' => $attendance->id,
+            'break_time_start' => $breakStartDbFormat,
+        ]);
+
+        $this->post(route('attendance.store'), ['status' => '休憩戻']);
+
+        $breakEndCarbon = Carbon::parse($breakTime->break_time_end);
+        $breakEndDbFormat = $breakEndCarbon->format('H:i:s');
+        $breakEndViewFormat = $breakEndCarbon->format('H:i');
+
+        $this->assertDatabaseHas('break_times', [
+            'id' => $breakTime->id,
+            'attendance_id' => $attendance->id,
+            'break_time_end' => $breakEndDbFormat,
         ]);
 
         $this->assertDatabaseHas('attendances', [
             'user_id' => $user->id,
             'status' => '出勤中',
-            'clock_in' => $clockInDbFormat,
         ]);
 
-        $response = $this->get(route('attendance.list'));
-        $response->assertStatus(200)->assertSee($clockInViewFormat);
+        $attendance = Attendance::where('user_id', $user->id)->latest()->first();
+
+        $response = $this->get(route('attendance.detail', ['id' => $attendance->id]));
+        $response->assertStatus(200)
+                ->assertSee($breakStartViewFormat)
+                ->assertSee($breakEndViewFormat);
     }
 }
