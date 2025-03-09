@@ -40,6 +40,8 @@ class UserLoginTest extends TestCase
     {
         $this->openLoginPage();
 
+        $user = TestHelper::userLogin();
+
         $data = [
             'email' => '',
             'password' => 'password123',
@@ -51,6 +53,8 @@ class UserLoginTest extends TestCase
     public function test_password_validation_error_when_password_is_missing()
     {
         $this->openLoginPage();
+
+        $user = TestHelper::userLogin();
 
         $data = [
             'email' => 'TEST USER',
