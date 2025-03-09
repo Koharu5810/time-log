@@ -62,4 +62,28 @@ class AttendanceClockInTest extends TestCase
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertDontSee('出勤');
     }
+// 出勤時刻が管理画面で確認できる
+    public function test_clock_in_time_ins_displayed_on_attendance_list(): void
+    {
+        $user = TestHelper::userLogin()->first();
+        $this->actingAs($user);
+
+        $this->createAttendanceStatus($user, '勤務外');
+
+        $now = now();
+        $clockInTime = $now->format('H:i');
+
+        $this->post(route('attendance.store'), [
+            'status' => '出勤',
+        ]);
+
+        $this->assertDatabaseHas('attendances', [
+            'user_id' => $user->id,
+            'status' => '出勤中',
+            'clock_in' => $clockInTime,
+        ]);
+
+        $response = $this->get(route('attendance.list'));
+        $response->assertStatus(200)->assertSee($clockInTime);
+    }
 }
