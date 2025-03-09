@@ -74,4 +74,45 @@ class BreakTimeTest extends TestCase
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('休憩入');
     }
+    public function test_user_can_end_break_time(): void
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        $this->actingAs($user);
+
+        $attendance = $this->createAttendanceStatus($user, '出勤中');
+
+        $now = now();
+
+        $this->post(route('attendance.store'), ['status' => '休憩入']);
+
+        $breakTime = BreakTime::where('attendance_id', $attendance->id)->latest()->first();
+        $breakStartTime = $breakTime->break_time_start;
+
+
+        $this->assertDatabaseHas('break_times', [
+            'id' => $breakTime->id,
+            'attendance_id' => $attendance->id,
+            'break_time_start' => $breakStartTime,
+        ]);
+
+        $this->post(route('attendance.store'), ['status' => '休憩戻']);
+
+        $breakTime = BreakTime::where('attendance_id', $attendance->id)->latest()->first();
+        $breakEndTime = $breakTime->break_time_end;
+
+        $this->assertDatabaseHas('break_times', [
+            'id' => $breakTime->id,
+            'attendance_id' => $attendance->id,
+            'break_time_end' => $breakEndTime,
+        ]);
+
+        $this->assertDatabaseHas('attendances', [
+            'user_id' => $user->id,
+            'status' => '出勤中',
+        ]);
+
+        $response = $this->get(route('create'));
+        $response->assertStatus(200)->assertSee('出勤中');
+    }
 }
