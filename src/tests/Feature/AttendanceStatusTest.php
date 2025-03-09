@@ -60,4 +60,19 @@ class AttendanceStatusTest extends TestCase
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('休憩中');
     }
+// ステータスが退勤済のユーザー
+    public function test_attendance_status_display_for_clocked_out_user(): void
+    {
+        $user = TestHelper::userLogin()->first();
+        $this->actingAs($user);
+
+        $attendance = $this->createAttendanceStatus($user, '退勤済');
+
+        $attendance->update([
+            'clock_end' => now()->format('H:i:s'),
+        ]);
+
+        $response = $this->get(route('create'));
+        $response->assertStatus(200)->assertSee('退勤済');
+    }
 }
