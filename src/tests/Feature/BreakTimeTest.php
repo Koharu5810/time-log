@@ -90,7 +90,6 @@ class BreakTimeTest extends TestCase
         $breakTime = BreakTime::where('attendance_id', $attendance->id)->latest()->first();
         $breakStartTime = $breakTime->break_time_start;
 
-
         $this->assertDatabaseHas('break_times', [
             'id' => $breakTime->id,
             'attendance_id' => $attendance->id,
@@ -123,7 +122,7 @@ class BreakTimeTest extends TestCase
         /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
         $this->actingAs($user);
 
-        $attendance = $this->createAttendanceStatus($user, '出勤中');
+        $this->createAttendanceStatus($user, '出勤中');
 
         $this->post(route('attendance.store'), ['status' => '休憩入']);
         $this->post(route('attendance.store'), ['status' => '休憩戻']);
@@ -131,5 +130,30 @@ class BreakTimeTest extends TestCase
 
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('休憩戻');
+    }
+// 休憩の日付が管理画面で確認できる
+    public function test_clock_in_time_is_displayed_on_attendance_list(): void
+    {
+        $user = TestHelper::userLogin()->first();
+        $this->actingAs($user);
+
+        $this->createAttendanceStatus($user, '勤務外');
+
+        $now = now();
+        $clockInDbFormat = $now->format('H:i:s');
+        $clockInViewFormat = $now->format('H:i');
+
+        $this->post(route('attendance.store'), [
+            'status' => '出勤',
+        ]);
+
+        $this->assertDatabaseHas('attendances', [
+            'user_id' => $user->id,
+            'status' => '出勤中',
+            'clock_in' => $clockInDbFormat,
+        ]);
+
+        $response = $this->get(route('attendance.list'));
+        $response->assertStatus(200)->assertSee($clockInViewFormat);
     }
 }

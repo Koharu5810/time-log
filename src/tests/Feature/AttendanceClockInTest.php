@@ -30,7 +30,8 @@ class AttendanceClockInTest extends TestCase
 // 出勤処理
     public function test_user_can_clock_in(): void
     {
-        $user = TestHelper::userLogin()->first();
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
         $this->actingAs($user);
 
         $this->createAttendanceStatus($user, '勤務外');
@@ -54,7 +55,8 @@ class AttendanceClockInTest extends TestCase
 // 出勤は1日1回のみ可能
     public function test_user_cannot_clock_in_again_after_clocking_in():void
     {
-        $user = TestHelper::userLogin()->first();
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
         $this->actingAs($user);
 
         $this->createAttendanceStatus($user, '退勤済');
@@ -65,7 +67,8 @@ class AttendanceClockInTest extends TestCase
 // 出勤時刻が管理画面で確認できる
     public function test_clock_in_time_is_displayed_on_attendance_list(): void
     {
-        $user = TestHelper::userLogin()->first();
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
         $this->actingAs($user);
 
         $this->createAttendanceStatus($user, '勤務外');
@@ -78,13 +81,15 @@ class AttendanceClockInTest extends TestCase
             'status' => '出勤',
         ]);
 
-        $this->assertDatabaseHas('attendances', [
+        $attendance = $this->assertDatabaseHas('attendances', [
             'user_id' => $user->id,
             'status' => '出勤中',
             'clock_in' => $clockInDbFormat,
         ]);
 
-        $response = $this->get(route('attendance.list'));
+        $attendance = Attendance::where('user_id', $user->id)->latest()->first();
+
+        $response = $this->get(route('attendance.detail', ['id' => $attendance->id]));
         $response->assertStatus(200)->assertSee($clockInViewFormat);
     }
 }
