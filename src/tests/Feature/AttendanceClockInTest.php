@@ -33,7 +33,7 @@ class AttendanceClockInTest extends TestCase
         $user = TestHelper::userLogin()->first();
         $this->actingAs($user);
 
-        $attendance = $this->createAttendanceStatus($user, '勤務外');
+        $this->createAttendanceStatus($user, '勤務外');
 
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('出勤');
@@ -54,6 +54,12 @@ class AttendanceClockInTest extends TestCase
 // 出勤は1日1回のみ可能
     public function test_user_cannot_clock_in_again_after_clocking_in():void
     {
+        $user = TestHelper::userLogin()->first();
+        $this->actingAs($user);
 
+        $this->createAttendanceStatus($user, '退勤済');
+
+        $response = $this->get(route('create'));
+        $response->assertStatus(200)->assertDontSee('出勤');
     }
 }
