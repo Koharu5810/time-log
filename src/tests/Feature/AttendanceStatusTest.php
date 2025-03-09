@@ -3,11 +3,10 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\Attendance;
+use App\Models\BreakTime;
 use Tests\TestCase;
 use Tests\Helpers\TestHelper;
-use Carbon\Carbon;
 
 class AttendanceStatusTest extends TestCase
 {
@@ -55,7 +54,13 @@ class AttendanceStatusTest extends TestCase
         $user = TestHelper::userLogin()->first();
         $this->actingAs($user);
 
-        $this->createAttendanceStatus($user, '休憩中');
+        $attendance = $this->createAttendanceStatus($user, '休憩中');
+
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'break_time_start' => now()->format('H:i:s'),
+            'break_time_end' => null,
+        ]);
 
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('休憩中');
