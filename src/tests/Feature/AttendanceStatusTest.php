@@ -10,9 +10,6 @@ use Tests\Helpers\TestHelper;
 
 class AttendanceStatusTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     use RefreshDatabase;
 
     private function createAttendanceStatus($user, $status)

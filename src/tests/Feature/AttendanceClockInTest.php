@@ -9,9 +9,6 @@ use Tests\TestCase;
 
 class AttendanceClockInTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     use RefreshDatabase;
 
     private function createAttendanceStatus($user, $status)

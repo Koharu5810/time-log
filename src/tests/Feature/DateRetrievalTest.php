@@ -9,9 +9,6 @@ use Carbon\Carbon;
 
 class DateRetrievalTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     use RefreshDatabase;
 
     public function test_login_user_can_see_date_and_time()

@@ -8,9 +8,6 @@ use App\Models\User;
 
 class UserLogoutTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     use RefreshDatabase;
 
     public function test_authUser_can_logout_and_redirect_to_home()

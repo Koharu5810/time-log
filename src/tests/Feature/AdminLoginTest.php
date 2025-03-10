@@ -8,9 +8,6 @@ use Tests\TestCase;
 
 class AdminLoginTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     use RefreshDatabase;
 
     protected array $adminData;

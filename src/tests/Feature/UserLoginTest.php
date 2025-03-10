@@ -9,9 +9,6 @@ use Tests\Helpers\TestHelper;
 
 class UserLoginTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     use RefreshDatabase;
 
     protected function setUp(): void

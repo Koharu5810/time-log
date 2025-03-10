@@ -3,16 +3,12 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\Attendance;
 use Tests\Helpers\TestHelper;
 use Tests\TestCase;
 
 class AttendanceClockOutTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     use RefreshDatabase;
 
     private function createAttendanceStatus($user)
