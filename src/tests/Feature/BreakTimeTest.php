@@ -13,7 +13,7 @@ class BreakTimeTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function createAttendanceStatus($user, $status)
+    private function createAttendanceStatus($user)
     {
         return Attendance::create([
             'user_id' => $user->id,
