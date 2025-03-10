@@ -38,9 +38,7 @@ class AttendanceClockOutTest extends TestCase
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('退勤');
 
-        $response = $this->post(route('attendance.store'), [
-            'status' => '退勤',
-        ]);
+        $response = $this->post(route('attendance.store'), ['status' => '退勤']);
 
         $this->assertDatabaseHas('attendances', [
             'user_id' => $user->id,
@@ -53,5 +51,31 @@ class AttendanceClockOutTest extends TestCase
 
         $responseAfterRedirect = $this->get(route('create'));
         $responseAfterRedirect->assertStatus(200)->assertSee('退勤済');
+    }
+// 出勤時刻が管理画面で確認できる
+    public function test_clock_out_time_is_displayed_on_attendance_detail(): void
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        $this->actingAs($user);
+
+        $this->createAttendanceStatus($user, '出勤中');
+
+        $now = now();
+        $clockEndDbFormat = $now->format('H:i:s');
+        $clockEndViewFormat = $now->format('H:i');
+
+        $this->post(route('attendance.store'), ['status' => '退勤']);
+
+        $attendance = $this->assertDatabaseHas('attendances', [
+            'user_id' => $user->id,
+            'status' => '退勤済',
+            'clock_end' => $clockEndDbFormat,
+        ]);
+
+        $attendance = Attendance::where('user_id', $user->id)->latest()->first();
+
+        $response = $this->get(route('attendance.detail', ['id' => $attendance->id]));
+        $response->assertStatus(200)->assertSee($clockEndViewFormat);
     }
 }

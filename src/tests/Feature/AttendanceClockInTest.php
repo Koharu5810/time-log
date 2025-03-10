@@ -37,9 +37,7 @@ class AttendanceClockInTest extends TestCase
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('出勤');
 
-        $response = $this->post(route('attendance.store'), [
-            'status' => '出勤',
-        ]);
+        $response = $this->post(route('attendance.store'), ['status' => '出勤']);
 
         $this->assertDatabaseHas('attendances', [
             'user_id' => $user->id,
@@ -75,9 +73,7 @@ class AttendanceClockInTest extends TestCase
         $clockInDbFormat = $now->format('H:i:s');
         $clockInViewFormat = $now->format('H:i');
 
-        $this->post(route('attendance.store'), [
-            'status' => '出勤',
-        ]);
+        $this->post(route('attendance.store'), ['status' => '出勤']);
 
         $attendance = $this->assertDatabaseHas('attendances', [
             'user_id' => $user->id,

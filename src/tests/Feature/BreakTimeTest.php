@@ -39,9 +39,7 @@ class BreakTimeTest extends TestCase
         $response = $this->get(route('create'));
         $response->assertStatus(200)->assertSee('休憩入');
 
-        $response = $this->post(route('attendance.store'), [
-            'status' => '休憩入',
-        ]);
+        $response = $this->post(route('attendance.store'), ['status' => '休憩入']);
 
         $this->assertDatabaseHas('break_times', [
             'attendance_id' => $attendance->id,
