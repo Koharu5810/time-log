@@ -52,10 +52,7 @@
 
             // 時間を更新
             const timeStr = now.getHours().toString().padStart(2, '0') + ':'
-                        + now.getMinutes().toString().padStart(2, '0')
-                        // + ':'
-                        // + now.getSeconds().toString().padStart(2, '0')  // デバッグ用に秒数表示残してるが後で消す
-                        ;
+                        + now.getMinutes().toString().padStart(2, '0');
 
             document.getElementById('current-time').innerText = timeStr;
         }
