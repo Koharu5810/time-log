@@ -52,4 +52,46 @@ class AttendanceListTest extends TestCase
         $currentMonth = Carbon::now()->format('Y/m');
         $response->assertSee($currentMonth);
     }
+// 前月を押下すると前月の情報が表示
+    public function test_attendance_list_displays_previous_month_after_clicking_previous_button(): void
+    {
+        $this->seed();
+
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */  // 型解析ツールのエラー防止
+        $this->actingAs($user);
+
+        $currentMonthDisplay = Carbon::now()->format('Y/m');
+        $response = $this->get(route('attendance.list'));
+        $response->assertStatus(200);
+        $response->assertSee($currentMonthDisplay);
+
+        $previousMonthDisplay = Carbon::now()->subMonth()->format('Y/m');
+
+        //「前月」ボタンを押す（前月のURLへリクエスト）
+        $response = $this->get(route('attendance.list', ['year' => Carbon::now()->subMonth()->year, 'month' => Carbon::now()->subMonth()->month]));
+        $response->assertStatus(200);
+        $response->assertSee($previousMonthDisplay);
+    }
+// 次月を押下すると次月の情報が表示
+    public function test_attendance_list_displays_next_month_after_clicking_previous_button(): void
+    {
+        $this->seed();
+
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */  // 型解析ツールのエラー防止
+        $this->actingAs($user);
+
+        $currentMonthDisplay = Carbon::now()->format('Y/m');
+        $response = $this->get(route('attendance.list'));
+        $response->assertStatus(200);
+        $response->assertSee($currentMonthDisplay);
+
+        $nextMonthDisplay = Carbon::now()->addMonth()->format('Y/m');
+
+        //「前月」ボタンを押す（前月のURLへリクエスト）
+        $response = $this->get(route('attendance.list', ['year' => Carbon::now()->addMonth()->year, 'month' => Carbon::now()->addMonth()->month]));
+        $response->assertStatus(200);
+        $response->assertSee($nextMonthDisplay);
+    }
 }
