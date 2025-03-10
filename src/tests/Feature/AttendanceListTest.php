@@ -116,5 +116,11 @@ class AttendanceListTest extends TestCase
 
         $response = $this->get(route('attendance.detail', ['id' => $attendance->id]));
         $response->assertStatus(200);
+
+        $formattedYear = Carbon::parse($attendance->work_date)->format('Y年');
+        $formattedDate = Carbon::parse($attendance->work_date)->format('n月j日');
+        // 勤務日が正しく表示されているか確認
+        $response->assertSee($formattedYear);
+        $response->assertSee($formattedDate);
     }
 }
