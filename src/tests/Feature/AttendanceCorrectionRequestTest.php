@@ -77,6 +77,8 @@ class AttendanceCorrectionRequestTest extends TestCase
             'attendance_id' => $attendance->id,
             'requested_clock_in' => Carbon::parse('18:30')->format('H:i:s'),
             'requested_clock_end' => Carbon::parse('17:30')->format('H:i:s'),
+            'remarks' => '早出のため',
+            'request_status' => '承認待ち',
         ]);
 
         // $response = $this->post(route('attendance.update'), $data);
@@ -175,6 +177,37 @@ class AttendanceCorrectionRequestTest extends TestCase
             'att_correct_id' => $attendance->id,
             'previous_break_time_start' => Carbon::parse('17:15')->format('H:i:s'),
             'previous_break_time_end' => Carbon::parse('17:45')->format('H:i:s'),
+        ]);
+    }
+// 備考欄が未入力の場合バリデーションメッセージ表示
+    public function test_validation_error_when_remarks_is_missing()
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        $this->actingAs($user);
+
+        ['attendance' => $attendance, 'breakTime' => $break_time] = $this->createAttendanceStatus($user);
+
+        $this->openLoginPage($attendance);
+
+        $data = [
+            'attendance_id' => $attendance->id,
+            'requested_clock_in' => '09:30',
+            'requested_clock_end' => '17:30',
+            'remarks' => '',
+            'request_status' => '承認待ち',
+        ];
+        $expectedErrors = ['remarks' => '備考を記入してください'];
+
+        $this->assertValidationError($attendance, $data, $expectedErrors);
+
+        // 修正リクエストがデータベースに保存されていないことを確認
+        $this->assertDatabaseMissing('attendance_correct_requests', [
+            'attendance_id' => $attendance->id,
+            'requested_clock_in' => Carbon::parse('18:30')->format('H:i:s'),
+            'requested_clock_end' => Carbon::parse('17:30')->format('H:i:s'),
+            'remarks' => '',
+            'request_status' => '承認待ち',
         ]);
     }
 }
