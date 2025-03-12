@@ -43,11 +43,6 @@
 }
 .table__input {
     display: flex;
-    justify-content: space-between;
-    text-align: left;
-    color: #000;
-    width: 320px;
-    padding: 35px 20px 35px 0;
 }
 .table__input input {
     width: 103px;
@@ -69,10 +64,34 @@
     resize: none;
     display: block;
 }
-.error-message {
+
+.attendance-time-group,
+.break-time-group {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+}
+.name-display,
+.work_date-display,
+.attendance-time-inputs,
+.break-time-inputs,
+.remarks_textarea {
+    width: 320px;
+    padding: 35px 20px 35px 0;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    color: #000;
+    gap: 10px;
+}
+
+.error-message {
+    max-width: 320px;
+    width: 100%;
+    margin-top: 5px;
+    flex-direction: column;
     display: block;
-    border: 1px solid green;
+    font-size: 14px;
 }
 
 .tfoot tr {
