@@ -52,7 +52,7 @@ class AttendanceDetailTest extends TestCase
         $response->assertSeeText($user->name);
     }
 // 選択した日付の表示
-    public function test_attendance_detail_displays_logged_in_work_date(): void
+    public function test_attendance_detail_displays_logged_in_users_work_date(): void
     {
         $user = TestHelper::userLogin();
         /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
@@ -69,8 +69,28 @@ class AttendanceDetailTest extends TestCase
         $yearPart = $carbonDate->format('Y年');
         $monthDayPart = $carbonDate->format('n月j日');
 
-        // ビューに正しい形式で表示されているか確認
         $response->assertSeeText($yearPart);
         $response->assertSeeText($monthDayPart);
+    }
+// 出退勤時刻がログインユーザの打刻と一致
+    public function test_attendance_detail_displays_correct_clock_in_and_clock_end(): void
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        $this->actingAs($user);
+
+        $attendance = $this->createAttendanceStatus($user);
+
+        $this->assertEquals($user->id, $attendance->user_id);
+
+        $response = $this->get(route('attendance.detail', ['id' => $attendance->id]));
+        $response->assertStatus(200);
+
+        $clockInTime = Carbon::parse($attendance->clock_in)->format('H:i');
+        $clockEndTime = Carbon::parse($attendance->clock_end)->format('H:i');
+
+        // ビューに正しい形式で表示されているか確認
+        $response->assertSee($clockInTime);
+        $response->assertSee($clockEndTime);
     }
 }
