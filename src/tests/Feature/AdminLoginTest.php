@@ -36,7 +36,7 @@ class AdminLoginTest extends TestCase
     {
         return $this->get('/admin/login')
             ->assertStatus(200)
-            ->assertSee('管理者ログインする')
+            ->assertSeeText('管理者ログインする')
             ->assertSee('<form', false);
     }
     private function assertValidationError($data, $expectedErrors)

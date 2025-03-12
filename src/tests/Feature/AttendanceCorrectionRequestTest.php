@@ -32,4 +32,40 @@ class AttendanceCorrectionRequestTest extends TestCase
         $attendance->breakTimes()->save($breakTime);
     }
 
+// 名前欄がログインユーザの氏名の表示
+    public function test_attendance_detail_displays_logged_in_user_name(): void
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        $this->actingAs($user);
+
+        $attendance = $this->createAttendanceStatus($user);
+
+        // 勤怠データがログインユーザーと紐づいているか確認
+        $this->assertEquals($user->id, $attendance->user_id);
+
+        $response = $this->get(route('attendance.detail', ['id' => $attendance->id]));
+        $response->assertStatus(200);
+
+        $response->assertSeeText($user->name);
+    }
+
+    public function test_email_validation_error_when_email_is_missing()
+    {
+        $this->openLoginPage();
+
+        Admin::create([
+            'name' => 'admin1',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('password123'),
+        ]);
+
+        $data = [
+            'email' => '',
+            'password' => 'password123',
+        ];
+        $expectedErrors = ['email' => 'メールアドレスを入力してください'];
+
+        $this->assertValidationError($data, $expectedErrors);
+    }
 }
