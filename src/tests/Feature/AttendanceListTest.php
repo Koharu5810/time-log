@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Attendance;
-use App\Models\BreakTime;
 use Tests\TestCase;
 use Tests\Helpers\TestHelper;
 use Carbon\Carbon;
