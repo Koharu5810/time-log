@@ -141,4 +141,40 @@ class AttendanceCorrectionRequestTest extends TestCase
             'previous_break_time_end' => Carbon::parse('18:30')->format('H:i:s'),
         ]);
     }
+// 休憩開始時間が退勤時間より後になっている場合バリデーションメッセージ表示
+    public function test_validation_error_when_break_time_end_is_after_clock_end()
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        $this->actingAs($user);
+
+        ['attendance' => $attendance, 'breakTime' => $break_time] = $this->createAttendanceStatus($user);
+
+        $this->openLoginPage($attendance);
+
+        $data = [
+            'attendance_id' => $attendance->id,
+            'requested_clock_in' => '09:30',
+            'requested_clock_end' => '17:30',
+            'break_times' => [
+                [
+                    'start' => '17:15',
+                    'end' => '17:45'
+                ],
+            ],
+            'remarks' => '早出のため',
+            'request_status' => '承認待ち',
+        ];
+        $expectedErrors = ['break_times.0.end' => '休憩時間が勤務時間外です'];
+
+        $this->assertValidationError($attendance, $data, $expectedErrors);
+
+        // 修正リクエストがデータベースに保存されていないことを確認
+        $this->assertDatabaseMissing('break_time_correct_requests', [
+            'break_time_id' => $break_time->id,
+            'att_correct_id' => $attendance->id,
+            'previous_break_time_start' => Carbon::parse('17:15')->format('H:i:s'),
+            'previous_break_time_end' => Carbon::parse('17:45')->format('H:i:s'),
+        ]);
+    }
 }

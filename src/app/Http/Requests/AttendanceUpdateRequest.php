@@ -77,6 +77,7 @@ class AttendanceUpdateRequest extends FormRequest
                                 // **休憩時間が出勤前 or 退勤後ならエラー**
                                 if ($breakStartTime->lt($clockIn) || $breakEndTime->gt($clockEnd)) {
                                     $validator->errors()->add("break_times.$index.start", '休憩時間が勤務時間外です');
+                                    $validator->errors()->add("break_times.$index.end", '休憩時間が勤務時間外です');
                                 }
 
                                 // 休憩時間を加算
