@@ -93,4 +93,26 @@ class AttendanceDetailTest extends TestCase
         $response->assertSee($clockInTime);
         $response->assertSee($clockEndTime);
     }
+// 休憩時刻がログインユーザの打刻と一致
+    public function test_attendance_detail_displays_correct_break_time_start_and_break_time_end(): void
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        $this->actingAs($user);
+
+        $attendance = $this->createAttendanceStatus($user);
+
+        $this->assertEquals($user->id, $attendance->user_id);
+
+        $response = $this->get(route('attendance.detail', ['id' => $attendance->id]));
+        $response->assertStatus(200);
+
+        foreach ($attendance->breakTimes as $index => $breakTime) {
+            $breakTimeStart = Carbon::parse($breakTime->break_time_start)->format('H:i');
+            $breakTimeEnd = Carbon::parse($breakTime->break_time_end)->format('H:i');
+
+            $response->assertSee('value="' . e($breakTimeStart) . '"', false);
+            $response->assertSee('value="' . e($breakTimeEnd) . '"', false);
+        }
+    }
 }
