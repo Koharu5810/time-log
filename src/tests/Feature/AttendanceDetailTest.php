@@ -34,7 +34,7 @@ class AttendanceDetailTest extends TestCase
         return $attendance;
     }
 
-// 勤怠詳細画面の名前欄がログインユーザの氏名
+// 名前欄がログインユーザの氏名の表示
     public function test_attendance_detail_displays_logged_in_user_name(): void
     {
         $user = TestHelper::userLogin();
@@ -51,18 +51,26 @@ class AttendanceDetailTest extends TestCase
 
         $response->assertSeeText($user->name);
     }
-// 勤怠詳細画面の名前欄がログインユーザの氏名
-    // public function test_attendance_detail_displays_logged_in_work_date(): void
-    // {
-    //     $user = TestHelper::userLogin();
-    //     /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
-    //     $this->actingAs($user);
+// 選択した日付の表示
+    public function test_attendance_detail_displays_logged_in_work_date(): void
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        $this->actingAs($user);
 
-    //     $attendance = $this->createAttendanceStatus($user);
+        $attendance = $this->createAttendanceStatus($user);
 
-    //     $response = $this->get(route('attendance.detail', ['id' => $attendance->id]));
-    //     $response->assertStatus(200);
+        $this->assertEquals($user->id, $attendance->user_id);
 
-    //     $response->assertSeeText($attendance->work_date);
-    // }
+        $response = $this->get(route('attendance.detail', ['id' => $attendance->id]));
+        $response->assertStatus(200);
+
+        $carbonDate = Carbon::parse($attendance->work_date);
+        $yearPart = $carbonDate->format('Y年');
+        $monthDayPart = $carbonDate->format('n月j日');
+
+        // ビューに正しい形式で表示されているか確認
+        $response->assertSeeText($yearPart);
+        $response->assertSeeText($monthDayPart);
+    }
 }
