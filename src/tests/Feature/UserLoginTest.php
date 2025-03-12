@@ -23,7 +23,7 @@ class UserLoginTest extends TestCase
     {
         return $this->get('/login')
             ->assertStatus(200)
-            ->assertSee('ログインする')
+            ->assertSeeText('ログインする')
             ->assertSee('<form', false);
     }
     private function assertValidationError($data, $expectedErrors)
