@@ -23,13 +23,20 @@ class AttendanceDetailTest extends TestCase
             'clock_end' => '18:00:00',
         ]);
 
-        $breakTime = BreakTime::create([
-            'attendance_id' => $attendance->id,
-            'break_time_start' => '12:00:00',
-            'break_time_end' => '13:00:00',
-        ]);
+        $breakTimes = [
+            ['break_time_start' => '12:00:00', 'break_time_end' => '12:30:00'], // 休憩1
+            ['break_time_start' => '15:30:00', 'break_time_end' => '16:00:00'], // 休憩2
+        ];
 
-        $attendance->breakTimes()->save($breakTime);
+        foreach ($breakTimes as $break) {
+            $breakTime = BreakTime::create([
+                'attendance_id' => $attendance->id,
+                'break_time_start' => $break['break_time_start'],
+                'break_time_end' => $break['break_time_end'],
+            ]);
+
+            $attendance->breakTimes()->save($breakTime);
+        }
 
         return $attendance;
     }
