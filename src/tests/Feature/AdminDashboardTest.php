@@ -4,9 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Admin;
-use App\Models\User;
 use App\Models\Attendance;
-use App\Models\BreakTime;
 use Tests\TestCase;
 use Carbon\Carbon;
 
@@ -143,5 +141,4 @@ class AdminDashboardTest extends TestCase
             $response->assertSee($attendance->user->name);
         }
     }
-
 }
