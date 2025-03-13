@@ -4,43 +4,69 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Admin;
+use App\Models\User;
 use App\Models\Attendance;
+use App\Models\BreakTime;
 use Tests\TestCase;
-use Tests\Helpers\TestHelper;
 use Carbon\Carbon;
 
 class AdminDashboardTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_can_view_all_users_attendance_list_correctly():void
+    protected function setUp(): void
     {
+        parent::setUp();
         $this->seed();
-
-        $admin = TestHelper::adminLogin();
-        $this->actingAs($admin, 'admin');
-
-        $response = $this->get(route('admin.dashboard'));
-        $response->assertStatus(200);
-
-        $attendances = Attendance::all();
-        foreach ($attendances as $attendance) {
-            $response->assertSee($attendance->user->name);
-            $response->assertSee(Carbon::parse($attendance->clock_in)->format('H:i'));
-            // $response->assertSee(Carbon::parse($attendance->clock_end ?? '')->format('H:i')); // 退勤前はnullの場合がある
-            if ($attendance->clock_end !== null) {
-            $response->assertSeeText(Carbon::parse($attendance->clock_end)->format('H:i'));
-            } else {
-                $response->assertDontSeeText('退勤時間'); // 退勤時間が表示されていないことを確認
-            }
-            // $response->assertSee($attendance->total_break_time); // 休憩時間 (分)
-            // 勤務合計時間 (勤務時間 - 休憩時間) を計算し、表示されていることを確認
-            // $work_time = $attendance->duration_in_minutes - $attendance->total_break_time;
-            // $work_time = ($attendance->duration_in_minutes ?? 0) - ($attendance->total_break_time ?? 0);
-            // $response->assertSee($work_time);
-            $response->assertSeeText('詳細');
-        }
     }
 
+    public function test_admin_can_view_all_users_attendance_list_correctly():void
+    {
+        // 1. 管理者ユーザーにログインする
+        $admin = Admin::where('email', 'admin1@test.com')->first();
+        $this->actingAs($admin, 'admin');
+
+        // 2. 勤怠一覧画面を開く
+        $date = Carbon::today()->toDateString();
+        $attendances = Attendance::whereDate('work_date', $date)->with('user', 'breakTimes')->get();
+
+        $response = $this->get(route('admin.dashboard', [
+            'year' => Carbon::today()->year,
+            'month' => Carbon::today()->month,
+            'day' => Carbon::today()->day,
+        ]));
+
+        $response->assertStatus(200);
+        foreach ($attendances as $attendance) {
+            $user = $attendance->user;
+            $totalBreakTime = $attendance->total_break_time;
+            $workDuration = gmdate('H:i', (($attendance->duration_in_minutes ?? 0) - ($totalBreakTime ?? 0)) * 60);
+
+            $response->assertSee($user->name);
+            $response->assertSee(Carbon::parse($attendance->clock_in)->format('H:i'));
+
+            // 退勤時間がある場合のみチェック
+            if ($attendance->clock_end) {
+                $response->assertSee(Carbon::parse($attendance->clock_end)->format('H:i'));
+            } else {
+                $response->assertDontSee('00:00'); // 退勤していない場合の対応
+            }
+
+            // 休憩時間がある場合のみチェック
+            if ($totalBreakTime > 0) {
+            $response->assertSee(gmdate('H:i', $totalBreakTime * 60));
+            } else {
+                $response->assertDontSee('00:00');
+            }
+
+            // 勤務合計時間がある場合のみチェック
+            if ($attendance->clock_end) {
+                $response->assertSee($workDuration);
+            }
+
+            $response->assertSee('詳細');
+        }
+    }
 
 }
