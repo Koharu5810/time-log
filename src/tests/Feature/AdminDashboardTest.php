@@ -84,4 +84,32 @@ class AdminDashboardTest extends TestCase
         $response->assertSeeText(Carbon::today()->format('Y年m月d日の勤怠'));
         $response->assertSee(Carbon::today()->format('Y/m/d'));
     }
+// 前日を押すと前の日の勤怠情報が表示される
+    public function test_admin_can_view_previous_day_attendance()
+    {
+        $this->loginAsAdmin();
+        $response = $this->getAdminDashboardResponse();
+
+        // 「前日」ボタンのURLを取得
+        $previousDate = Carbon::today()->subDay();
+        $previousUrl = route('admin.dashboard', [
+            'year' => $previousDate->year,
+            'month' => $previousDate->month,
+            'day' => $previousDate->day,
+        ]);
+
+        $response->assertSee($previousUrl);
+        $response->assertSeeText('前日');
+
+        // 「前日」ボタンを押す
+        $response = $this->get($previousUrl);
+
+        $response->assertSeeText($previousDate->format('Y年m月d日の勤怠'));
+        $response->assertSee($previousDate->format('Y/m/d'));
+
+        $attendances = Attendance::whereDate('work_date', $previousDate)->with('user', 'breakTimes')->get();
+        foreach ($attendances as $attendance) {
+            $response->assertSee($attendance->user->name);
+        }
+    }
 }
