@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\Admin;
 use App\Models\User;
 use App\Models\Attendance;
@@ -21,21 +20,29 @@ class AdminDashboardTest extends TestCase
         $this->seed();
     }
 
-    public function test_admin_can_view_all_users_attendance_list_correctly():void
+    private function loginAsAdmin()
     {
-        // 1. 管理者ユーザーにログインする
         $admin = Admin::where('email', 'admin1@test.com')->first();
         $this->actingAs($admin, 'admin');
-
-        // 2. 勤怠一覧画面を開く
-        $date = Carbon::today()->toDateString();
-        $attendances = Attendance::whereDate('work_date', $date)->with('user', 'breakTimes')->get();
-
-        $response = $this->get(route('admin.dashboard', [
+    }
+    private function getAdminDashboardResponse()
+    {
+        return $this->get(route('admin.dashboard', [
             'year' => Carbon::today()->year,
             'month' => Carbon::today()->month,
             'day' => Carbon::today()->day,
         ]));
+    }
+
+// その日になされた全ユーザの勤怠情報を確認
+    public function test_admin_can_view_all_users_attendance_list_correctly():void
+    {
+        $this->loginAsAdmin();
+        $response = $this->getAdminDashboardResponse();
+
+        // 勤怠一覧画面を開く
+        $date = Carbon::today()->toDateString();
+        $attendances = Attendance::whereDate('work_date', $date)->with('user', 'breakTimes')->get();
 
         $response->assertStatus(200);
         foreach ($attendances as $attendance) {
@@ -68,5 +75,13 @@ class AdminDashboardTest extends TestCase
             $response->assertSee('詳細');
         }
     }
+// 管理者ダッシュボードページに遷移した際、現在の日付が表示される
+    public function test_admin_dashboard_shows_current_date()
+    {
+        $this->loginAsAdmin();
+        $response = $this->getAdminDashboardResponse();
 
+        $response->assertSeeText(Carbon::today()->format('Y年m月d日の勤怠'));
+        $response->assertSee(Carbon::today()->format('Y/m/d'));
+    }
 }
