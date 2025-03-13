@@ -112,4 +112,36 @@ class AdminDashboardTest extends TestCase
             $response->assertSee($attendance->user->name);
         }
     }
+// 翌日を押すと次の日の勤怠情報が表示される
+    public function test_admin_can_view_next_day_attendance()
+    {
+        $this->loginAsAdmin();
+        $response = $this->getAdminDashboardResponse();
+
+        // 「翌日」ボタンのURLを取得
+        $nextDate = Carbon::today()->addDay();
+        $nextUrl = route('admin.dashboard', [
+            'year' => $nextDate->year,
+            'month' => $nextDate->month,
+            'day' => $nextDate->day,
+        ]);
+
+        // 「翌日」リンクが存在することを確認
+        $response->assertSee($nextUrl);
+        $response->assertSeeText('翌日');
+
+        // 「翌日」ボタンを押したと仮定してリクエスト
+        $response = $this->get($nextUrl);
+
+        // 翌日の日付が表示されていることを確認
+        $response->assertSeeText($nextDate->format('Y年m月d日の勤怠'));
+        $response->assertSee($nextDate->format('Y/m/d'));
+
+        // 翌日分の勤怠情報が表示されることを確認
+        $attendances = Attendance::whereDate('work_date', $nextDate)->with('user', 'breakTimes')->get();
+        foreach ($attendances as $attendance) {
+            $response->assertSee($attendance->user->name);
+        }
+    }
+
 }
