@@ -219,7 +219,11 @@ class AdminAttendanceTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText('詳細');
 
-        $response = $this->get(route('attendance.detail', ['id' => $attendance->id]));
+        $detailUrl = route('attendance.detail', ['id' => $attendance->id]);
+        $response->assertSee($detailUrl);
+
+        // 「詳細」ボタンを押す
+        $response = $this->get($detailUrl);
         $response->assertStatus(200);
 
         $response->assertSee(Carbon::parse($attendance->work_date)->format('Y年'));
