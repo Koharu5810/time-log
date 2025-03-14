@@ -44,26 +44,29 @@
                 <tr>
                     <td class="table__label">出勤・退勤</td>
                     <td class="table__input">
-                        {{ \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') }}
+                        {{ \Carbon\Carbon::parse($attendance->attendanceCorrectRequest->requested_clock_in)->format('H:i') }}
 
                         <span>〜</span>
 
-                        {{ \Carbon\Carbon::parse($attendance->clock_end)->format('H:i') }}
+                        {{ \Carbon\Carbon::parse($attendance->attendanceCorrectRequest->requested_clock_end)->format('H:i') }}
                     </td>
                 </tr>
         {{-- 休憩 --}}
-                @foreach ($attendance->breakTimes as $index => $break)
-                    <tr>
-                        <td class="table__label">{{ $index == 0 ? '休憩' : '休憩' . ($index + 1) }}</td>
-                        <td class="table__input">
-                            {{ $break->break_time_start ?\Carbon\Carbon::parse($break->break_time_start)->format('H:i') : '' }}
+                @if (!empty($displayBreakTimes))
+                    @foreach ($displayBreakTimes as $break)
+                        <tr>
+                            <td class="table__label">{{ $break['index'] == 0 ? '休憩' : '休憩' . ($break['index'] + 1) }}</td>
 
-                            <span>〜</span>
+                            <td class="table__input">
+                                {{ \Carbon\Carbon::parse($break['start'])->format('H:i') }}
 
-                            {{ $break->break_time_end ?\Carbon\Carbon::parse($break->break_time_end)->format('H:i') : '' }}
-                        </td>
-                    </tr>
-                @endforeach
+                                <span>〜</span>
+
+                                {{ \Carbon\Carbon::parse($break['end'])->format('H:i') }}
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
         {{-- 備考 --}}
                 <tr>
                     <td class="table__label">備考</td>

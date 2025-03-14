@@ -41,7 +41,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/admin/attendance/staff/{id}', [AttendanceController::class, 'showAttendanceList'])->name('admin.attendance.list');
 
     // 修正申請承認（管理者）
-    Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AttendanceRequestController::class, 'showApprove'])->name('show.request.approve');
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AttendanceRequestController::class, 'showApproveDetail'])->name('show.request.approve');
     Route::patch('/stamp_correction_request/approve/{attendance_correct_request}', [AttendanceRequestController::class, 'approve'])->name('request.approve');
 });
 

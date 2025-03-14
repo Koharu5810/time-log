@@ -12,7 +12,7 @@ use Carbon\Carbon;
 
 class AttendanceRequestController extends Controller
 {
-// 勤怠詳細画面表示
+// 勤怠詳細画面表示（一般ユーザ・管理者/修正可）
     public function showAttendanceDetail($id) {
         $attendance = Attendance::with([
             'user',
@@ -140,13 +140,39 @@ class AttendanceRequestController extends Controller
     }
 
 // 修正承認画面表示（管理者）
-    public function showApprove($id)
+    public function showApproveDetail($id)
     {
-        $request = AttendanceCorrectRequest::with('attendance')->findOrFail($id);
+        $request = AttendanceCorrectRequest::with([
+            'attendance.user',
+            'attendance.breakTimes',
+            'breakTimeCorrectRequests',
+        ])->findOrFail($id);
 
         $attendance = $request->attendance;
 
-        return view('admin.request-approval', compact('request', 'attendance'));
+        $displayBreakTimes = [];
+
+        $hasBreakTimes = $attendance->breakTimes->isNotEmpty();
+        $hasBreakCorrections = $request->breakTimeCorrectRequests->isNotEmpty();
+
+        if ($hasBreakTimes || $hasBreakCorrections) {
+            foreach ($attendance->breakTimes as $index => $breakTime) {
+
+                $correction = $request->breakTimeCorrectRequests
+                    ->where('break_time_id', $breakTime->id)
+                    ->first();
+
+                $displayBreakTimes[] = [
+                    'id' => $breakTime->id,
+                    'index' => $index,
+                    'is_corrected' => !is_null($correction),
+                    'start' => $correction ? $correction->requested_break_time_start : $breakTime->break_time_start,
+                    'end' => $correction ? $correction->requested_break_time_end : $breakTime->break_time_end,
+                ];
+            }
+        }
+
+        return view('admin.request-approval', compact('request', 'attendance', 'displayBreakTimes'));
     }
 // 修正勤怠承認（管理者）
     public function approve(AttendanceCorrectRequest $attendance_correct_request)
