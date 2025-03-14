@@ -67,14 +67,14 @@ class AdminAttendanceRequestTest extends TestCase
             'admin_id' => null,
             'approved_at' => null,
         ]);
-        // $this->breakTimeRequest = BreakTimeCorrectRequest::create([
-        //     'break_time_id' => $this->breakTime->id,
-        //     'att_correct_id' => $this->correctionRequest->id,
-        //     'previous_break_time_start' => $this->breakTime->break_time_start,
-        //     'previous_break_time_end' => $this->breakTime->break_time_end,
-        //     'requested_break_time_start' => '12:15:00',
-        //     'requested_break_time_end' => '13:15:00',
-        // ]);
+        $this->breakTimeRequest = BreakTimeCorrectRequest::create([
+            'break_time_id' => $this->breakTime->id,
+            'att_correct_id' => $this->correctionRequest->id,
+            'previous_break_time_start' => $this->breakTime->break_time_start,
+            'previous_break_time_end' => $this->breakTime->break_time_end,
+            'requested_break_time_start' => '12:15:00',
+            'requested_break_time_end' => '13:15:00',
+        ]);
     }
 
     private function loginAsAdmin()
@@ -131,13 +131,22 @@ class AdminAttendanceRequestTest extends TestCase
         $response->assertSee(Carbon::parse($this->correctionRequest->requested_clock_in)->format('H:i'));
         $response->assertSee(Carbon::parse($this->correctionRequest->requested_clock_end)->format('H:i'));
 
+        // 休憩データの確認
         $breakTimes = $this->attendance->breakTimes;
+
         if ($breakTimes->isNotEmpty()) {
             foreach ($breakTimes as $break) {
-                $breakCorrection = $this->breakTimeRequest;
+                // 該当のBreakTimeCorrectRequestを取得（存在しない場合は null）
+                $breakCorrection = BreakTimeCorrectRequest::where('break_time_id', $break->id)
+                    ->where('att_correct_id', $this->correctionRequest->id)
+                    ->first();
 
-                $response->assertSee(Carbon::parse($breakCorrection->requested_break_time_start)->format('H:i'));
-                $response->assertSee(Carbon::parse($breakCorrection->requested_break_time_end)->format('H:i'));
+                // 修正データがある場合はrequested_break_time_startを表示、なければ元のbreak_time_start
+                $startTime = $breakCorrection ? $breakCorrection->requested_break_time_start : $break->break_time_start;
+                $endTime = $breakCorrection ? $breakCorrection->requested_break_time_end : $break->break_time_end;
+
+                $response->assertSee(Carbon::parse($startTime)->format('H:i'));
+                $response->assertSee(Carbon::parse($endTime)->format('H:i'));
             }
         } else {
             // 休憩がない場合は休憩の行が表示されないことを確認
