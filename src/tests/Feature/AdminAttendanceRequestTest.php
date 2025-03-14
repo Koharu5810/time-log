@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\User;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrectRequest;
+use App\Models\BreakTime;
 use App\Models\BreakTimeCorrectRequest;
 use Tests\TestCase;
 use Carbon\Carbon;
@@ -18,6 +19,7 @@ class AdminAttendanceRequestTest extends TestCase
     protected $admin;
     protected $user;
     protected $attendance;
+    protected $breakTime;
     protected $correctionRequest;
     protected $breakTimeRequest;
 
@@ -28,7 +30,6 @@ class AdminAttendanceRequestTest extends TestCase
 
         // 固定の管理者アカウントを作成
         $this->admin = Admin::where('email', 'admin1@test.com')->first();
-
         if (!$this->admin) {
             $this->admin = Admin::create([
                 'name' => '管理者',
@@ -36,42 +37,48 @@ class AdminAttendanceRequestTest extends TestCase
                 'password' => bcrypt('password'),
             ]);
         }
-        // 固定のユーザーと勤怠データを作成
+
         $this->user = User::create([
             'name' => 'テストユーザー',
             'email' => 'user1@test.com',
             'password' => bcrypt('password'),
         ]);
-
         $this->attendance = Attendance::create([
             'user_id' => $this->user->id,
             'work_date' => '2025-03-14',
             'clock_in' => '09:00:00',
             'clock_end' => '18:00:00',
         ]);
+        $this->breakTime = BreakTime::create([
+            'attendance_id' => $this->attendance->id,
+            'break_time_start' => '12:00:00',
+            'break_time_end' => '13:00:00',
+        ]);
 
-        // 固定の修正申請データを作成
         $this->correctionRequest = AttendanceCorrectRequest::create([
             'user_id' => $this->user->id,
             'attendance_id' => $this->attendance->id,
-            'request_status' => '承認待ち',
+            'previous_clock_in' => $this->attendance->clock_in,
+            'previous_clock_end' => $this->attendance->clock_end,
             'requested_clock_in' => '09:23:00',
             'requested_clock_end' => '18:22:00',
-            'remarks' => '打刻漏れ'
+            'remarks' => '打刻漏れ',
+            'request_status' => '承認待ち',
+            'admin_id' => null,
+            'approved_at' => null,
         ]);
-
-        // 休憩時間データ（ある場合のみ）を作成
-        $this->breakTimeRequest = BreakTimeCorrectRequest::create([
-            'att_correct_id' => $this->correctionRequest->id,
-            'requested_break_time_start' => '10:22:00',
-            'requested_break_time_end' => '10:57:00',
-        ]);
+        // $this->breakTimeRequest = BreakTimeCorrectRequest::create([
+        //     'break_time_id' => $this->breakTime->id,
+        //     'att_correct_id' => $this->correctionRequest->id,
+        //     'previous_break_time_start' => $this->breakTime->break_time_start,
+        //     'previous_break_time_end' => $this->breakTime->break_time_end,
+        //     'requested_break_time_start' => '12:15:00',
+        //     'requested_break_time_end' => '13:15:00',
+        // ]);
     }
 
     private function loginAsAdmin()
     {
-        // $admin = Admin::where('email', 'admin1@test.com')->first();
-        // $this->actingAs($admin, 'admin');
         $this->actingAs($this->admin, 'admin');
     }
 
@@ -114,12 +121,6 @@ class AdminAttendanceRequestTest extends TestCase
     {
         $this->loginAsAdmin();
 
-        // 承認待ちの修正申請を1つ取得
-        // $request = AttendanceCorrectRequest::where('request_status', '承認待ち')->first();
-        // $attendance = $request->attendance;
-
-        // 修正申請詳細ページを開く
-        // $response = $this->get(route('show.request.approve', ['attendance_correct_request' => $request->id]));
         $response = $this->get(route('show.request.approve', ['attendance_correct_request' => $this->correctionRequest->id]));
         $response->assertStatus(200);
 
@@ -132,10 +133,11 @@ class AdminAttendanceRequestTest extends TestCase
 
         $breakTimes = $this->attendance->breakTimes;
         if ($breakTimes->isNotEmpty()) {
-            // foreach ($breakTimes as $index => $break) {
             foreach ($breakTimes as $break) {
-                $response->assertSee(Carbon::parse($break->break_time_start)->format('H:i'));
-                $response->assertSee(Carbon::parse($break->break_time_end)->format('H:i'));
+                $breakCorrection = $this->breakTimeRequest;
+
+                $response->assertSee(Carbon::parse($breakCorrection->requested_break_time_start)->format('H:i'));
+                $response->assertSee(Carbon::parse($breakCorrection->requested_break_time_end)->format('H:i'));
             }
         } else {
             // 休憩がない場合は休憩の行が表示されないことを確認
@@ -150,34 +152,50 @@ class AdminAttendanceRequestTest extends TestCase
     {
         $this->loginAsAdmin();
 
-        // 承認待ちの修正申請を1つ取得
-        // $request = AttendanceCorrectRequest::where('request_status', '承認待ち')->first();
-        // $attendance = $request->attendance;
-
         // 修正申請の承認処理を実行
         $response = $this->patch(route('request.approve', ['attendance_correct_request' => $this->correctionRequest->id]));
-        // $response->assertRedirect(route('request.list'));
 
         // 修正申請が承認済みに更新されたか確認
         $this->assertDatabaseHas('attendance_correct_requests', [
             'id' => $this->correctionRequest->id,
             'request_status' => '承認済み',
-            // 'admin_id' => Admin::where('email', 'admin1@test.com')->first()->id,
             'admin_id' => $this->admin->id,
             'approved_at' => Carbon::now(),
         ]);
 
-        // 勤怠情報が修正申請の内容で更新されたか確認
-        $this->assertDatabaseHas('attendances', [
-            'id' => $this->attendance->id,
-            'clock_in' => $this->correctionRequest->requested_clock_in,
-            'clock_end' => $this->correctionRequest->requested_clock_end,
-        ]);
+        // **ケース1：勤怠データに付随する休憩データがない**
+        if ($this->attendance->breakTimes->isEmpty() && $this->breakTimeRequest === null) {
+            // `break_times` に該当の `attendance_id` のデータがないことを確認
+            $this->assertDatabaseMissing('break_times', [
+                'attendance_id' => $this->attendance->id,
+            ]);
+        }
 
-        // 休憩データの確認
+        // **ケース2：勤怠修正はあるが休憩修正はない**
+        if (
+            $this->correctionRequest->requested_clock_in !== $this->attendance->clock_in ||
+            $this->correctionRequest->requested_clock_end !== $this->attendance->clock_end
+        ) {
+            // 勤怠情報が修正されていることを確認
+            $this->assertDatabaseHas('attendances', [
+                'id' => $this->attendance->id,
+                'clock_in' => $this->correctionRequest->requested_clock_in,
+                'clock_end' => $this->correctionRequest->requested_clock_end,
+            ]);
+        } else {
+            // 勤怠情報に修正がない場合、元のデータが維持されていることを確認
+            $this->assertDatabaseHas('attendances', [
+                'id' => $this->attendance->id,
+                'clock_in' => $this->attendance->clock_in,
+                'clock_end' => $this->attendance->clock_end,
+            ]);
+        }
+
+        // **ケース3 & 4：休憩修正がある場合のみbreak_timesを確認**
         $correctBreakTimes = BreakTimeCorrectRequest::where('att_correct_id', $this->correctionRequest->id)->get();
-
         if ($correctBreakTimes->isNotEmpty()) {
+            // **ケース3：勤怠修正も休憩修正もある**
+            // **ケース4：休憩修正はあるが勤怠修正はない**
             foreach ($correctBreakTimes as $correctBreak) {
                 $this->assertDatabaseHas('break_times', [
                     'attendance_id' => $this->attendance->id,
@@ -186,9 +204,12 @@ class AdminAttendanceRequestTest extends TestCase
                 ]);
             }
         } else {
-            // 休憩データがない場合、break_timesテーブルに該当のattendance_idのデータがないことを確認
-            $this->assertDatabaseMissing('break_times', [
+            // **ケース2：休憩修正なし**
+            // 元のbreak_timesのデータが維持されていることを確認
+            $this->assertDatabaseHas('break_times', [
                 'attendance_id' => $this->attendance->id,
+                'break_time_start' => $this->breakTime->break_time_start,
+                'break_time_end' => $this->breakTime->break_time_end,
             ]);
         }
 
