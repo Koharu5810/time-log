@@ -88,7 +88,7 @@
                             <div class="break-time-group">
                                 <div class="break-time-inputs">
                                     @if ($break['is_corrected'])
-                                        <div>{{ \Carbon\Carbon::parse($break['start'])->format('H:i') }}</div>
+                                        {{ \Carbon\Carbon::parse($break['start'])->format('H:i') }}
                                     @else
                                         <input
                                             type="text"

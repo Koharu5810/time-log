@@ -20,6 +20,14 @@ class AttendanceRequestController extends Controller
             'attendanceCorrectRequest.breakTimeCorrectRequests'  // ネストリレーションの取得
         ])->find($id);
 
+        $isCorrected = false;
+        $requestStatus = null;
+
+        if ($attendance->attendanceCorrectRequest) {
+            $requestStatus = $attendance->attendanceCorrectRequest->request_status;
+            $isCorrected = in_array($requestStatus, ['承認待ち', '承認済み']);
+        }
+
         $displayBreakTimes = [];
 
         foreach ($attendance->breakTimes as $index => $breakTime) {
@@ -30,12 +38,13 @@ class AttendanceRequestController extends Controller
             $displayBreakTimes[] = [
                 'id' => $breakTime->id,
                 'index' => $index,
-                'is_corrected' => !is_null($correction),
+                // 'is_corrected' => !is_null($correction),
+                'is_corrected' => $isCorrected,
                 'start' => $correction ? $correction->requested_break_time_start : $breakTime->break_time_start,
                 'end' => $correction ? $correction->requested_break_time_end : $breakTime->break_time_end,
             ];
         }
-        return view('attendance.detail', compact('attendance', 'displayBreakTimes'));
+        return view('attendance.detail', compact('attendance', 'displayBreakTimes', 'isCorrected'));
     }
 // 勤怠詳細画面から修正申請（一般ユーザ・管理者）
     public function updateRequest(AttendanceUpdateRequest $request) {
