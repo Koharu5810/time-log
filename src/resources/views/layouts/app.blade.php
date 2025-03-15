@@ -33,7 +33,7 @@
                             <a href="{{ route('staff.list') }}" class="header__list-button">スタッフ一覧</a>
                         </div>
                         <div class="header__buttons-row">
-                        {{-- 申請ボタン --}}
+                        {{-- 申請一覧ボタン --}}
                             <a href="{{ route('request.list') }}" class="header__request-button">申請一覧</a>
                         {{-- ログアウトボタン --}}
                             <form action="{{ route('admin.logout') }}" method="POST" class="header__logout">

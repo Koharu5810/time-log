@@ -218,15 +218,57 @@ class AttendanceCorrectionRequestTest extends TestCase
             'approved_at' => null,
         ]);
 
-        // 申請一覧画面に申請が表示されることを確認
-        $this->actingAs($user);
-        $response = $this->get(route('request.list', ['tab' => 'pending']));
+        $request = AttendanceCorrectRequest::where('attendance_id', $attendance->id)->first();
 
-        $response->assertSeeText('承認待ち')
+        // 管理者が承認
+        $admin = TestHelper::adminLogin();
+        $this->actingAs($admin, 'admin');
+
+        $response = $this->get(route('request.list', ['attendance_correct_request' => $request->id, 'tab' => 'pending']));
+        $response->assertStatus(200);
+
+        // 管理者申請一覧画面
+        $response->assertSee('承認待ち')
                 ->assertSeeText($user->name)
                 ->assertSee(\Carbon\Carbon::parse($attendance->work_date)->format('Y/m/d'))
                 ->assertSeeText('早出勤務')
-                ->assertSee(\Carbon\Carbon::now()->format('Y/m/d'));;
+                ->assertSee(\Carbon\Carbon::now()->format('Y/m/d'));
+
+        // 管理者承認画面
+        $response = $this->get(route('show.request.approve', ['attendance_correct_request' => $request->id]));
+        $response->assertStatus(200);
+        $response->assertSeeText('詳細');
+
+        $carbonDate = Carbon::parse($attendance->work_date);
+        $yearPart = $carbonDate->translatedFormat('Y年');
+        $monthDayPart = $carbonDate->translatedFormat('n月j日');
+
+        $response->assertSee($user->name)
+                ->assertSeeText($yearPart)
+                ->assertSeeText($monthDayPart)
+                ->assertSeeText('早出勤務')
+                ->assertSeeText('承認');
+
+        // 出勤・退勤時間の確認
+        $response->assertSeeText(Carbon::parse($attendance->attendanceCorrectRequest->requested_clock_in)->format('H:i'))
+                ->assertSeeText(Carbon::parse($attendance->attendanceCorrectRequest->requested_clock_end)->format('H:i'));
+
+        // 休憩時間の確認（複数ある場合）
+        // if ($attendance->attendanceCorrectRequest && optional($attendance->attendanceCorrectRequest->breakTimes)->isNotEmpty()) {
+        //     foreach ($attendance->attendanceCorrectRequest->breakTimes as $break) {
+        //         $response->assertSeeText(Carbon::parse($break->start)->format('H:i'))
+        //                 ->assertSee('〜')
+        //                 ->assertSeeText(Carbon::parse($break->end)->format('H:i'));
+        //     }
+        // } elseif ($attendance->attendanceCorrectRequest && optional($attendance->attendanceCorrectRequest->breakTimeCorrectRequest)->isNotEmpty()) {
+        //     foreach ($attendance->attendanceCorrectRequest->breakTimeCorrectRequest as $break) {
+        //         $response->assertSeeText(Carbon::parse($break->requested_break_time_start)->format('H:i'))
+        //                 ->assertSee('〜')
+        //                 ->assertSeeText(Carbon::parse($break->requested_break_time_end)->format('H:i'));
+        //     }
+        // } else {
+        //     $response->assertDontSee('休憩');
+        // }
     }
 // 「承認待ち」タブにユーザーの申請が全て表示されることを確認
     public function test_pending_requests_are_displayed_correctly()
@@ -242,12 +284,26 @@ class AttendanceCorrectionRequestTest extends TestCase
         AttendanceCorrectRequest::create([
             'user_id' => $user->id,
             'attendance_id' => $attendance1->id,
+            'previous_clock_in' => $attendance1->clock_in,
+            'previous_clock_end' => $attendance1->clock_end,
+            'requested_clock_in' => '09:30',
+            'requested_clock_end' => '18:30',
+            'remarks' => '電車遅延',
             'request_status' => '承認待ち',
+            'admin_id' => null,
+            'approved_at' => null,
         ]);
         AttendanceCorrectRequest::create([
             'user_id' => $user->id,
             'attendance_id' => $attendance2->id,
+            'previous_clock_in' => $attendance2->clock_in,
+            'previous_clock_end' => $attendance2->clock_end,
+            'requested_clock_in' => '09:30',
+            'requested_clock_end' => '18:30',
+            'remarks' => '電車遅延',
             'request_status' => '承認待ち',
+            'admin_id' => null,
+            'approved_at' => null,
         ]);
 
         // 申請一覧画面で「承認待ち」タブを開く
@@ -271,7 +327,14 @@ class AttendanceCorrectionRequestTest extends TestCase
         $request = AttendanceCorrectRequest::create([
             'user_id' => $user->id,
             'attendance_id' => $attendance->id,
+            'previous_clock_in' => $attendance->clock_in,
+            'previous_clock_end' => $attendance->clock_end,
+            'requested_clock_in' => '09:30',
+            'requested_clock_end' => '18:30',
+            'remarks' => '電車遅延',
             'request_status' => '承認待ち',
+            'admin_id' => null,
+            'approved_at' => null,
         ]);
 
         // 管理者が承認
@@ -280,7 +343,7 @@ class AttendanceCorrectionRequestTest extends TestCase
 
         $this->put(route('request.approve', ['attendance_correct_request' => $request->id]));
 
-        // 「承認済み」タブを開く
+        // 申請一覧の「承認済み」タブを開く
         $response = $this->get(route('request.list', ['tab' => 'approved']));
 
         // 承認済みの申請が表示されることを確認
@@ -288,33 +351,39 @@ class AttendanceCorrectionRequestTest extends TestCase
                 ->assertSee($attendance->id);
     }
 // 「詳細」ボタンを押すと申請詳細画面に遷移することを確認
-    // public function test_clicking_details_redirects_to_request_detail_page()
-    // {
-    //     $user = TestHelper::userLogin();
-    //     /** @var \App\Models\User $user */
-    //     $this->actingAs($user);
+    public function test_clicking_details_redirects_to_request_detail_page()
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */
+        $this->actingAs($user);
 
-    //     ['attendance' => $attendance] = $this->createAttendanceStatus($user);
+        ['attendance' => $attendance] = $this->createAttendanceStatus($user);
 
-    //     // 修正申請作成
-    //     $request = AttendanceCorrectRequest::create([
-    //         'user_id' => $user->id,
-    //         'attendance_id' => $attendance->id,
-    //         'remarks' => '早出勤務',
-    //         'request_status' => '承認待ち',
-    //     ]);
+        // 修正申請作成
+        $request = AttendanceCorrectRequest::create([
+            'user_id' => $user->id,
+            'attendance_id' => $attendance->id,
+            'previous_clock_in' => $attendance->clock_in,
+            'previous_clock_end' => $attendance->clock_end,
+            'requested_clock_in' => '09:30',
+            'requested_clock_end' => '18:30',
+            'remarks' => '電車遅延',
+            'request_status' => '承認待ち',
+            'admin_id' => null,
+            'approved_at' => null,
+        ]);
 
-    //     // 申請一覧画面を開く
-    //     $response = $this->get(route('request.list'));
+        // 申請一覧画面を開く
+        $response = $this->get(route('request.list'));
 
-    //     // 一般ユーザーの場合の詳細リンク
-    //     $expectedUrl = route('attendance.detail', ['id' => $attendance->id]);
-    //     $response->assertSeeText($expectedUrl);
+        // 一般ユーザーの場合の詳細リンク
+        $expectedUrl = route('attendance.detail', ['id' => $attendance->id]);
+        $response->assertSeeText('詳細');
 
-    //     // 詳細画面に遷移できるかテスト
-    //     $detailResponse = $this->get($expectedUrl);
-    //     $detailResponse->assertStatus(200)
-    //                 ->assertSee($attendance->id)
-    //                 ->assertSee('承認待ち');
-    // }
+        // 詳細画面に遷移できるかテスト
+        $detailResponse = $this->get($expectedUrl);
+        $detailResponse->assertStatus(200)
+                    ->assertSee($attendance->id)
+                    ->assertSee('承認待ち');
+    }
 }

@@ -50,6 +50,6 @@ Route::middleware(['auth:web,admin'])->group(function () {
     Route::get('/attendance/{id}', [AttendanceRequestController::class, 'showAttendanceDetail'])->name('attendance.detail');
     Route::put('/attendance/{id}', [AttendanceRequestController::class, 'updateRequest'])->name('attendance.update');
 
-    // 修正申請一覧（一般・管理者）
+    // 修正申請一覧画面表示（一般・管理者）
     Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'showRequestList'])->name('request.list');
 });
