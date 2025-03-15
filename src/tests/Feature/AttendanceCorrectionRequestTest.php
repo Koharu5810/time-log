@@ -252,23 +252,6 @@ class AttendanceCorrectionRequestTest extends TestCase
         // 出勤・退勤時間の確認
         $response->assertSeeText(Carbon::parse($attendance->attendanceCorrectRequest->requested_clock_in)->format('H:i'))
                 ->assertSeeText(Carbon::parse($attendance->attendanceCorrectRequest->requested_clock_end)->format('H:i'));
-
-        // 休憩時間の確認（複数ある場合）
-        // if ($attendance->attendanceCorrectRequest && optional($attendance->attendanceCorrectRequest->breakTimes)->isNotEmpty()) {
-        //     foreach ($attendance->attendanceCorrectRequest->breakTimes as $break) {
-        //         $response->assertSeeText(Carbon::parse($break->start)->format('H:i'))
-        //                 ->assertSee('〜')
-        //                 ->assertSeeText(Carbon::parse($break->end)->format('H:i'));
-        //     }
-        // } elseif ($attendance->attendanceCorrectRequest && optional($attendance->attendanceCorrectRequest->breakTimeCorrectRequest)->isNotEmpty()) {
-        //     foreach ($attendance->attendanceCorrectRequest->breakTimeCorrectRequest as $break) {
-        //         $response->assertSeeText(Carbon::parse($break->requested_break_time_start)->format('H:i'))
-        //                 ->assertSee('〜')
-        //                 ->assertSeeText(Carbon::parse($break->requested_break_time_end)->format('H:i'));
-        //     }
-        // } else {
-        //     $response->assertDontSee('休憩');
-        // }
     }
 // 「承認待ち」タブにユーザーの申請が全て表示されることを確認
     public function test_pending_requests_are_displayed_correctly()
@@ -341,14 +324,17 @@ class AttendanceCorrectionRequestTest extends TestCase
         $admin = TestHelper::adminLogin();
         $this->actingAs($admin, 'admin');
 
-        $this->put(route('request.approve', ['attendance_correct_request' => $request->id]));
+        $this->patch(route('request.approve', ['attendance_correct_request' => $request->id]));
 
         // 申請一覧の「承認済み」タブを開く
         $response = $this->get(route('request.list', ['tab' => 'approved']));
 
         // 承認済みの申請が表示されることを確認
         $response->assertSee('承認済み')
-                ->assertSee($attendance->id);
+                ->assertSeeText($user->name)
+                ->assertSee(\Carbon\Carbon::parse($attendance->work_date)->format('Y/m/d'))
+                ->assertSeeText('電車遅延')
+                ->assertSee(\Carbon\Carbon::parse($attendance->attendanceCorrectRequest->first()->created_at)->format('Y/m/d'));
     }
 // 「詳細」ボタンを押すと申請詳細画面に遷移することを確認
     public function test_clicking_details_redirects_to_request_detail_page()
