@@ -38,7 +38,6 @@ class AttendanceRequestController extends Controller
             $displayBreakTimes[] = [
                 'id' => $breakTime->id,
                 'index' => $index,
-                // 'is_corrected' => !is_null($correction),
                 'is_corrected' => $isCorrected,
                 'start' => $correction ? $correction->requested_break_time_start : $breakTime->break_time_start,
                 'end' => $correction ? $correction->requested_break_time_end : $breakTime->break_time_end,
