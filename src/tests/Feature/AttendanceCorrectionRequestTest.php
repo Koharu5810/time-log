@@ -10,7 +10,6 @@ use Tests\TestCase;
 use Tests\Helpers\TestHelper;
 use Carbon\Carbon;
 
-
 class AttendanceCorrectionRequestTest extends TestCase
 {
     use RefreshDatabase;
@@ -186,125 +185,136 @@ class AttendanceCorrectionRequestTest extends TestCase
         ]);
     }
 
-// 修正申請処理実行共通コード
-    private function submitAttendanceCorrectionRequest($user)
-    {
-        ['attendance' => $attendance, 'breakTime' => $break_time] = $this->createAttendanceStatus($user);
-
-        $data = [
-            'attendance_id' => $attendance->id,
-            'requested_clock_in' => '09:30',
-            'requested_clock_end' => '17:30',
-            'break_times' => [
-                [
-                    'id' => $break_time->id,
-                    'start' => '12:30',
-                    'end' => '13:30'
-                ],
-            ],
-            'remarks' => '早退のため',
-            'request_status' => '承認待ち',
-        ];
-
-        // 修正申請リクエストを送信
-        $response = $this->put(route('attendance.update', ['id' => $attendance->id]), $data);
-        $response->assertStatus(302);
-
-        return compact('attendance', 'break_time');
-    }
-
-// 一般ユーザ修正申請
-    public function test_general_user_can_submit_attendance_correction_request()
+// 修正申請が正常に実行されることを確認
+    public function test_correction_request_is_executed_successfully()
     {
         $user = TestHelper::userLogin();
         /** @var \App\Models\User $user */
         $this->actingAs($user);
 
-        ['attendance' => $attendance, 'break_time' => $break_time] = $this->submitAttendanceCorrectionRequest($user);
+        ['attendance' => $attendance] = $this->createAttendanceStatus($user);
 
-        // **データベースに修正リクエストが正しく保存されたことを確認**
+        $this->openLoginPage($attendance);
+
+        $data = [
+            'attendance_id' => $attendance->id,
+            'requested_clock_in' => '08:30',
+            'requested_clock_end' => '17:30',
+            'remarks' => '早出勤務',
+        ];
+
+        $response = $this->put(route('attendance.update', ['id' => $attendance->id]), $data);
+
+        // 修正申請がDBに保存されているか確認
         $this->assertDatabaseHas('attendance_correct_requests', [
             'attendance_id' => $attendance->id,
-            'requested_clock_in' => '09:30:00',
+            'user_id' => $user->id,
+            'previous_clock_in' => $attendance->clock_in,
+            'previous_clock_end' => $attendance->clock_end,
+            'requested_clock_in' => '08:30:00',
             'requested_clock_end' => '17:30:00',
-            'remarks' => '早退のため',
+            'request_status' => '承認待ち',
+            'admin_id' => null,
+            'approved_at' => null,
+        ]);
+
+        // 申請一覧画面に申請が表示されることを確認
+        $this->actingAs($user);
+        $response = $this->get(route('request.list', ['tab' => 'pending']));
+
+        $response->assertSeeText('承認待ち')
+                ->assertSeeText($user->name)
+                ->assertSee(\Carbon\Carbon::parse($attendance->work_date)->format('Y/m/d'))
+                ->assertSeeText('早出勤務')
+                ->assertSee(\Carbon\Carbon::now()->format('Y/m/d'));;
+    }
+// 「承認待ち」タブにユーザーの申請が全て表示されることを確認
+    public function test_pending_requests_are_displayed_correctly()
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */
+        $this->actingAs($user);
+
+        ['attendance' => $attendance1] = $this->createAttendanceStatus($user);
+        ['attendance' => $attendance2] = $this->createAttendanceStatus($user);
+
+        // 修正申請を作成
+        AttendanceCorrectRequest::create([
+            'user_id' => $user->id,
+            'attendance_id' => $attendance1->id,
+            'request_status' => '承認待ち',
+        ]);
+        AttendanceCorrectRequest::create([
+            'user_id' => $user->id,
+            'attendance_id' => $attendance2->id,
             'request_status' => '承認待ち',
         ]);
 
-        $this->assertDatabaseHas('break_time_correct_requests', [
-            'att_correct_id' => AttendanceCorrectRequest::latest()->first()->id,
-            'previous_break_time_start' => $break_time->break_time_start,
-            'previous_break_time_end' => $break_time->break_time_end,
-            'requested_break_time_start' => '12:30:00',
-            'requested_break_time_end' => '13:30:00',
+        // 申請一覧画面で「承認待ち」タブを開く
+        $response = $this->get(route('request.list', ['tab' => 'pending']));
+
+        // 2件の申請が表示されていることを確認
+        $response->assertSee('承認待ち')
+                ->assertSee($attendance1->id)
+                ->assertSee($attendance2->id);
+    }
+// 「承認済み」タブに管理者が承認した申請が表示されることを確認
+    public function test_approved_requests_are_displayed_correctly()
+    {
+        $user = TestHelper::userLogin();
+        /** @var \App\Models\User $user */
+        $this->actingAs($user);
+
+        ['attendance' => $attendance] = $this->createAttendanceStatus($user);
+
+        // 修正申請作成
+        $request = AttendanceCorrectRequest::create([
+            'user_id' => $user->id,
+            'attendance_id' => $attendance->id,
+            'request_status' => '承認待ち',
         ]);
 
-        $this->actingAs($this->admin, 'admin');
-        $response = $this->get(route('request.list', ['tab' => 'pending']));
-        $response->assertSee('承認待ち');
+        // 管理者が承認
+        $admin = TestHelper::adminLogin();
+        $this->actingAs($admin, 'admin');
+
+        $this->put(route('request.approve', ['attendance_correct_request' => $request->id]));
+
+        // 「承認済み」タブを開く
+        $response = $this->get(route('request.list', ['tab' => 'approved']));
+
+        // 承認済みの申請が表示されることを確認
+        $response->assertSee('承認済み')
+                ->assertSee($attendance->id);
     }
-// 管理者ユーザが承認画面と申請一覧で修正申請を確認
-    // public function test_admin_can_approve_attendance_correction_request()
+// 「詳細」ボタンを押すと申請詳細画面に遷移することを確認
+    // public function test_clicking_details_redirects_to_request_detail_page()
     // {
     //     $user = TestHelper::userLogin();
     //     /** @var \App\Models\User $user */
     //     $this->actingAs($user);
 
-    //     ['attendance' => $attendance, 'break_time' => $break_time] = $this->submitAttendanceCorrectionRequest($user);
+    //     ['attendance' => $attendance] = $this->createAttendanceStatus($user);
 
-    //     $admin = TestHelper::adminLogin();
-    //     $this->actingAs($admin, 'admin');
+    //     // 修正申請作成
+    //     $request = AttendanceCorrectRequest::create([
+    //         'user_id' => $user->id,
+    //         'attendance_id' => $attendance->id,
+    //         'remarks' => '早出勤務',
+    //         'request_status' => '承認待ち',
+    //     ]);
 
-    //     // 管理者が修正申請一覧ページを開く
+    //     // 申請一覧画面を開く
     //     $response = $this->get(route('request.list'));
-    //     $response->assertStatus(200);
-    //     $response->assertSeeText('承認待ち');
-    //     $response->assertSeeText($user->name);
-    //     // $response->assertSeeText($attendance->work_date);
-    //     // $response->assertSeeText($attendance->remarks);
-    //     // $response->assertSeeText($attendance->created_at);
-    //     $response->assertSeeText('詳細');
 
-    //     // 管理者が修正申請の詳細ページを開く
-    //     $correctionRequest = AttendanceCorrectRequest::where('attendance_id', $attendance->id)->first();
-    //     $response = $this->get(route('show.request.approve', ['attendance_correct_request' => $correctionRequest->id]));
-    //     $response->assertStatus(200);
-    //     $response->assertSeeText($user->name);
-    //     $response->assertSeeText('09:30');
-    //     $response->assertSeeText('17:30');
-    //     $response->assertSeeText('12:30');
-    //     $response->assertSeeText('13:30');
-    //     $response->assertSeeText('早退のため');
+    //     // 一般ユーザーの場合の詳細リンク
+    //     $expectedUrl = route('attendance.detail', ['id' => $attendance->id]);
+    //     $response->assertSeeText($expectedUrl);
 
-        // // **管理者が承認処理を実行**
-        // $approveData = [
-        //     'request_status' => '承認済み',
-        //     'admin_id' => $admin->id,
-        //     'approved_at' => now()->format('Y-m-d H:i:s'),
-        // ];
-        // $response = $this->put(route('admin.approve_attendance_request', ['id' => $correctionRequest->id]), $approveData);
-        // $response->assertStatus(302);
-
-        // // **修正リクエストが承認済みになったことを確認**
-        // $this->assertDatabaseHas('attendance_correct_requests', [
-        //     'id' => $correctionRequest->id,
-        //     'request_status' => '承認済み',
-        //     'admin_id' => $admin->id,
-        // ]);
-
-        // // **修正後の勤怠データが更新されていることを確認**
-        // $this->assertDatabaseHas('attendances', [
-        //     'id' => $attendance->id,
-        //     'clock_in' => '09:30:00',
-        //     'clock_end' => '17:30:00',
-        // ]);
-
-        // // **修正後の休憩データが更新されていることを確認**
-        // $this->assertDatabaseHas('break_times', [
-        //     'attendance_id' => $attendance->id,
-        //     'break_time_start' => '12:00:00',
-        //     'break_time_end' => '13:00:00',
-        // ]);
+    //     // 詳細画面に遷移できるかテスト
+    //     $detailResponse = $this->get($expectedUrl);
+    //     $detailResponse->assertStatus(200)
+    //                 ->assertSee($attendance->id)
+    //                 ->assertSee('承認待ち');
     // }
-
 }
