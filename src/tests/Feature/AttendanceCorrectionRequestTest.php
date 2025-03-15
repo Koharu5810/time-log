@@ -15,6 +15,7 @@ class AttendanceCorrectionRequestTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $admin;
     private $user;
     private $attendance;
 
@@ -196,6 +197,7 @@ class AttendanceCorrectionRequestTest extends TestCase
             'requested_clock_end' => '17:30',
             'break_times' => [
                 [
+                    'id' => $break_time->id,
                     'start' => '12:30',
                     'end' => '13:30'
                 ],
@@ -210,6 +212,7 @@ class AttendanceCorrectionRequestTest extends TestCase
 
         return compact('attendance', 'break_time');
     }
+
 // 一般ユーザ修正申請
     public function test_general_user_can_submit_attendance_correction_request()
     {
@@ -235,6 +238,10 @@ class AttendanceCorrectionRequestTest extends TestCase
             'requested_break_time_start' => '12:30:00',
             'requested_break_time_end' => '13:30:00',
         ]);
+
+        $this->actingAs($this->admin, 'admin');
+        $response = $this->get(route('request.list', ['tab' => 'pending']));
+        $response->assertSee('承認待ち');
     }
 // 管理者ユーザが承認画面と申請一覧で修正申請を確認
     // public function test_admin_can_approve_attendance_correction_request()

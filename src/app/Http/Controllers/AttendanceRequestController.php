@@ -23,12 +23,9 @@ class AttendanceRequestController extends Controller
         $displayBreakTimes = [];
 
         foreach ($attendance->breakTimes as $index => $breakTime) {
-            $correction = null;
-            if ($attendance->attendanceCorrectRequest) {
-                $correction = $attendance->attendanceCorrectRequest->breakTimeCorrectRequests
-                    ->where('break_time_id', $breakTime->id)
-                    ->first();
-            }
+            $correction = $attendance->attendanceCorrectRequest
+                ? $attendance->attendanceCorrectRequest->breakTimeCorrectRequests->firstWhere('break_time_id', $breakTime->id)
+                : null;
 
             $displayBreakTimes[] = [
                 'id' => $breakTime->id,
