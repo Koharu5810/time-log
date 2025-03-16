@@ -60,50 +60,36 @@ php artisan migrate --seed
 
 ``` bash
 mysql -u root -p
-CREATE DATABASE your_database;
+CREATE DATABASE test_database;
 ```
 
-2. src/config/database.phpのmysqlの配列をすべてコピーし、mysql_testを作成する。  
-   以下は1.で作成したデータベースに合わせた設定項目に書き換える。
+2. テスト用の環境変数ファイルを作成し、テスト用データベース設定に編集する。
 
 ``` bash
-'database' => 'your_database',
-'username' => 'your_username',
-'password' => 'your_password',
-```
-
-3. テスト用の環境変数ファイルを作成し、テスト用データベース設定に編集する。
-
-``` bash
-cp .env .env.testing
+cp .env.example .env.testing
 
 
 APP_ENV=test
 APP_KEY=base64:テスト用キーを生成
 
-DB_DATABASE=your_database
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+DB_DATABASE=test_database
+DB_USERNAME=root
+DB_PASSWORD=root
 ```
 
-4. キャッシュを削除
+3. キャッシュを削除
 
 ``` bash
 php artisan config:clear
 ```
 
-5. テスト用データベースにマイグレーションとシーディングを適用する
+4. テスト用データベースにマイグレーションとシーディングを適用する
 
 ``` bash
 php artisan migrate --env=testing
 php artisan db:seed --env=testing
 ```
 
-6. phpunit.xmlを修正
-``` bash
-<env name="DB_CONNECTION" value="mysql_test"/>
-<env name="DB_DATABASE" value="your_database"/>
-```
 <br>
 
 **会員登録後のメール認証**
