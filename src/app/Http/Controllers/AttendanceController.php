@@ -69,7 +69,7 @@ class AttendanceController extends Controller
             ->orderBy('work_date', 'asc')
             ->get();
 
-        $response = new StreamedResponse(function () use ($attendances, $staff, $year, $month) {
+        $response = new StreamedResponse(function () use ($attendances, $staff) {
             $handle = fopen('php://output', 'w');
 
             // CSVヘッダー
@@ -91,7 +91,7 @@ class AttendanceController extends Controller
             fclose($handle);
         });
 
-        $fileName = "スタッフ月次勤怠_{$staff->id}_{$year}_{$month}.csv";
+        $fileName = "スタッフ月次勤怠_ID{$staff->id}_{$year}_{$month}.csv";
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', "attachment; filename=\"$fileName\"");
 
