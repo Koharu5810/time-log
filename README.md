@@ -41,10 +41,13 @@ MAIL_FROM_ADDRESS=test@abc.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-5. アプリケーションキーの作成
+5. アプリケーションキーを作成し、キャッシュをクリア
 
 ```bash
 php artisan key:generate
+
+php artisan config:clear
+php artisan cache:clear
 ```
 
 6. マイグレーション・シーディングの実行
@@ -70,17 +73,22 @@ cp .env.example .env.testing
 
 
 APP_ENV=test
-APP_KEY=base64:テスト用キーを生成
 
+DB_CONNECTION=mysql_test
+DB_HOST=mysql
+DB_PORT=3306
 DB_DATABASE=test_database
 DB_USERNAME=root
 DB_PASSWORD=root
 ```
 
-3. キャッシュを削除
+3. テスト用のアプリケーションキーを作成し、キャッシュクリア
 
 ``` bash
+php artisan key:generate --env=testing
+
 php artisan config:clear
+php artisan cache:clear
 ```
 
 4. テスト用データベースにマイグレーションとシーディングを適用する
