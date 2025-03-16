@@ -10,6 +10,10 @@ use App\Http\Controllers\AdminController;
 // 会員登録画面
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->withoutMiddleware(['auth'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->withoutMiddleware(['auth'])->name('registration');
+// メール認証画面
+Route::get('verify-email', function () {
+    return view('auth.verify-email');
+});
 // ログイン画面（一般）
 Route::get('/login', [AuthController::class, 'showUsersLoginForm'])->name('login.show');
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
