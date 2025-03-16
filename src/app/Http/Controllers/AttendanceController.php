@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Attendance;
 use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendanceController extends Controller
 {
@@ -53,5 +54,47 @@ class AttendanceController extends Controller
         }
 
         return view('attendance.attendance-list', compact('user', 'staff', 'year', 'month', 'attendances'));
+    }
+// スタッフ別勤怠リストCSV出力
+    public function exportMonthlyAttendance(Request $request, $id) {
+        $staff = User::findOrFail($id);
+
+        $year = $request->query('year', Carbon::today()->year);
+        $month = $request->query('month', Carbon::today()->month);
+
+        $attendances = Attendance::with('breakTimes')
+            ->where('user_id', $staff->id)
+            ->whereYear('work_date', $year)
+            ->whereMonth('work_date', $month)
+            ->orderBy('work_date', 'asc')
+            ->get();
+
+        $response = new StreamedResponse(function () use ($attendances, $staff, $year, $month) {
+            $handle = fopen('php://output', 'w');
+
+            // CSVヘッダー
+            fputcsv($handle, ['スタッフ名', '勤務日', '出勤時間', '退勤時間', '休憩時間', '勤怠合計時間']);
+
+            foreach ($attendances as $attendance) {
+                fputcsv($handle, [
+                    $staff->name,
+                    $attendance->work_date,
+                    $attendance->clock_in ? Carbon::parse($attendance->clock_in)->format('H:i') : '',
+                    $attendance->clock_end ? Carbon::parse($attendance->clock_end)->format('H:i') : '',
+                    $attendance->total_break_time ? gmdate('H:i', $attendance->total_break_time * 60) : '',
+                    $attendance->clock_in && $attendance->clock_end
+                        ? gmdate('H:i', ($attendance->duration_in_minutes - $attendance->total_break_time) * 60)
+                        : '',
+                ]);
+            }
+
+            fclose($handle);
+        });
+
+        $fileName = "スタッフ月次勤怠_{$staff->id}_{$year}_{$month}.csv";
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', "attachment; filename=\"$fileName\"");
+
+        return $response;
     }
 }

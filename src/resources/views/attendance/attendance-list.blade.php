@@ -89,7 +89,7 @@
 
         @if (auth('admin')->check())
             <div class="csv-download">
-                <a href="" class="csv-button">CSV出力</a>
+                <a href="{{ route('admin.attendance.export', ['id' => $staff->id, 'year' => $year, 'month' => $month]) }}" class="csv-button">CSV出力</a>
             </div>
         @endif
 

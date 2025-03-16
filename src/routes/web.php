@@ -40,7 +40,7 @@ Route::middleware('auth:admin')->group(function () {
     // スタッフ別勤怠一覧画面
     Route::get('/admin/attendance/staff/{id}', [AttendanceController::class, 'showAttendanceList'])->name('admin.attendance.list');
     // CSV出力
-    Route::get('/admin/attendance/export', [AttendanceController::class, 'export'])->name('admin.attendance.export');
+    Route::get('/admin/attendance/export/{id}', [AttendanceController::class, 'exportMonthlyAttendance'])->name('admin.attendance.export');
 
     // 修正申請承認（管理者）
     Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AttendanceRequestController::class, 'showApproveDetail'])->name('show.request.approve');
