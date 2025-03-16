@@ -39,6 +39,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/admin/staff/list', [AdminController::class, 'showStaffList'])->name('staff.list');
     // スタッフ別勤怠一覧画面
     Route::get('/admin/attendance/staff/{id}', [AttendanceController::class, 'showAttendanceList'])->name('admin.attendance.list');
+    // CSV出力
+    Route::get('/admin/attendance/export', [AttendanceController::class, 'export'])->name('admin.attendance.export');
 
     // 修正申請承認（管理者）
     Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AttendanceRequestController::class, 'showApproveDetail'])->name('show.request.approve');

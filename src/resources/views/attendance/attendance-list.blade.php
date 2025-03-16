@@ -87,6 +87,12 @@
             </table>
         </div>
 
+        @if (auth('admin')->check())
+            <div class="csv-download">
+                <a href="" class="csv-button">CSV出力</a>
+            </div>
+        @endif
+
     </div>
 @endsection
 
