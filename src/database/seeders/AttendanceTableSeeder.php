@@ -20,21 +20,21 @@ class AttendanceTableSeeder extends Seeder
 
         foreach ($users as $userId) {
             $createdCount = 0;
-            $daysAgo = 0;
-            $correctionDays = []; // 修正申請を入れる日
 
-            // 過去20営業日のうち、3〜5日ランダムに修正対象日を選ぶ
-            while (count($correctionDays) < rand(3, 5)) {
+            // 過去20営業日のリストを作成
+            $daysAgoList = [];
+            $daysAgo = 0;
+
+            while (count($daysAgoList) < 20) {
                 $date = Carbon::now()->subDays($daysAgo);
-                if ($date->isWeekend()) {
-                    $daysAgo++;
-                    continue;
-                }
-                if ($daysAgo < 20) { // 過去20営業日の範囲
-                    $correctionDays[] = $date->format('Y-m-d');
+                if (!$date->isWeekend()) {
+                    $daysAgoList[] = $date->format('Y-m-d');
                 }
                 $daysAgo++;
             }
+
+            // 修正申請対象の日付を3〜5日ランダムに選択
+            $correctionDays = collect($daysAgoList)->random(rand(3, 5))->all();
 
             // 過去90日分の勤怠データ作成
             $createdCount = 0;
