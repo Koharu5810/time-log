@@ -85,16 +85,20 @@ td {
     height: clamp(130px, 5vw, 170px);
     padding-right: 10px;
     display: flex;
-    text-align: right;
-    align-items: flex-end;
+    align-items: center;
     justify-content: flex-end;
 }
 .csv-download a {
-    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 .csv-button {
-    width: 130px;
+    background-color: #000;
+    width: 184px;
     height: 50px;
+    margin-top: clamp(40px, 5vw, 70px);
     padding: 8px 24px;
     display: inline-flex;
     justify-content: center;
@@ -105,8 +109,8 @@ td {
     border: none;
     border-radius: 5px;
 }
-.csv-button {
-    background-color: #000;
+.csv-button:hover {
+    background-color: #333;
     cursor: pointer;
 }
 
