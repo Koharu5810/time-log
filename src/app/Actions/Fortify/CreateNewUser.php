@@ -41,11 +41,5 @@ class CreateNewUser implements CreatesNewUsers
         event(new Registered($user)); // メール認証を送信するために追加
 
         return $user;
-
-        // return User::create([
-        //     'name' => $input['name'],
-        //     'email' => $input['email'],
-        //     'password' => Hash::make($input['password']),
-        // ]);
     }
 }
