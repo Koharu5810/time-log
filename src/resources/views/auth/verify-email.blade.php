@@ -16,8 +16,16 @@
             <button type="submit" class="verifyEmail-button">認証はこちらから</button>
         </form>
 
+        @if (session('status'))
+            <p class="success-message">{{ session('status') }}</p>
+        @endif
+
+        @if (session('error'))
+            <p class="error-message">{{ session('error') }}</p>
+        @endif
+
         @if (session('message'))
-            <p>{{ session('message') }}</p>
+            <p class="info-message">{{ session('message') }}</p>
         @endif
 
 {{-- 再送ボタン --}}

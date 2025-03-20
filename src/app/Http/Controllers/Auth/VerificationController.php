@@ -47,11 +47,11 @@ class VerificationController extends Controller
     public function resend(Request $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice');
+            return redirect()->route('verification.notice')->with('message', '確認メールを再送しました。');
         }
 
         $request->user()->sendEmailVerificationNotification();
 
-        return back()->with('message', '確認メールを再送しました。');
+        return back();
     }
 }
