@@ -24,20 +24,20 @@ class VerificationController extends Controller
     public function verify(EmailVerificationRequest $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('login.show')->with('status', 'すでにメール認証が完了しています');
+            return redirect()->route('login.show');
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
 
-        return redirect()->route('verification.notice')->with('status', 'メール認証が完了しました');
+        return redirect()->route('login.show')->with('status', 'メール認証が完了しました');
     }
 
     public function check(Request $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('create')->with('status', 'メール認証が完了しました！');
+            return redirect()->route('create');
         } else {
             return back()->with('error', 'まだメール認証が完了していません。');
         }
@@ -47,11 +47,11 @@ class VerificationController extends Controller
     public function resend(Request $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice')->with('message', '確認メールを再送しました。');
+            return redirect()->route('verification.notice')->with('message', 'すでに認証が完了しています。');
         }
 
         $request->user()->sendEmailVerificationNotification();
 
-        return back();
+        return redirect()->route('verification.notice')->with('message', '確認メールを再送しました。');
     }
 }

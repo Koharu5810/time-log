@@ -17,9 +17,21 @@
     background-color: #D9D9D9;
     border: 1px solid #000;
 }
+.verifyEmail-button:hover {
+    cursor: pointer;
+}
 .resend-button {
     margin-top: 52px;
     font: normal 400 clamp(12px, 6vw, 20px) "Inter", sans-serif;
     border: none;
     background-color: transparent;
+}
+
+.success-message,
+.error-message,
+.info-message {
+    font: normal 400 clamp(12px, 6vw, 20px) "Inter", sans-serif;
+    color: red;
+    display: flex;
+    justify-content: center;
 }
