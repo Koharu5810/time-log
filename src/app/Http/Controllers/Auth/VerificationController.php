@@ -24,14 +24,14 @@ class VerificationController extends Controller
     public function verify(EmailVerificationRequest $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('login.show');
+            return redirect()->route('create');
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
 
-        return redirect()->route('login.show')->with('status', 'メール認証が完了しました');
+        return redirect()->route('create');
     }
 
     public function check(Request $request)
@@ -47,7 +47,7 @@ class VerificationController extends Controller
     public function resend(Request $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice')->with('message', 'すでに認証が完了しています。');
+            return redirect()->route('login.show')->with('message', 'すでに認証が完了しています。');
         }
 
         $request->user()->sendEmailVerificationNotification();
