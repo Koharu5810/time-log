@@ -34,11 +34,20 @@ class VerificationController extends Controller
         return redirect()->route('verification.notice')->with('status', 'メール認証が完了しました');
     }
 
+    public function check(Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->route('create')->with('status', 'メール認証が完了しました！');
+        } else {
+            return back()->with('error', 'まだメール認証が完了していません。');
+        }
+    }
+
     // メール認証の再送
     public function resend(Request $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('login.show');
+            return redirect()->route('verification.notice');
         }
 
         $request->user()->sendEmailVerificationNotification();

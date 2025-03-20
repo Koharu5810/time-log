@@ -12,10 +12,19 @@
         <div>メール認証を完了してください。</div>
 
 {{-- メール認証ボタン --}}
-        <button class="verifyEmail-button">認証はこちらから</button>
+        <form method="GET" action="{{ route('verification.check') }}">
+            <button type="submit" class="verifyEmail-button">認証はこちらから</button>
+        </form>
+
+        @if (session('message'))
+            <p>{{ session('message') }}</p>
+        @endif
 
 {{-- 再送ボタン --}}
-        <a href="" class="resend-button blue-button">認証メールを再送する</a>
+        <form method="POST" action="{{ route('verification.resend') }}">
+            @csrf
+            <button type="submit" class="resend-button blue-button">確認メールを再送する</button>
+        </form>
 
     </div>
 @endsection
