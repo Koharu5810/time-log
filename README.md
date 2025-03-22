@@ -18,7 +18,7 @@
 
 1. `docker-compose exec php bash`
 2. `composer install`
-3. .env ファイルを作成（`cp .env.example .env`）し、以下の環境変数を追加する。
+3. .env ファイルを作成（`cp .env.example .env`）し、以下の環境変数を修正する。
 
 ```text
 DB_CONNECTION=mysql
@@ -28,15 +28,6 @@ DB_DATABASE=laravel_db
 DB_USERNAME=laravel_user
 DB_PASSWORD=laravel_pass
 
-MAIL_MAILER=smtp
-MAIL_ENCODING=UTF-8
-MAIL_HOST=mailhog
-MAIL_PORT=1025
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-MAIL_ENCRYPTION=null
-MAIL_FROM_ADDRESS=test@abc.com
-MAIL_FROM_NAME="${APP_NAME}"
 ```
 
 5. アプリケーションキーを作成し、キャッシュをクリア
@@ -110,10 +101,9 @@ http://localhost:8025
 
 | 言語・フレームワーク | バージョン |
 | :------------------- | :--------- |
-| PHP                  | 8.3.13     |
-| Laravel              | 8.83.27    |
-| MySQL                | 9.0.1      |
-| Stripe               | 9.9.0      |
+| PHP                  | 8.3.19     |
+| Laravel              | 10.48.28   |
+| MySQL                | 8.4.4      |
 | MailHog              |            |
 
 ## ER 図

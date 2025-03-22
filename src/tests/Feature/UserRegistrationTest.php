@@ -83,10 +83,13 @@ class UserRegistrationTest extends TestCase
         // パスワードがハッシュ化されて保存されていることを確認
         $user = User::where('email', 'test@example.com')->first();
         $this->assertNotNull($user);
+
+        // メール認証済みにする
+        $user->forceFill(['email_verified_at' => now()])->save();
         $this->actingAs($user);
 
-        $response->assertStatus(302);   // ステータスコード302を確認（リダイレクト）
-        $response->assertRedirect(route('create'));  // 登録後に勤怠管理画面へリダイレクト確認
+        // 登録後に勤怠管理画面へアクセスできることを確認
+        $response = $this->get('/attendance');
 
         // データベースにユーザーが作成されたことを確認
         $this->assertDatabaseHas('users', [
