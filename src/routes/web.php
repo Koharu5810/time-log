@@ -7,8 +7,6 @@ use App\Http\Controllers\AttendanceCreateController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\VerificationController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\Request;
 
 // メール認証ルート設定
 Route::middleware(['auth'])->group(function () {

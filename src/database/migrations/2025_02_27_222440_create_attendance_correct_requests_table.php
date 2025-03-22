@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('attendance_id')->constrained()->cascadeOnDelete();
-            $table->time('previous_clock_in')->nullable();   // 変更前の出勤時刻
-            $table->time('previous_clock_end')->nullable();  // 変更前の退勤時刻
-            $table->time('requested_clock_in')->nullable();  // 申請された出勤時刻
-            $table->time('requested_clock_end')->nullable(); // 申請された退勤時刻
+            $table->time('previous_clock_in')->nullable();
+            $table->time('previous_clock_end')->nullable();
+            $table->time('requested_clock_in')->nullable();
+            $table->time('requested_clock_end')->nullable();
             $table->string('remarks', 255)->nullable();
             $table->enum('request_status', ['承認待ち', '承認済み'])->default('承認待ち');
             $table->foreignId('admin_id')->nullable()->constrained('admins')->cascadeOnDelete();

@@ -53,6 +53,7 @@
 {{-- 登録ボタン --}}
         <button class="register-form__button form__black-button">登録する</button>
     </form>
+
 {{-- ログイン案内 --}}
     <a href="/login" class="login-link blue-button">ログインはこちら</a>
 @endsection

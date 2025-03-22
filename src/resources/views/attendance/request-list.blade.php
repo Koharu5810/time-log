@@ -9,6 +9,7 @@
 
 @section('content')
     <div class="request-list__container">
+
         <div class="request-list__header">
             <a href="{{ route('request.list', ['tab' => 'pending', 'query' => $query]) }}" class="pending {{ $tab === 'pending' ? 'active' : '' }}">
                 承認待ち
@@ -61,6 +62,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
 
+    </div>
 @endsection

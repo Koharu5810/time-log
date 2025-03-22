@@ -61,7 +61,7 @@ class AttendanceDetailTest extends TestCase
     public function test_attendance_detail_displays_logged_in_users_work_date(): void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $attendance = $this->createAttendanceStatus($user);
@@ -82,7 +82,7 @@ class AttendanceDetailTest extends TestCase
     public function test_attendance_detail_displays_correct_clock_in_and_clock_end(): void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $attendance = $this->createAttendanceStatus($user);
@@ -103,7 +103,7 @@ class AttendanceDetailTest extends TestCase
     public function test_attendance_detail_displays_correct_break_time_start_and_break_time_end(): void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $attendance = $this->createAttendanceStatus($user);

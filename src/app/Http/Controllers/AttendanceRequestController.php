@@ -48,10 +48,10 @@ class AttendanceRequestController extends Controller
 // 勤怠詳細画面から修正申請（一般ユーザ・管理者）
     public function updateRequest(AttendanceUpdateRequest $request) {
         try {
-            // **1. 勤怠修正リクエストを新規作成**
+            // 1. 勤怠修正リクエストを新規作成
             $attendance = Attendance::find($request->attendance_id);
 
-            // **2. 勤怠修正履歴を作成**
+            // 2. 勤怠修正履歴を作成
             $attendanceCorrectRequest = AttendanceCorrectRequest::create([
                 'user_id' => $attendance->user_id,
                 'attendance_id' => $attendance->id,
@@ -65,7 +65,7 @@ class AttendanceRequestController extends Controller
                 'approved_at' => null,
             ]);
 
-            // **3. 休憩データを保存**
+            // 3. 休憩データを保存
             if (!empty($request->break_times)) {
                 foreach ($request->break_times as $index => $break) {
                     if (!empty($break['start']) && !empty($break['end'])) {
@@ -73,13 +73,13 @@ class AttendanceRequestController extends Controller
                         $breakEnd = Carbon::createFromFormat('H:i', $break['end'])->format('H:i:s');
 
                         if (!empty($break['id'])) {
-                            // **該当の休憩時間を取得**
+                            // 該当の休憩時間を取得
                             $breakTime = BreakTime::find($break['id']);
                         } else {
                             $breakTime = null;
                         }
 
-                        // **修正前のデータを BreakTimeCorrect に保存**
+                        // 修正前のデータをBreakTimeCorrectに保存
                         BreakTimeCorrectRequest::create([
                             'attendance_id' => $attendance->id,
                             'att_correct_id' => $attendanceCorrectRequest->id,

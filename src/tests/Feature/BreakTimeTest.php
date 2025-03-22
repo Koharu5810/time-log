@@ -58,7 +58,7 @@ class BreakTimeTest extends TestCase
     public function test_user_can_take_multiple_breaks_in_one_day(): void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $this->createAttendanceStatus($user, '出勤中');
@@ -73,7 +73,7 @@ class BreakTimeTest extends TestCase
     public function test_user_can_end_break_time(): void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $this->createAttendanceStatus($user, '出勤中');
@@ -88,7 +88,7 @@ class BreakTimeTest extends TestCase
     public function test_user_can_take_multiple_break_end_in_one_day(): void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $this->createAttendanceStatus($user, '出勤中');
@@ -104,7 +104,7 @@ class BreakTimeTest extends TestCase
     public function test_break_time_is_displayed_on_attendance_detail(): void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $attendance = $this->createAttendanceStatus($user, '出勤中');

@@ -85,7 +85,7 @@ class AttendanceCorrectionRequestTest extends TestCase
     public function test_validation_error_when_break_time_start_is_after_clock_end()
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         ['attendance' => $attendance, 'breakTime' => $break_time] = $this->createAttendanceStatus($user);
@@ -121,7 +121,7 @@ class AttendanceCorrectionRequestTest extends TestCase
     public function test_validation_error_when_break_time_end_is_after_clock_end()
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         ['attendance' => $attendance, 'breakTime' => $break_time] = $this->createAttendanceStatus($user);
@@ -157,7 +157,7 @@ class AttendanceCorrectionRequestTest extends TestCase
     public function test_validation_error_when_remarks_is_missing()
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         ['attendance' => $attendance, 'breakTime' => $break_time] = $this->createAttendanceStatus($user);

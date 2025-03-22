@@ -52,7 +52,7 @@ class AttendanceClockOutTest extends TestCase
     public function test_clock_out_time_is_displayed_on_attendance_detail(): void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $this->createAttendanceStatus($user, '出勤中');

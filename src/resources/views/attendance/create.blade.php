@@ -6,8 +6,8 @@
 @endsection
 
 @section('content')
-
     <div class="container">
+
     {{-- ステータスバッジ --}}
         <span class="status-badge">{{ $attendance->status ?? '勤務外' }}</span>
 

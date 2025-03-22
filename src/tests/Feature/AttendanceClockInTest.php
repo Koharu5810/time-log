@@ -49,7 +49,7 @@ class AttendanceClockInTest extends TestCase
     public function test_user_cannot_clock_in_again_after_clocking_in():void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $this->createAttendanceStatus($user, '退勤済');
@@ -61,7 +61,7 @@ class AttendanceClockInTest extends TestCase
     public function test_clock_in_time_is_displayed_on_attendance_detail(): void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */   // $userの型解析ツールエラーが出るため追記
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $this->createAttendanceStatus($user, '勤務外');

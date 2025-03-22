@@ -87,8 +87,6 @@ class UserLoginTest extends TestCase
 // 全ての項目が正しく入力されている場合、ログイン処理実行
     public function test_user_can_login_and_redirect_to_home()
     {
-        // $user = TestHelper::userLogin();
-
         $user = User::factory()->create([
             'email' => 'test@example.com',
             'password' => bcrypt('password123'),

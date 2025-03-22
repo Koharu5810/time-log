@@ -12,7 +12,6 @@ class UserLogoutTest extends TestCase
 
     public function test_authUser_can_logout_and_redirect_to_home()
     {
-        /** @var */
         $user = User::factory()->create([
             'name' => 'TEST USER',
             'email' => 'test@example.com',

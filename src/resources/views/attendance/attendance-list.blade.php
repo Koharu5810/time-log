@@ -11,6 +11,7 @@
 
 @section('content')
     <div class="attendance-list__container">
+
         @php
             // 認証ユーザー情報を取得
             $authUser = auth('admin')->check() ? auth('admin')->user() : auth('web')->user();

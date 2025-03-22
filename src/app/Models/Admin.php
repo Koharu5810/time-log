@@ -36,6 +36,6 @@ class Admin extends Authenticatable
     }
     public function attendanceHistory()
     {
-        return $this->hasMany(AttendanceHistory::class, 'admin_id');
+        return $this->hasMany(AttendanceCorrectRequest::class, 'admin_id');
     }
 }

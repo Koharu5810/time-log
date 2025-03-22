@@ -42,7 +42,7 @@ class AttendanceListTest extends TestCase
         $this->seed();
 
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */  // 型解析ツールのエラー防止
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $response = $this->get(route('attendance.list'));
@@ -58,7 +58,7 @@ class AttendanceListTest extends TestCase
         $this->seed();
 
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */  // 型解析ツールのエラー防止
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $currentMonthDisplay = Carbon::now()->format('Y/m');
@@ -79,7 +79,7 @@ class AttendanceListTest extends TestCase
         $this->seed();
 
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */  // 型解析ツールのエラー防止
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $currentMonthDisplay = Carbon::now()->format('Y/m');
@@ -98,7 +98,7 @@ class AttendanceListTest extends TestCase
     public function test_can_access_attendance_detail_page(): void
     {
         $user = TestHelper::userLogin();
-        /** @var \App\Models\User $user */  // 型解析ツールのエラー防止
+        /** @var \App\Models\User $user */
         $this->actingAs($user);
 
         $attendance = Attendance::create([
