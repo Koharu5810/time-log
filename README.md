@@ -94,7 +94,6 @@ php artisan db:seed --env=testing
 アプリケーションをブラウザで確認時に、会員登録画面で登録後メール認証を行うには  
 http://localhost:8025  
 へダイレクトし、本文記載の認証ボタンをクリックする。
-<br><br>
 
 **一般ユーザのログイン**
 http://localhost/login へアクセス
