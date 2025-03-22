@@ -9,7 +9,7 @@ use App\Models\AttendanceCorrectRequest;
 use Carbon\Carbon;
 use Exception;
 
-class AttendanceTableSeeder extends Seeder
+class AttendancesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

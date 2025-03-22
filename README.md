@@ -4,6 +4,7 @@
 メール認証によって、認証済みユーザのみが操作を行える  
 一般ユーザは勤怠申請、管理者ユーザは勤怠管理を行える
 
+
 ## 環境構築
 
 **Docker ビルド**
@@ -86,14 +87,22 @@ php artisan migrate --env=testing
 php artisan db:seed --env=testing
 ```
 
-<br>
 
-**会員登録後のメール認証**
+## ログイン情報
+**一般ユーザ会員登録後のメール認証**
 
 アプリケーションをブラウザで確認時に、会員登録画面で登録後メール認証を行うには  
 http://localhost:8025  
 へダイレクトし、本文記載の認証ボタンをクリックする。
 <br><br>
+
+**一般ユーザのログイン**
+http://localhost/login へアクセス
+UsersTableSeederに記述のメールアドレス、パスワードを使用
+
+**管理者ユーザのログイン**
+http://localhost/admin/login へアクセス
+AdminsTableSeederに記述のメールアドレス、パスワードを使用
 
 
 ## 使用技術(実行環境)
@@ -111,8 +120,7 @@ http://localhost:8025
 
 ## URL
 
-- 開発環境 : http://localhost/
+- 開発環境 : http://localhost/login
 - 開発環境（管理者）：http://localhost/admin/login
-  （AdminsTableSeederに記述のメールアドレス、パスワードを使用）
 - phpMyAdmin : http://localhost:8080/
 - MailHog : http://localhost:8025/
