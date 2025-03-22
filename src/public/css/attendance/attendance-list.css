@@ -80,6 +80,40 @@ td {
     text-decoration: underline;
 }
 
+.csv-download {
+    background-color: #E6E6E6;
+    height: clamp(130px, 5vw, 170px);
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.csv-download a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.csv-button {
+    background-color: #000;
+    width: 184px;
+    height: 50px;
+    margin-top: clamp(40px, 5vw, 70px);
+    padding: 8px 24px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: #FFF;
+    font: normal 700 clamp(16px, 2vw, 22px) "Inter", sans-serif;
+    letter-spacing: 2px;
+    border: none;
+    border-radius: 5px;
+}
+.csv-button:hover {
+    background-color: #333;
+    cursor: pointer;
+}
+
 /* タブレットサイズ */
 @media (min-width: 426px) {
     td {

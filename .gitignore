@@ -9,7 +9,7 @@ docker-compose.override.yml
 /node_modules
 /.env
 /.env.*
-/.env.testing
+src/.env.testing
 /storage/*.log
 /storage/framework/cache
 /storage/framework/sessions

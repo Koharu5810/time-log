@@ -87,6 +87,12 @@
             </table>
         </div>
 
+        @if (auth('admin')->check())
+            <div class="csv-download">
+                <a href="{{ route('admin.attendance.export', ['id' => $staff->id, 'year' => $year, 'month' => $month]) }}" class="csv-button">CSV出力</a>
+            </div>
+        @endif
+
     </div>
 @endsection
 
