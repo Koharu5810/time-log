@@ -6,10 +6,27 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceCreateController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\VerificationController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+
+// メール認証ルート設定
+Route::middleware(['auth'])->group(function () {
+    Route::get('/email/verify', [VerificationController::class, 'notice'])->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+    Route::get('/email/verify/check', [VerificationController::class, 'check'])->name('verification.check');
+    Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
+});
 
 // 会員登録画面
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->withoutMiddleware(['auth'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->withoutMiddleware(['auth'])->name('registration');
+// メール認証画面
+Route::get('verify-email', function () {
+    return view('auth.verify-email');
+});
 // ログイン画面（一般）
 Route::get('/login', [AuthController::class, 'showUsersLoginForm'])->name('login.show');
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');

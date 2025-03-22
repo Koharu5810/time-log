@@ -27,7 +27,7 @@ class AuthController extends Controller
         // 登録直後にログイン状態にする
         auth()->login($user);
 
-        return redirect()->route('create');
+        return redirect()->route('verification.notice');
     }
 
 // ログイン画面表示（一般ユーザー）

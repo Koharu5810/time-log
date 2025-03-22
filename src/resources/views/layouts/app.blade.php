@@ -21,8 +21,12 @@
                 <img class="header__logo" src="{{ asset('images/icons/logo.svg') }}" alt="ロゴ" />
             </div>
 
-    {{-- ボタンコンテナ（ログイン時のみ表示） --}}
-            @if (auth()->check() && !request()->is('user/register') && !request()->is('user/login') && !request()->is('admin/login'))
+    {{-- ボタンコンテナ（ログイン・会員登録時は非表示） --}}
+            @if (auth()->check() &&
+                !request()->is('user/register') &&
+                !request()->is('user/login') &&
+                !request()->is('email/verify') &&
+                !request()->is('admin/login'))
                 <div class="header-right">
 
             {{-- 管理者用ヘッダー --}}

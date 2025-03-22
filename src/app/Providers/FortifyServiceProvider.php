@@ -3,14 +3,10 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
-use App\Actions\Fortify\ResetUserPassword;
-use App\Actions\Fortify\UpdateUserPassword;
-use App\Actions\Fortify\UpdateUserProfileInformation;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -29,13 +25,18 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Fortify::createUsersUsing(CreateNewUser::class);
-        // Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
-        // Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
-        // Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
-        Fortify::registerView(function () {
-            return view('user.register');
-        });
+        $this->app->singleton(
+            \Laravel\Fortify\Contracts\RegisterResponse::class,
+            function () {
+                return new class implements \Laravel\Fortify\Contracts\RegisterResponse {
+                    public function toResponse($request)
+                    {
+                        return redirect()->route('verification.notice');
+                    }
+                };
+            }
+        );
 
         Fortify::loginview(function () {
             return view('user.login');
