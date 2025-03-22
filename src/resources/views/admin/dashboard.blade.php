@@ -22,7 +22,7 @@
                 <img class="calendar" src="{{ asset('images/icons/calendar.png') }}" alt="日付" />
                 <span>{{ \Carbon\Carbon::create($date)->format('Y/m/d') }}</span>
             </div>
-        {{-- 次日リンク --}}
+        {{-- 翌日リンク --}}
             <a href="{{ route('admin.dashboard', [
                 'year' => \Carbon\Carbon::create($date)->addDay()->year,
                 'month' => \Carbon\Carbon::create($date)->addDay()->month,

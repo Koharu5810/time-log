@@ -27,6 +27,7 @@ class VerificationController extends Controller
             return redirect()->route('create');
         }
 
+        // Userモデルのemail_verified_atカラムに挿入
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
