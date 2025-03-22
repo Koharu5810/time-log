@@ -18,9 +18,7 @@
 
 1. `docker-compose exec php bash`
 2. `composer install`
-3. 「.env.example」ファイルを 「.env」ファイルに命名を変更。  
-    または、新しく.env ファイルを作成（`cp .env.example .env`）。
-4. .env に以下の環境変数を追加する。
+3. .env ファイルを作成（`cp .env.example .env`）し、以下の環境変数を追加する。
 
 ```text
 DB_CONNECTION=mysql
@@ -34,8 +32,8 @@ MAIL_MAILER=smtp
 MAIL_ENCODING=UTF-8
 MAIL_HOST=mailhog
 MAIL_PORT=1025
-MAIL_USERNAME=test
-MAIL_PASSWORD=pass
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
 MAIL_FROM_ADDRESS=test@abc.com
 MAIL_FROM_NAME="${APP_NAME}"
