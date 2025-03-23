@@ -153,7 +153,7 @@ class AdminAttendanceTest extends TestCase
             $response->assertSeeText('詳細');
         }
     }
-// 次月を押した際に表示月の次月の情報が表示される
+// 翌月を押した際に表示月の次月の情報が表示される
     public function test_admin_can_view_next_month_attendance()
     {
         $this->loginAsAdmin();
