@@ -55,6 +55,20 @@ class AdminAttendanceCorrectionRequestTest extends TestCase
         $response->assertSessionHasErrors($expectedErrors);
     }
 
+// 勤怠詳細画面に表示されるデータが選択したものになっている
+    public function test_admin_can_view_selected_user_attendance_details()
+    {
+        ['attendance' => $attendance] = $this->createAttendanceStatus();
+        $response = $this->openAdminAttendanceDetailPage($attendance);
+
+        $response->assertStatus(200);
+        $response->assertSee($attendance->user->name);
+        $response->assertSee($attendance->work_date);
+        $response->assertSee('09:00');
+        $response->assertSee('18:00');
+        $response->assertSee('12:00');
+        $response->assertSee('13:00');
+    }
 // 出勤時間が退勤時間より後になっている場合バリデーションメッセージ表示
     public function test_validation_error_when_clock_in_is_after_clock_end()
     {
@@ -92,7 +106,7 @@ class AdminAttendanceCorrectionRequestTest extends TestCase
 
         $this->assertValidationError($attendance, $data, $expectedErrors);
     }
-// 休憩開始時間が退勤時間より後になっている場合バリデーションメッセージ表示
+// 休憩終了時間が退勤時間より後になっている場合バリデーションメッセージ表示
     public function test_validation_error_when_break_time_end_is_after_clock_end()
     {
         ['attendance' => $attendance, 'breakTime' => $break_time] = $this->createAttendanceStatus();
